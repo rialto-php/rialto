@@ -1,0 +1,21 @@
+{
+    "name": "extractr-io/rialto",
+    "description": "Manage Node resources from PHP",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Johann Pardanaud",
+            "email": "pardanaud.j@gmail.com"
+        }
+    ],
+    "require": {
+        "clue/socket-raw": "^1.2",
+        "symfony/process": "^3.3|^4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "ExtractrIo\\Rialto\\": "src/"
+        }
+    }
+}
