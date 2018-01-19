@@ -13,9 +13,24 @@
         "clue/socket-raw": "^1.2",
         "symfony/process": "^3.3|^4.0"
     },
+    "require-dev": {
+        "codedungeon/phpunit-result-printer": "^0.5.3",
+        "phpunit/phpunit": "^6.5"
+    },
     "autoload": {
         "psr-4": {
             "ExtractrIo\\Rialto\\": "src/"
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ExtractrIo\\Rialto\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit"
+    },
+    "config": {
+        "sort-packages": true
     }
 }
