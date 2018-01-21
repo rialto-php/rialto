@@ -28,6 +28,7 @@
         }
     },
     "scripts": {
+        "post-install-cmd": "npm install",
         "test": "./vendor/bin/phpunit"
     },
     "config": {
