@@ -148,7 +148,7 @@ class ImplementationTest extends TestCase
         sleep(1);
 
         $this->expectException(\ExtractrIo\Rialto\Exceptions\Node\FatalException::class);
-        $this->expectExceptionMessage('');
+        $this->expectExceptionMessage('The idle timeout has been reached.');
 
         $fs->constants;
     }

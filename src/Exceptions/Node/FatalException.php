@@ -3,6 +3,7 @@
 namespace ExtractrIo\Rialto\Exceptions\Node;
 
 use Symfony\Component\Process\Process;
+use ExtractrIo\Rialto\Exceptions\ProcessException;
 
 class FatalException extends Exception
 {
@@ -19,6 +20,12 @@ class FatalException extends Exception
     public function __construct(Process $process)
     {
         $this->process = $process;
+
+        $error = json_decode($process->getErrorOutput(), true);
+
+        if (($error['__node_communicator_error__'] ?? false) !== true) {
+            throw new ProcessException($process);
+        }
 
         parent::__construct($process->getErrorOutput());
     }

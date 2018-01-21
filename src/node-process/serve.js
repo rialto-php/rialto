@@ -1,7 +1,8 @@
 'use strict';
 
 const Server = require('./Server'),
-    ConnectionDelegate = require('./ConnectionDelegate');
+    ConnectionDelegate = require('./ConnectionDelegate'),
+    ErrorSerializer = require('./ErrorSerializer');
 
 // Instanciate the custom connection delegate
 const connectionDelegate = new (require(process.argv.slice(2)[0]));
@@ -19,4 +20,11 @@ server.writePortToOutput();
 // Throw unhandled rejections
 process.on('unhandledRejection', error => {
     throw error;
+});
+
+// Output the exceptions in JSON format
+process.on('uncaughtException', error => {
+    process.stderr.write(JSON.stringify(ErrorSerializer.serialize(error)));
+
+    process.exit(1);
 });

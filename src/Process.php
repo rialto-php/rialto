@@ -256,7 +256,7 @@ class Process
             return $value;
         } else {
             if (($value['__node_communicator_error__'] ?? false) === true) {
-                throw new Exceptions\Node\Exception($value['error']);
+                throw new Exceptions\Node\Exception($value);
             } else if (($value['__node_communicator_resource__'] ?? false) === true) {
                 $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name'])
                     ?: $this->delegate->defaultResource();

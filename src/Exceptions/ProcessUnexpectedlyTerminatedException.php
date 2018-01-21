@@ -4,30 +4,13 @@ namespace ExtractrIo\Rialto\Exceptions;
 
 use Symfony\Component\Process\Process;
 
-class ProcessUnexpectedlyTerminatedException extends \RuntimeException
+class ProcessUnexpectedlyTerminatedException extends ProcessException
 {
-    /**
-     * The associated process.
-     *
-     * @var \Symfony\Component\Process\Process
-     */
-    private $process;
-
     /**
      * Constructor.
      */
     public function __construct(Process $process)
     {
-        parent::__construct('The process has been unexpectedly terminated.');
-
-        $this->process = $process;
-    }
-
-    /**
-     * Return the associated process.
-     */
-    public function getProcess(): Process
-    {
-        return $this->process;
+        parent::__construct($process, 'The process has been unexpectedly terminated.');
     }
 }

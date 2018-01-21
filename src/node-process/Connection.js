@@ -4,7 +4,8 @@ const EventEmitter = require('events'),
     _ = require('lodash'),
     ConnectionDelegate = require('./ConnectionDelegate'),
     ResourceRepository = require('./ResourceRepository'),
-    Instruction = require('./Instruction');
+    Instruction = require('./Instruction'),
+    ErrorSerializer = require('./ErrorSerializer');
 
 /**
  * Handle a connection interacting with this process.
@@ -184,10 +185,7 @@ class Connection extends EventEmitter
      */
     serializeError(error)
     {
-        return {
-            __node_communicator_error__: true,
-            error: error.stack,
-        };
+        return ErrorSerializer.serialize(error);
     }
 }
 
