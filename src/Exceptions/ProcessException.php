@@ -6,12 +6,7 @@ use Symfony\Component\Process\Process;
 
 class ProcessException extends \RuntimeException
 {
-    /**
-     * The associated process.
-     *
-     * @var \Symfony\Component\Process\Process
-     */
-    private $process;
+    use IdentifiesProcess;
 
     /**
      * Constructor.
@@ -21,13 +16,5 @@ class ProcessException extends \RuntimeException
         parent::__construct($message ?: $process->getErrorOutput());
 
         $this->process = $process;
-    }
-
-    /**
-     * Return the associated process.
-     */
-    public function getProcess(): Process
-    {
-        return $this->process;
     }
 }

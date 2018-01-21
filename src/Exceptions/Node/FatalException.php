@@ -4,15 +4,11 @@ namespace ExtractrIo\Rialto\Exceptions\Node;
 
 use Symfony\Component\Process\Process;
 use ExtractrIo\Rialto\Exceptions\ProcessException;
+use ExtractrIo\Rialto\Exceptions\IdentifiesProcess;
 
 class FatalException extends Exception
 {
-    /**
-     * The associated process.
-     *
-     * @var \Symfony\Component\Process\Process
-     */
-    private $process;
+    use IdentifiesProcess;
 
     /**
      * Constructor.
@@ -28,13 +24,5 @@ class FatalException extends Exception
         }
 
         parent::__construct($process->getErrorOutput());
-    }
-
-    /**
-     * Return the associated process.
-     */
-    public function getProcess(): Process
-    {
-        return $this->process;
     }
 }
