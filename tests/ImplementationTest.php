@@ -138,6 +138,16 @@ class ImplementationTest extends TestCase
         $this->fs->tryCatch->__inexistantMethod__();
     }
 
+    /**
+     * @test
+     * @expectedException \ExtractrIo\Rialto\Exceptions\ProcessException
+     * @expectedExceptionMessageRegExp /__inexistant_process__.*not found/
+     */
+    public function executable_path_option_changes_the_process_prefix()
+    {
+        new Fs(['executable_path' => '__inexistant_process__']);
+    }
+
     /** @test */
     public function idle_timeout_option_closes_node_once_timer_is_reached()
     {

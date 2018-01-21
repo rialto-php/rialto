@@ -33,6 +33,9 @@ class Process
      * @var array
      */
     protected $options = [
+        // Node's executable path
+        'executable_path' => 'node',
+
         // How much time (in seconds) the process can stay inactive before being killed
         'idle_timeout' => 60,
 
@@ -116,7 +119,7 @@ class Process
         $options = array_intersect_key($this->options, array_flip(['idle_timeout']));
 
         return new SymfonyProcess(array_merge(
-            ['node', __DIR__.'/node-process/serve.js'],
+            [$this->options['executable_path'], __DIR__.'/node-process/serve.js'],
             [$realConnectionDelegatePath],
             [json_encode((object) $options)]
         ));
