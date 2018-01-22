@@ -2,6 +2,9 @@
 
 namespace ExtractrIo\Rialto\Tests;
 
+use Mockery as m;
+use Monolog\Logger;
+use Psr\Log\LogLevel;
 use PHPUnit\Framework\TestCase;
 use ExtractrIo\Rialto\JsFunction;
 use ExtractrIo\Rialto\BasicResource;
@@ -20,6 +23,8 @@ class ImplementationTest extends TestCase
 
     public function tearDown(): void
     {
+        m::close();
+
         unset($this->fs);
     }
 
@@ -218,5 +223,41 @@ class ImplementationTest extends TestCase
         $this->expectExceptionMessage('The process has been unexpectedly terminated.');
 
         $fs->foo;
+    }
+
+    /** @test */
+    public function logger_is_used_when_provided()
+    {
+        $mock = m::mock(new Logger('rialto'));
+
+        $shouldLog = function ($level, $message) use ($mock) {
+            $mock->shouldReceive('log')->with($level, $message)->ordered()->once();
+        };
+
+        $shouldLog(LogLevel::DEBUG, 'Starting process...');
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
+
+        $fs = new Fs(['logger' => $mock]);
+
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
+        $shouldLog(LogLevel::NOTICE, m::pattern('/^\[PID \d+\] \[stdout\] Hello World!$/'));
+
+        $fs->runCallback(JsFunction::create("
+            process.stdout.write('Hello World!');
+        "));
+
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
+        $shouldLog(LogLevel::ERROR, m::pattern('/^\[PID \d+\] \[stderr\] Goodbye World!$/'));
+
+        $fs->runCallback(JsFunction::create("
+            process.stderr.write('Goodbye World!');
+        "));
+
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopping process...$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopped process$/'));
+
+        $this->assertTrue(true);
     }
 }

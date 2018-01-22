@@ -4,6 +4,7 @@ namespace ExtractrIo\Rialto;
 
 use RuntimeException;
 use Socket\Raw\Socket;
+use Psr\Log\{LoggerInterface, LogLevel};
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
 use ExtractrIo\Rialto\Exceptions\Node\FatalException;
@@ -46,6 +47,9 @@ class Process
 
         // How much time (in seconds) the process can take to shutdown properly before being killed
         'stop_timeout' => 3,
+
+        // A logger instance for debugging (must implement \Psr\Log\LoggerInterface)
+        'logger' => null,
     ];
 
     /**
@@ -70,6 +74,13 @@ class Process
     protected $client;
 
     /**
+     * The server port.
+     *
+     * @var int
+     */
+    protected $serverPort;
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -81,7 +92,11 @@ class Process
 
         $this->process = $this->createNewProcess($connectionDelegatePath);
 
+        $this->log(LogLevel::DEBUG, [], 'Starting process...');
+
         $this->process->start();
+
+        $this->log(LogLevel::DEBUG, ["PID {$this->process->getPid()}"], 'Process started');
 
         $this->delegate = $processDelegate;
 
@@ -93,8 +108,34 @@ class Process
      */
     public function __destruct() {
         if ($this->process !== null) {
+            $pid = $this->process->getPid();
+
+            $this->log(LogLevel::DEBUG, ["PID $pid"], 'Stopping process...');
+
             $this->process->stop($this->options['stop_timeout']);
+
+            $this->log(LogLevel::DEBUG, ["PID $pid"], 'Stopped process');
         }
+    }
+
+    /**
+     * Log a message with an arbitrary level.
+     */
+    protected function log(string $level, array $sections, string $message): bool
+    {
+        ['logger' => $logger] = $this->options;
+
+        if ($logger instanceof LoggerInterface) {
+            $sections = implode(' ', array_map(function ($section) {
+                return "[$section]";
+            }, $sections));
+
+            $logger->log($level, empty($sections) ? $message : "$sections $message");
+
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -128,6 +169,15 @@ class Process
     protected function checkProcessStatus(): void
     {
         $process = $this->process;
+        $pid = $process->getPid();
+
+        if (!empty($output = $process->getIncrementalOutput())) {
+            $this->log(LogLevel::NOTICE, ["PID $pid", "stdout"], $output);
+        }
+
+        if (!empty($errorOutput = $process->getIncrementalErrorOutput())) {
+            $this->log(LogLevel::ERROR, ["PID $pid", "stderr"], $errorOutput);
+        }
 
         if (!empty($process->getErrorOutput())) {
             if (IdleTimeoutException::exceptionApplies($process)) {
@@ -149,10 +199,14 @@ class Process
      */
     protected function serverPort(): int
     {
+        if ($this->serverPort !== null) {
+            return $this->serverPort;
+        }
+
         $iterator = $this->process->getIterator(SymfonyProcess::ITER_SKIP_ERR | SymfonyProcess::ITER_KEEP_OUTPUT);
 
         foreach ($iterator as $data) {
-            return (int) $data;
+            return $this->serverPort = (int) $data;
         }
 
         // If the iterator didn't execute properly, then the process must have failed, we must check to be sure.
@@ -178,8 +232,11 @@ class Process
         // Check the process status because it could have crash in idle status.
         $this->checkProcessStatus();
 
+        $instruction = json_encode($instruction);
+        $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "sending"], $instruction);
+
         $this->client->selectWrite(1);
-        $this->client->write(json_encode($instruction));
+        $this->client->write($instruction);
 
         $value = $this->readNextProcessValue();
 
@@ -227,6 +284,8 @@ class Process
                     throw $exception;
             }
         }
+
+        $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
 
         $data = json_decode($output, true);
 

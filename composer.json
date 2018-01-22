@@ -11,10 +11,13 @@
     ],
     "require": {
         "clue/socket-raw": "^1.2",
+        "psr/log": "^1.0",
         "symfony/process": "^3.3|^4.0"
     },
     "require-dev": {
         "codedungeon/phpunit-result-printer": "^0.5.3",
+        "mockery/mockery": "^1.0",
+        "monolog/monolog": "^1.23",
         "phpunit/phpunit": "^6.5"
     },
     "autoload": {
