@@ -165,8 +165,8 @@ class ImplementationTest extends TestCase
 
         sleep(1);
 
-        $this->expectException(\ExtractrIo\Rialto\Exceptions\Node\FatalException::class);
-        $this->expectExceptionMessage('The idle timeout has been reached.');
+        $this->expectException(\ExtractrIo\Rialto\Exceptions\IdleTimeoutException::class);
+        $this->expectExceptionMessageRegExp('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
 
         $fs->constants;
     }
@@ -174,7 +174,7 @@ class ImplementationTest extends TestCase
     /**
      * @test
      * @expectedException \ExtractrIo\Rialto\Exceptions\ReadSocketTimeoutException
-     * @expectedExceptionMessageRegExp /^The timeout \(0\.01 seconds\) has been exceeded/
+     * @expectedExceptionMessageRegExp /^The timeout \(0\.010 seconds\) has been exceeded/
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
     {

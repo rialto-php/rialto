@@ -7,6 +7,7 @@ use Socket\Raw\Socket;
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
 use ExtractrIo\Rialto\Exceptions\Node\FatalException;
+use ExtractrIo\Rialto\Exceptions\IdleTimeoutException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
@@ -148,7 +149,9 @@ class Process
         $process = $this->process;
 
         if (!empty($process->getErrorOutput())) {
-            if (FatalException::errorOutputContainsNodeException($process)) {
+            if (IdleTimeoutException::exceptionApplies($process)) {
+                throw new IdleTimeoutException($this->options['idle_timeout'], new FatalException($process));
+            } else if (FatalException::exceptionApplies($process)) {
                 throw new FatalException($process);
             } elseif ($process->isTerminated() && !$process->isSuccessful()) {
                 throw new ProcessFailedException($process);

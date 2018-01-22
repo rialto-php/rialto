@@ -10,9 +10,9 @@ class FatalException extends Exception
     use IdentifiesProcess;
 
     /**
-     * Check if the error output of the process contains a Node exception.
+     * Check if the exception can be applied to the process.
      */
-    public static function errorOutputContainsNodeException(Process $process): bool
+    public static function exceptionApplies(Process $process): bool
     {
         $error = json_decode($process->getErrorOutput(), true);
 
