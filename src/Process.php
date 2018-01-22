@@ -56,13 +56,6 @@ class Process
     protected $process;
 
     /**
-     * Whether the process should be stopped on the instance destruction or kept alive.
-     *
-     * @var bool
-     */
-    protected $stopProcessOnDestruction = true;
-
-    /**
      * The process delegate.
      *
      * @var \ExtractrIo\Rialto\ShouldHandleProcessDelegation;
@@ -99,7 +92,7 @@ class Process
      * Destructor.
      */
     public function __destruct() {
-        if ($this->process !== null && $this->stopProcessOnDestruction) {
+        if ($this->process !== null) {
             $this->process->stop($this->options['stop_timeout']);
         }
     }
@@ -125,18 +118,6 @@ class Process
             [$realConnectionDelegatePath],
             [json_encode((object) $options)]
         ));
-    }
-
-    /**
-     * Keep the process alive even if the PHP instance is destroyed.
-     *
-     * @return int The PID of the process.
-     */
-    public function keepProcessAlive(): int
-    {
-        $this->stopProcessOnDestruction = false;
-
-        return $this->process->getPid();
     }
 
     /**
