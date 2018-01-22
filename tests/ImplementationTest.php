@@ -138,6 +138,14 @@ class ImplementationTest extends TestCase
         $this->fs->tryCatch->__inexistantMethod__();
     }
 
+    /** @test*/
+    public function node_current_working_directory_is_the_same_as_php()
+    {
+        $result = $this->fs->accessSync('tests/resources/file');
+
+        $this->assertNull($result);
+    }
+
     /**
      * @test
      * @expectedException \ExtractrIo\Rialto\Exceptions\ProcessException
