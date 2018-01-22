@@ -148,8 +148,8 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \ExtractrIo\Rialto\Exceptions\ProcessException
-     * @expectedExceptionMessageRegExp /__inexistant_process__.*not found/
+     * @expectedException \Symfony\Component\Process\Exception\ProcessFailedException
+     * @expectedExceptionMessageRegExp /Error Output:\n=+\n.*__inexistant_process__.*not found/
      */
     public function executable_path_option_changes_the_process_prefix()
     {

@@ -6,6 +6,7 @@ use RuntimeException;
 use Socket\Raw\Socket;
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
+use ExtractrIo\Rialto\Exceptions\Node\FatalException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
@@ -147,15 +148,15 @@ class Process
         $process = $this->process;
 
         if (!empty($process->getErrorOutput())) {
-            throw new Exceptions\Node\FatalException($process);
-        }
-
-        if ($process->getExitCode() !== null) {
-            throw new Exceptions\ProcessUnexpectedlyTerminatedException($process);
+            if (FatalException::errorOutputContainsNodeException($process)) {
+                throw new FatalException($process);
+            } elseif ($process->isTerminated() && !$process->isSuccessful()) {
+                throw new ProcessFailedException($process);
+            }
         }
 
         if ($process->isTerminated()) {
-            throw new ProcessFailedException($process);
+            throw new Exceptions\ProcessUnexpectedlyTerminatedException($process);
         }
     }
 
