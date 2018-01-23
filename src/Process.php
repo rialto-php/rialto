@@ -53,11 +53,18 @@ class Process
     ];
 
     /**
-     * The runnning process.
+     * The running process.
      *
      * @var \Symfony\Component\Process\Process
      */
     protected $process;
+
+    /**
+     * The PID of the running process.
+     *
+     * @var int
+     */
+    protected $processPid;
 
     /**
      * The process delegate.
@@ -92,11 +99,7 @@ class Process
 
         $this->process = $this->createNewProcess($connectionDelegatePath);
 
-        $this->log(LogLevel::DEBUG, [], 'Starting process...');
-
-        $this->process->start();
-
-        $this->log(LogLevel::DEBUG, ["PID {$this->process->getPid()}"], 'Process started');
+        $this->processPid = $this->startProcess($this->process);
 
         $this->delegate = $processDelegate;
 
@@ -108,13 +111,11 @@ class Process
      */
     public function __destruct() {
         if ($this->process !== null) {
-            $pid = $this->process->getPid();
-
-            $this->log(LogLevel::DEBUG, ["PID $pid"], 'Stopping process...');
+            $this->log(LogLevel::DEBUG, ["PID {$this->processPid}"], 'Stopping process...');
 
             $this->process->stop($this->options['stop_timeout']);
 
-            $this->log(LogLevel::DEBUG, ["PID $pid"], 'Stopped process');
+            $this->log(LogLevel::DEBUG, ["PID {$this->processPid}"], 'Stopped process');
         }
     }
 
@@ -139,7 +140,7 @@ class Process
     }
 
     /**
-     * Create a new process.
+     * Create a new Node process.
      *
      * @throws RuntimeException if the path to the connection delegate cannot be found.
      */
@@ -159,6 +160,22 @@ class Process
             [$realConnectionDelegatePath],
             [json_encode((object) $options)]
         ));
+    }
+
+    /**
+     * Start the Node process.
+     */
+    protected function startProcess(SymfonyProcess $process): int
+    {
+        $this->log(LogLevel::DEBUG, [], 'Starting process...');
+
+        $process->start();
+
+        $pid = $process->getPid();
+
+        $this->log(LogLevel::DEBUG, ["PID $pid"], 'Process started');
+
+        return $pid;
     }
 
     /**
