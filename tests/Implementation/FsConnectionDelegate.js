@@ -29,9 +29,11 @@ class FsConnectionDelegate extends ConnectionDelegate
 
     extendFsModule(fs)
     {
-        fs.runCallback = cb => cb(fs);
-
         fs.multipleStatSync = (...args) => args.map(fs.statSync);
+
+        fs.wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+        fs.runCallback = cb => cb(fs);
 
         return fs;
     }

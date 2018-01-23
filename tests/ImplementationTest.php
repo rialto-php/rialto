@@ -185,9 +185,7 @@ class ImplementationTest extends TestCase
     {
         $fs = new Fs(['read_timeout' => 0.01]);
 
-        $fs->runCallback(JsFunction::create("
-            return new Promise(resolve => setTimeout(resolve, 20));
-        "));
+        $fs->wait(20);
     }
 
     /** @test */
