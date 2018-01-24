@@ -17,9 +17,9 @@ trait UnserializesData
         if (!is_array($value)) {
             return $value;
         } else {
-            if (($value['__node_communicator_error__'] ?? false) === true) {
+            if (($value['__rialto_error__'] ?? false) === true) {
                 return new Exception($value);
-            } else if (($value['__node_communicator_resource__'] ?? false) === true) {
+            } else if (($value['__rialto_resource__'] ?? false) === true) {
                 $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name'])
                     ?: $this->delegate->defaultResource();
 

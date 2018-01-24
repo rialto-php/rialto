@@ -13,7 +13,7 @@ class Serializer
     static serializeError(error)
     {
         return {
-            __node_communicator_error__: true,
+            __rialto_error__: true,
             message: error.message,
             stack: error.stack,
         };

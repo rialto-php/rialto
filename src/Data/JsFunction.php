@@ -53,7 +53,7 @@ class JsFunction implements \JsonSerializable
     public function jsonSerialize(): array
     {
         return [
-            '__node_communicator_function__' => true,
+            '__rialto_function__' => true,
             'parameters' => (object) $this->parameters,
             'body' => $this->body,
             'scope' => (object) $this->scope,

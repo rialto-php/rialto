@@ -23,9 +23,9 @@ class Unserializer
      */
     unserialize(value)
     {
-        if (value.__node_communicator_resource__ === true) {
+        if (value.__rialto_resource__ === true) {
             return this.resources.retrieve(ResourceIdentity.unserialize(value));
-        } else if (value.__node_communicator_function__ === true) {
+        } else if (value.__rialto_function__ === true) {
             return this.unserializeFunction(value);
         } else if (Value.isContainer(value)) {
             return Value.mapContainer(value, this.unserialize.bind(this));

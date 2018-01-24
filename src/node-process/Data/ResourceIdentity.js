@@ -52,7 +52,7 @@ class ResourceIdentity
     serialize()
     {
         return {
-            __node_communicator_resource__: true,
+            __rialto_resource__: true,
             class_name: this.className(),
             id: this.uniqueIdentifier(),
         };

@@ -16,7 +16,7 @@ class FatalException extends Exception
     {
         $error = json_decode($process->getErrorOutput(), true);
 
-        return ($error['__node_communicator_error__'] ?? false) === true;
+        return ($error['__rialto_error__'] ?? false) === true;
     }
 
     /**
