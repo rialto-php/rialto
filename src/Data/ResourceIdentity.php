@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto;
+namespace ExtractrIo\Rialto\Data;
 
 class ResourceIdentity
 {

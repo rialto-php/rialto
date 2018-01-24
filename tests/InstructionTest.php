@@ -3,8 +3,9 @@
 namespace ExtractrIo\Rialto\Tests;
 
 use PHPUnit\Framework\TestCase;
+use ExtractrIo\Rialto\Instruction;
+use ExtractrIo\Rialto\Data\ResourceIdentity;
 use ExtractrIo\Rialto\Traits\IdentifiesResource;
-use ExtractrIo\Rialto\{Instruction, ResourceIdentity};
 use ExtractrIo\Rialto\Interfaces\ShouldIdentifyResource;
 
 class InstructionTest extends TestCase

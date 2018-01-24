@@ -3,7 +3,7 @@
 namespace ExtractrIo\Rialto\Traits;
 
 use RuntimeException;
-use ExtractrIo\Rialto\ResourceIdentity;
+use ExtractrIo\Rialto\Data\ResourceIdentity;
 
 trait IdentifiesResource
 {

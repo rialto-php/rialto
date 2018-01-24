@@ -9,6 +9,8 @@ use ExtractrIo\Rialto\Exceptions\Node\Exception as NodeException;
 
 class Instruction implements \JsonSerializable
 {
+    use Data\SerializesData;
+
     public const TYPE_CALL = 'call';
     public const TYPE_GET = 'get';
     public const TYPE_SET = 'set';
@@ -131,21 +133,6 @@ class Instruction implements \JsonSerializable
     }
 
     /**
-     * Serialize a value to send to the process.
-     */
-    protected function serializeValue($value): array
-    {
-        if ($value instanceof JsFunction) {
-            return $value->jsonSerialize();
-        }
-
-        return [
-            'type' => 'json',
-            'value' => $value,
-        ];
-    }
-
-    /**
      * Serialize the object to a value that can be serialized natively by {@see json_encode}.
      */
     public function jsonSerialize(): array
@@ -158,9 +145,9 @@ class Instruction implements \JsonSerializable
 
         if ($this->type !== self::TYPE_GET) {
             $instruction['value'] = $this->type === self::TYPE_SET
-                ? $this->serializeValue($this->value)
+                ? $this->serialize($this->value)
                 : array_map(function ($value) {
-                    return $this->serializeValue($value);
+                    return $this->serialize($value);
                 }, $this->value);
         }
 

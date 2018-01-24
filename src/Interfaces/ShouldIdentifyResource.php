@@ -2,7 +2,7 @@
 
 namespace ExtractrIo\Rialto\Interfaces;
 
-use ExtractrIo\Rialto\ResourceIdentity;
+use ExtractrIo\Rialto\Data\ResourceIdentity;
 
 interface ShouldIdentifyResource
 {

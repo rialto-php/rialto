@@ -9,6 +9,6 @@ trait UsesBasicResourceAsDefault
      */
     public function defaultResource(): string
     {
-        return \ExtractrIo\Rialto\BasicResource::class;
+        return \ExtractrIo\Rialto\Data\BasicResource::class;
     }
 }

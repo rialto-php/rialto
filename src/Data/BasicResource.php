@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto;
+namespace ExtractrIo\Rialto\Data;
 
 use ExtractrIo\Rialto\Process;
 use ExtractrIo\Rialto\Traits\{IdentifiesResource, CommunicatesWithProcess};

@@ -7,15 +7,17 @@ use Socket\Raw\Socket;
 use Psr\Log\{LoggerInterface, LogLevel};
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
-use ExtractrIo\Rialto\Exceptions\Node\FatalException;
 use ExtractrIo\Rialto\Exceptions\IdleTimeoutException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
-use ExtractrIo\Rialto\Interfaces\{ShouldIdentifyResource, ShouldCommunicateWithProcess};
+use ExtractrIo\Rialto\Exceptions\Node\Exception as NodeException;
+use ExtractrIo\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 
 class Process
 {
+    use Data\UnserializesData;
+
     /**
      * The size of a packet sent through the sockets.
      *
@@ -109,7 +111,8 @@ class Process
     /**
      * Destructor.
      */
-    public function __destruct() {
+    public function __destruct()
+    {
         if ($this->process !== null) {
             $this->log(LogLevel::DEBUG, ["PID {$this->processPid}"], 'Stopping process...');
 
@@ -198,9 +201,9 @@ class Process
 
         if (!empty($process->getErrorOutput())) {
             if (IdleTimeoutException::exceptionApplies($process)) {
-                throw new IdleTimeoutException($this->options['idle_timeout'], new FatalException($process));
-            } else if (FatalException::exceptionApplies($process)) {
-                throw new FatalException($process);
+                throw new IdleTimeoutException($this->options['idle_timeout'], new NodeFatalException($process));
+            } else if (NodeFatalException::exceptionApplies($process)) {
+                throw new NodeFatalException($process);
             } elseif ($process->isTerminated() && !$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
@@ -268,6 +271,8 @@ class Process
 
     /**
      * Read the next value written by the process.
+     *
+     * @throws \ExtractrIo\Rialto\Exceptions\Node\Exception if the process returned an error.
      */
     protected function readNextProcessValue()
     {
@@ -306,41 +311,12 @@ class Process
 
         $data = json_decode($output, true);
 
-        return !empty($data) ? $this->unserializeProcessValue($data) : null;
-    }
+        $value = !empty($data) ? $this->unserialize($data) : null;
 
-    /**
-     * Unserialize a value sent by the process.
-     *
-     * @throws \ExtractrIo\Rialto\Exceptions\Node\Exception if the process returned an error.
-     */
-    protected function unserializeProcessValue($value)
-    {
-        if (!is_array($value)) {
-            return $value;
-        } else {
-            if (($value['__node_communicator_error__'] ?? false) === true) {
-                throw new Exceptions\Node\Exception($value);
-            } else if (($value['__node_communicator_resource__'] ?? false) === true) {
-                $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name'])
-                    ?: $this->delegate->defaultResource();
-
-                $resource = new $classPath;
-
-                if ($resource instanceof ShouldIdentifyResource) {
-                    $resource->setResourceIdentity(new ResourceIdentity($value['class_name'], $value['id']));
-                }
-
-                if ($resource instanceof ShouldCommunicateWithProcess) {
-                    $resource->setProcess($this);
-                }
-
-                return $resource;
-            } else {
-                return array_map(function ($value) {
-                    return $this->unserializeProcessValue($value);
-                }, $value);
-            }
+        if ($value instanceof NodeException) {
+            throw $value;
         }
+
+        return $value;
     }
 }
