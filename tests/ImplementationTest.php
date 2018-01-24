@@ -234,6 +234,25 @@ class ImplementationTest extends TestCase
         $this->fs->foo;
     }
 
+    /** @test */
+    public function process_is_properly_shutdown_when_they_is_no_more_references()
+    {
+        if (!class_exists('WeakRef')) {
+            $this->markTestSkipped('This test requires weak references: http://php.net/weakref/');
+        }
+
+        $ref = new \WeakRef($this->fs->getProcess());
+
+        $resource = $this->fs->readFileSync($this->filePath);
+
+        $this->assertInstanceOf(BasicResource::class, $resource);
+
+        $this->fs = null;
+        unset($resource);
+
+        $this->assertFalse($ref->valid());
+    }
+
     /**
      * @test
      * @dontPopulateProperties fs
