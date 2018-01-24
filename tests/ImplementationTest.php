@@ -71,15 +71,17 @@ class ImplementationTest extends TestCase
     }
 
     /** @test */
-    public function can_return_nested_resources()
+    public function can_use_nested_resources()
     {
         $resources = $this->fs->multipleStatSync($this->dirPath, $this->filePath);
 
         $this->assertCount(2, $resources);
         $this->assertContainsOnlyInstancesOf(Stats::class, $resources);
 
-        $this->assertTrue($resources[0]->isDirectory());
-        $this->assertTrue($resources[1]->isFile());
+        $isFile = $this->fs->multipleResourcesIsFile($resources);
+
+        $this->assertFalse($isFile[0]);
+        $this->assertTrue($isFile[1]);
     }
 
     /** @test */

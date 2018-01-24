@@ -29,7 +29,9 @@ class FsConnectionDelegate extends ConnectionDelegate
 
     extendFsModule(fs)
     {
-        fs.multipleStatSync = (...args) => args.map(fs.statSync);
+        fs.multipleStatSync = (...paths) => paths.map(fs.statSync);
+
+        fs.multipleResourcesIsFile = resources => resources.map(resource => resource.isFile());
 
         fs.wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 

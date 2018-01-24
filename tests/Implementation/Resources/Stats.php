@@ -2,10 +2,9 @@
 
 namespace ExtractrIo\Rialto\Tests\Implementation\Resources;
 
-use ExtractrIo\Rialto\Traits\{IdentifiesResource, CommunicatesWithProcess};
-use ExtractrIo\Rialto\Interfaces\{ShouldIdentifyResource, ShouldCommunicateWithProcess};
+use ExtractrIo\Rialto\Data\BasicResource;
 
-class Stats implements ShouldIdentifyResource, ShouldCommunicateWithProcess
+class Stats extends BasicResource
 {
-    use IdentifiesResource, CommunicatesWithProcess;
+    //
 }

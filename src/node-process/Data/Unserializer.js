@@ -1,5 +1,7 @@
 'use strict';
 
+const Value = require('./Value');
+
 class Unserializer
 {
     /**
@@ -20,32 +22,58 @@ class Unserializer
      */
     unserialize(value)
     {
-        if (value.__node_communicator_function__ === true) {
-            const scopedVariables = [];
+        if (value.__node_communicator_resource__ === true) {
+            return this.unserializeResource(value);
+        } else if (value.__node_communicator_function__ === true) {
+            return this.unserializeFunction(value);
+        } else if (Value.isContainer(value)) {
+            return Value.mapContainer(value, this.unserialize.bind(this));
+        } else {
+            return value;
+        }
+    }
 
-            for (let [varName, varValue] of Object.entries(value.scope)) {
-                scopedVariables.push(`var ${varName} = ${JSON.stringify(varValue)};`);
-            }
+    /**
+     * Unserialize a resource.
+     *
+     * @param  {Object} value
+     * @return {Object}
+     */
+    unserializeResource(value)
+    {
+        return this.resources.retrieve(value.id);
+    }
 
-            const parameters = [];
+    /**
+     * Unserialize a function.
+     *
+     * @param  {Object} value
+     * @return {Function}
+     */
+    unserializeFunction(value)
+    {
+        const scopedVariables = [];
 
-            for (let [paramKey, paramValue] of Object.entries(value.parameters)) {
-                if (!isNaN(parseInt(paramKey, 10))) {
-                    parameters.push(paramValue);
-                } else {
-                    parameters.push(`${paramKey} = ${JSON.stringify(paramValue)}`);
-                }
-            }
-
-            return new Function(`
-                return function (${parameters.join(', ')}) {
-                    ${scopedVariables.join('\n')}
-                    ${value.body}
-                };
-            `)();
+        for (let [varName, varValue] of Object.entries(value.scope)) {
+            scopedVariables.push(`var ${varName} = ${JSON.stringify(varValue)};`);
         }
 
-        return value;
+        const parameters = [];
+
+        for (let [paramKey, paramValue] of Object.entries(value.parameters)) {
+            if (!isNaN(parseInt(paramKey, 10))) {
+                parameters.push(paramValue);
+            } else {
+                parameters.push(`${paramKey} = ${JSON.stringify(paramValue)}`);
+            }
+        }
+
+        return new Function(`
+            return function (${parameters.join(', ')}) {
+                ${scopedVariables.join('\n')}
+                ${value.body}
+            };
+        `)();
     }
 }
 

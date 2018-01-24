@@ -2,7 +2,7 @@
 
 namespace ExtractrIo\Rialto\Data;
 
-class ResourceIdentity
+class ResourceIdentity implements \JsonSerializable
 {
     /**
      * The class name of the resource.
@@ -41,5 +41,17 @@ class ResourceIdentity
     public function uniqueIdentifier(): string
     {
         return $this->uniqueIdentifier;
+    }
+
+    /**
+     * Serialize the object to a value that can be serialized natively by {@see json_encode}.
+     */
+    public function jsonSerialize(): array
+    {
+        return [
+            '__node_communicator_resource__' => true,
+            'class_name' => $this->className(),
+            'id' => $this->uniqueIdentifier(),
+        ];
     }
 }

@@ -1,6 +1,6 @@
 'use strict';
 
-const _ = require('lodash');
+const Value = require('./Value');
 
 class Serializer
 {
@@ -39,52 +39,28 @@ class Serializer
     {
         value = value === undefined ? null : value;
 
-        if (this.isValueContainer(value)) {
-            return this.mapContainerValues(value, this.serialize.bind(this));
-        } else if (_.isString(value) || _.isNumber(value) || _.isBoolean(value) || _.isNull(value)) {
+        if (Value.isContainer(value)) {
+            return Value.mapContainer(value, this.serialize.bind(this));
+        } else if (Value.isScalar(value)) {
             return value;
         } else {
-            return {
-                __node_communicator_resource__: true,
-                class_name: value.constructor.name,
-                id: this.resources.store(value),
-            };
+            return this.serializeResource(value);
         }
     }
 
     /**
-     * Determine if the value is a container.
+     * Serialize a resource.
      *
-     * @protected
-     * @param  {*} value
-     * @return {boolean}
+     * @param  {Object} value
+     * @return {Object}
      */
-    isValueContainer(value)
+    serializeResource(value)
     {
-        return _.isArray(value) || _.isPlainObject(value);
-    }
-
-    /**
-     * Map the values of a container.
-     *
-     * @protected
-     * @param  {*} container
-     * @param  {callback} mapper
-     * @return {array}
-     */
-    mapContainerValues(container, mapper)
-    {
-        if (_.isArray(container)) {
-            return container.map(mapper);
-        } else if (_.isPlainObject(container)) {
-            return Object.entries(container).reduce((finalObject, [key, value]) => {
-                finalObject[key] = mapper(value);
-
-                return finalObject;
-            }, {});
-        } else {
-            return container;
-        }
+        return {
+            __node_communicator_resource__: true,
+            class_name: value.constructor.name,
+            id: this.resources.store(value),
+        };
     }
 }
 

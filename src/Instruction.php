@@ -9,8 +9,6 @@ use ExtractrIo\Rialto\Exceptions\Node\Exception as NodeException;
 
 class Instruction implements \JsonSerializable
 {
-    use Data\SerializesData;
-
     public const TYPE_CALL = 'call';
     public const TYPE_GET = 'get';
     public const TYPE_SET = 'set';
@@ -144,11 +142,7 @@ class Instruction implements \JsonSerializable
         ];
 
         if ($this->type !== self::TYPE_GET) {
-            $instruction['value'] = $this->type === self::TYPE_SET
-                ? $this->serialize($this->value)
-                : array_map(function ($value) {
-                    return $this->serialize($value);
-                }, $this->value);
+            $instruction['value'] = $this->value;
         }
 
         if ($this->resourceId !== null) {
