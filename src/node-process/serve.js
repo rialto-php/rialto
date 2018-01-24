@@ -2,7 +2,7 @@
 
 const Server = require('./Server'),
     ConnectionDelegate = require('./ConnectionDelegate'),
-    ErrorSerializer = require('./ErrorSerializer');
+    DataSerializer = require('./Data/Serializer');
 
 // Instanciate the custom connection delegate
 const connectionDelegate = new (require(process.argv.slice(2)[0]));
@@ -24,7 +24,7 @@ process.on('unhandledRejection', error => {
 
 // Output the exceptions in JSON format
 process.on('uncaughtException', error => {
-    process.stderr.write(JSON.stringify(ErrorSerializer.serialize(error)));
+    process.stderr.write(JSON.stringify(DataSerializer.serializeError(error)));
 
     process.exit(1);
 });

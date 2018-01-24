@@ -1,11 +1,11 @@
 'use strict';
 
 const EventEmitter = require('events'),
-    _ = require('lodash'),
     ConnectionDelegate = require('./ConnectionDelegate'),
-    ResourceRepository = require('./ResourceRepository'),
+    ResourceRepository = require('./Data/ResourceRepository'),
     Instruction = require('./Instruction'),
-    ErrorSerializer = require('./ErrorSerializer');
+    DataSerializer = require('./Data/Serializer'),
+    DataUnserializer = require('./Data/Unserializer');
 
 /**
  * Handle a connection interacting with this process.
@@ -31,6 +31,9 @@ class Connection extends EventEmitter
         }
 
         this.resources = new ResourceRepository;
+
+        this.dataSerializer = new DataSerializer(this.resources);
+        this.dataUnserializer = new DataUnserializer(this.resources);
     }
 
     /**
@@ -59,7 +62,7 @@ class Connection extends EventEmitter
      */
     handleSocketData(data)
     {
-        const instruction = new Instruction(JSON.parse(data), this.resources),
+        const instruction = new Instruction(JSON.parse(data), this.resources, this.dataUnserializer),
             {responseHandler, errorHandler} = this.createInstructionHandlers();
 
         this.delegate.handleInstruction(instruction, responseHandler, errorHandler);
@@ -129,52 +132,7 @@ class Connection extends EventEmitter
      */
     serializeValue(value)
     {
-        value = value === undefined ? null : value;
-
-        if (this.isValueContainer(value)) {
-            return this.mapContainerValues(value, this.serializeValue.bind(this));
-        } else if (_.isString(value) || _.isNumber(value) || _.isBoolean(value) || _.isNull(value)) {
-            return value;
-        } else {
-            return {
-                __node_communicator_resource__: true,
-                class_name: value.constructor.name,
-                id: this.resources.store(value),
-            };
-        }
-    }
-
-    /**
-     * Determine if the value is a container.
-     *
-     * @param  {*} value
-     * @return {boolean}
-     */
-    isValueContainer(value)
-    {
-        return _.isArray(value) || _.isPlainObject(value);
-    }
-
-    /**
-     * Map the values of a container.
-     *
-     * @param  {*} container
-     * @param  {callback} mapper
-     * @return {array}
-     */
-    mapContainerValues(container, mapper)
-    {
-        if (_.isArray(container)) {
-            return container.map(mapper);
-        } else if (_.isPlainObject(container)) {
-            return Object.entries(container).reduce((finalObject, [key, value]) => {
-                finalObject[key] = mapper(value);
-
-                return finalObject;
-            }, {});
-        } else {
-            return container;
-        }
+        return this.dataSerializer.serialize(value);
     }
 
     /**
@@ -185,7 +143,7 @@ class Connection extends EventEmitter
      */
     serializeError(error)
     {
-        return ErrorSerializer.serialize(error);
+        return DataSerializer.serializeError(error);
     }
 }
 
