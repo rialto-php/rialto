@@ -44,23 +44,8 @@ class Serializer
         } else if (Value.isScalar(value)) {
             return value;
         } else {
-            return this.serializeResource(value);
+            return this.resources.store(value).serialize();
         }
-    }
-
-    /**
-     * Serialize a resource.
-     *
-     * @param  {Object} value
-     * @return {Object}
-     */
-    serializeResource(value)
-    {
-        return {
-            __node_communicator_resource__: true,
-            class_name: value.constructor.name,
-            id: this.resources.store(value),
-        };
     }
 }
 

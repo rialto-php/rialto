@@ -35,11 +35,11 @@ class Instruction implements \JsonSerializable
     protected $value;
 
     /**
-     * The identifier of the resource associated to the instruction.
+     * The resource associated to the instruction.
      *
-     * @var string|null
+     * @var \ExtractrIo\Rialto\Traits\IdentifiesResource
      */
-    protected $resourceId;
+    protected $resource;
 
     /**
      * Define whether instruction errors should be catched.
@@ -89,7 +89,7 @@ class Instruction implements \JsonSerializable
      */
     public function linkToResource(?ShouldIdentifyResource $resource): self
     {
-        $this->resourceId = $resource !== null ? $resource->getResourceIdentity()->uniqueIdentifier() : null;
+        $this->resource = $resource;
 
         return $this;
     }
@@ -145,8 +145,8 @@ class Instruction implements \JsonSerializable
             $instruction['value'] = $this->value;
         }
 
-        if ($this->resourceId !== null) {
-            $instruction['resource'] = $this->resourceId;
+        if ($this->resource !== null) {
+            $instruction['resource'] = $this->resource;
         }
 
         return $instruction;

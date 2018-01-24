@@ -1,6 +1,7 @@
 'use strict';
 
-const Value = require('./Value');
+const Value = require('./Value'),
+    ResourceIdentity = require('./ResourceIdentity');
 
 class Unserializer
 {
@@ -23,7 +24,7 @@ class Unserializer
     unserialize(value)
     {
         if (value.__node_communicator_resource__ === true) {
-            return this.unserializeResource(value);
+            return this.resources.retrieve(ResourceIdentity.unserialize(value));
         } else if (value.__node_communicator_function__ === true) {
             return this.unserializeFunction(value);
         } else if (Value.isContainer(value)) {
@@ -31,17 +32,6 @@ class Unserializer
         } else {
             return value;
         }
-    }
-
-    /**
-     * Unserialize a resource.
-     *
-     * @param  {Object} value
-     * @return {Object}
-     */
-    unserializeResource(value)
-    {
-        return this.resources.retrieve(value.id);
     }
 
     /**

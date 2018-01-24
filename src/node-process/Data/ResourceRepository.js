@@ -1,5 +1,7 @@
 'use strict';
 
+const ResourceIdentity = require('./ResourceIdentity');
+
 class ResourceRepository {
     /**
      * Constructor.
@@ -10,15 +12,15 @@ class ResourceRepository {
     }
 
     /**
-     * Retrieve a resource with its identifier.
+     * Retrieve a resource with its identity.
      *
-     * @param  {string} resourceId
+     * @param  {ResourceIdentity} identity
      * @return {*}
      */
-    retrieve(resourceId)
+    retrieve(identity)
     {
         for (let [resource, id] of this.resources) {
-            if (resourceId === id) {
+            if (identity.uniqueIdentifier() === id) {
                 return resource;
             }
         }
@@ -27,10 +29,10 @@ class ResourceRepository {
     }
 
     /**
-     * Store a resource and return its unique identifier.
+     * Store a resource and return its identity.
      *
      * @param  {*} resource
-     * @return {string}
+     * @return {ResourceIdentity}
      */
     store(resource)
     {
@@ -44,7 +46,7 @@ class ResourceRepository {
 
         resources.set(resource, id);
 
-        return id;
+        return new ResourceIdentity(resource.constructor.name, id);
     }
 }
 

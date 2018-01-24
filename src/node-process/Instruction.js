@@ -1,5 +1,7 @@
 'use strict';
 
+const ResourceIdentity = require('./Data/ResourceIdentity');
+
 class Instruction
 {
     /**
@@ -98,7 +100,7 @@ class Instruction
         const {resource} = this.instruction;
 
         return resource
-            ? this.resources.retrieve(resource)
+            ? this.resources.retrieve(ResourceIdentity.unserialize(resource))
             : null;
     }
 
