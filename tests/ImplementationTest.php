@@ -5,10 +5,9 @@ namespace ExtractrIo\Rialto\Tests;
 use Mockery as m;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
-use PHPUnit\Framework\TestCase;
 use ExtractrIo\Rialto\Data\JsFunction;
-use ExtractrIo\Rialto\Data\BasicResource;
 use Symfony\Component\Process\Process;
+use ExtractrIo\Rialto\Data\BasicResource;
 use ExtractrIo\Rialto\Tests\Implementation\Fs;
 use ExtractrIo\Rialto\Tests\Implementation\Resources\Stats;
 
@@ -16,16 +15,19 @@ class ImplementationTest extends TestCase
 {
     public function setUp(): void
     {
-        $this->fs = new Fs;
+        parent::setUp();
+
         $this->dirPath = realpath(__DIR__.'/resources');
         $this->filePath = "{$this->dirPath}/file";
+
+        $this->fs = $this->canPopulateProperty('fs') ? new Fs : null;
     }
 
     public function tearDown(): void
     {
         m::close();
 
-        unset($this->fs);
+        $this->fs = null;
     }
 
     /** @test */
@@ -163,34 +165,41 @@ class ImplementationTest extends TestCase
         new Fs(['executable_path' => '__inexistant_process__']);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
     public function idle_timeout_option_closes_node_once_timer_is_reached()
     {
-        $fs = new Fs(['idle_timeout' => 0.5]);
+        $this->fs = new Fs(['idle_timeout' => 0.5]);
 
-        $fs->constants;
+        $this->fs->constants;
 
         sleep(1);
 
         $this->expectException(\ExtractrIo\Rialto\Exceptions\IdleTimeoutException::class);
         $this->expectExceptionMessageRegExp('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
 
-        $fs->constants;
+        $this->fs->constants;
     }
 
     /**
      * @test
+     * @dontPopulateProperties fs
      * @expectedException \ExtractrIo\Rialto\Exceptions\ReadSocketTimeoutException
      * @expectedExceptionMessageRegExp /^The timeout \(0\.010 seconds\) has been exceeded/
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
     {
-        $fs = new Fs(['read_timeout' => 0.01]);
+        $this->fs = new Fs(['read_timeout' => 0.01]);
 
-        $fs->wait(20);
+        $this->fs->wait(20);
     }
 
-    /** @test */
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
     public function process_status_is_tracked()
     {
         if (PHP_OS === 'WINNT') {
@@ -206,7 +215,7 @@ class ImplementationTest extends TestCase
         $pgrep->run();
         $oldPids = explode("\n", $pgrep->getOutput());
 
-        $fs = new Fs;
+        $this->fs = new Fs;
 
         $pgrep->run();
         $newPids = explode("\n", $pgrep->getOutput());
@@ -222,10 +231,13 @@ class ImplementationTest extends TestCase
         $this->expectException(\ExtractrIo\Rialto\Exceptions\ProcessUnexpectedlyTerminatedException::class);
         $this->expectExceptionMessage('The process has been unexpectedly terminated.');
 
-        $fs->foo;
+        $this->fs->foo;
     }
 
-    /** @test */
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
     public function logger_is_used_when_provided()
     {
         $mock = m::mock(new Logger('rialto'));
@@ -237,13 +249,13 @@ class ImplementationTest extends TestCase
         $shouldLog(LogLevel::DEBUG, 'Starting process...');
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
 
-        $fs = new Fs(['logger' => $mock]);
+        $this->fs = new Fs(['logger' => $mock]);
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::NOTICE, m::pattern('/^\[PID \d+\] \[stdout\] Hello World!$/'));
 
-        $fs->runCallback(JsFunction::create("
+        $this->fs->runCallback(JsFunction::create("
             process.stdout.write('Hello World!');
         "));
 
@@ -251,13 +263,13 @@ class ImplementationTest extends TestCase
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::ERROR, m::pattern('/^\[PID \d+\] \[stderr\] Goodbye World!$/'));
 
-        $fs->runCallback(JsFunction::create("
+        $this->fs->runCallback(JsFunction::create("
             process.stderr.write('Goodbye World!');
         "));
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopping process...$/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopped process$/'));
 
-        $this->assertTrue(true);
+        $this->assertNull($this->fs = null);
     }
 }
