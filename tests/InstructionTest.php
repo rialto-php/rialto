@@ -19,14 +19,8 @@ class InstructionTest extends TestCase
             'type' => 'call',
             'name' => 'methodName',
             'value' => [
-                [
-                    'type' => 'json',
-                    'value' => 'arg1',
-                ],
-                [
-                    'type' => 'json',
-                    'value' => ['arg2' => 'value'],
-                ],
+                'arg1',
+                ['arg2' => 'value'],
             ],
             'catched' => false,
         ], $instruction->jsonSerialize());
@@ -52,10 +46,7 @@ class InstructionTest extends TestCase
         $this->assertEquals([
             'type' => 'set',
             'name' => 'propertyName',
-            'value' => [
-                'type' => 'json',
-                'value' => ['a' => 'b'],
-            ],
+            'value' => ['a' => 'b'],
             'catched' => false,
         ], $instruction->jsonSerialize());
     }

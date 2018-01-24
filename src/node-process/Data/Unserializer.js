@@ -15,16 +15,12 @@ class Unserializer
     /**
      * Unserialize a value.
      *
-     * @param  {Object} value
+     * @param  {*} value
      * @return {*}
      */
     unserialize(value)
     {
-        if (value.type === 'json') {
-            return value.value;
-        }
-
-        if (value.type === 'function') {
+        if (value.__node_communicator_function__ === true) {
             const scopedVariables = [];
 
             for (let [varName, varValue] of Object.entries(value.scope)) {
@@ -49,7 +45,7 @@ class Unserializer
             `)();
         }
 
-        return null;
+        return value;
     }
 }
 

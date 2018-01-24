@@ -33,7 +33,7 @@ class Serializer
      * Serialize a value.
      *
      * @param  {*} value
-     * @return {Object}
+     * @return {*}
      */
     serialize(value)
     {

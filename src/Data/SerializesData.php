@@ -7,15 +7,12 @@ trait SerializesData
     /**
      * Serialize a value.
      */
-    protected function serialize($value): array
+    protected function serialize($value)
     {
         if ($value instanceof JsFunction) {
             return $value->jsonSerialize();
         }
 
-        return [
-            'type' => 'json',
-            'value' => $value,
-        ];
+        return $value;
     }
 }
