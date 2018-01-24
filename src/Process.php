@@ -189,14 +189,13 @@ class Process
     protected function checkProcessStatus(): void
     {
         $process = $this->process;
-        $pid = $process->getPid();
 
         if (!empty($output = $process->getIncrementalOutput())) {
-            $this->log(LogLevel::NOTICE, ["PID $pid", "stdout"], $output);
+            $this->log(LogLevel::NOTICE, ["PID {$this->processPid}", "stdout"], $output);
         }
 
         if (!empty($errorOutput = $process->getIncrementalErrorOutput())) {
-            $this->log(LogLevel::ERROR, ["PID $pid", "stderr"], $errorOutput);
+            $this->log(LogLevel::ERROR, ["PID {$this->processPid}", "stderr"], $errorOutput);
         }
 
         if (!empty($process->getErrorOutput())) {
