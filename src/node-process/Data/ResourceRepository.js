@@ -39,14 +39,26 @@ class ResourceRepository {
         const {resources} = this;
 
         if (resources.has(resource)) {
-            return resources.get(resource);
+            return this.generateResourceIdentity(resource, resources.get(resource));
         }
 
         const id = String(Date.now() + Math.random());
 
         resources.set(resource, id);
 
-        return new ResourceIdentity(resource.constructor.name, id);
+        return this.generateResourceIdentity(resource, id);
+    }
+
+    /**
+     * Generate a resource identity.
+     *
+     * @param  {*} resource
+     * @param  {string} uniqueIdentifier
+     * @return {ResourceIdentity}
+     */
+    generateResourceIdentity(resource, uniqueIdentifier)
+    {
+        return new ResourceIdentity(resource.constructor.name, uniqueIdentifier);
     }
 }
 

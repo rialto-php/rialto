@@ -100,6 +100,15 @@ class ImplementationTest extends TestCase
     }
 
     /** @test */
+    public function can_return_multiple_times_the_same_resource()
+    {
+        $stats1 = $this->fs->Stats;
+        $stats2 = $this->fs->Stats;
+
+        $this->assertEquals($stats1, $stats2);
+    }
+
+    /** @test */
     public function can_create_and_pass_js_functions()
     {
         $value = $this->fs->runCallback(JsFunction::create("
