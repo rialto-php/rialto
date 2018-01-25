@@ -18,6 +18,9 @@
   "license": "MIT",
   "repository": "github:extractr-io/rialto",
   "main": "src/node-process",
+  "engines" : {
+    "node" : ">=8.0.0"
+  },
   "dependencies": {
     "lodash": "^4.17.4"
   }
