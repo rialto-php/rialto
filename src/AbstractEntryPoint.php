@@ -9,15 +9,39 @@ abstract class AbstractEntryPoint
     use Traits\CommunicatesWithProcess;
 
     /**
+     * Forbidden options for the user.
+     *
+     * @var string[]
+     */
+    protected $forbiddenOptions = ['stop_timeout'];
+
+    /**
      * Instanciate the entry point of the implementation.
      */
     public function __construct(
         ShouldHandleProcessDelegation $processDelegate,
         string $connectionDelegatePath,
-        array $options = []
+        array $implementationOptions = [],
+        array $userOptions = []
     ) {
-        $process = new Process($processDelegate, $connectionDelegatePath, $options);
+        $process = new Process(
+            $processDelegate,
+            $connectionDelegatePath,
+            $this->consolidateOptions($implementationOptions, $userOptions)
+        );
 
         $this->setProcess($process);
+    }
+
+    /**
+     * Clean the user options.
+     */
+    protected function consolidateOptions(array $implementationOptions, array $userOptions): array
+    {
+        // Filter out the forbidden option
+        $userOptions = array_diff_key($userOptions, array_flip($this->forbiddenOptions));
+
+        // Merge the user options with the implementation ones
+        return array_merge($implementationOptions, $userOptions);
     }
 }

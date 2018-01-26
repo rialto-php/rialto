@@ -209,6 +209,35 @@ class ImplementationTest extends TestCase
      * @test
      * @dontPopulateProperties fs
      */
+    public function forbidden_options_are_removed()
+    {
+        $mock = m::mock(new Logger('rialto'));
+
+        $mock->shouldReceive('log')->withArgs(function ($level, $message) {
+            if (substr($message, 0, strlen('[options]')) === '[options]') {
+                $content = substr($message, strlen('[options] '));
+                $options = json_decode($content, true);
+
+                $this->assertArrayHasKey('read_timeout', $options);
+                $this->assertArrayNotHasKey('stop_timeout', $options);
+                $this->assertArrayNotHasKey('foo', $options);
+            }
+
+            return true;
+        });
+
+        $this->fs = new Fs([
+            'logger' => $mock,
+            'read_timeout' => 5,
+            'stop_timeout' => 0,
+            'foo' => 'bar',
+        ]);
+    }
+
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
     public function process_status_is_tracked()
     {
         if (PHP_OS === 'WINNT') {
@@ -274,6 +303,7 @@ class ImplementationTest extends TestCase
             $mock->shouldReceive('log')->with($level, $message)->ordered()->once();
         };
 
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[options] \{.*\}$/'));
         $shouldLog(LogLevel::DEBUG, 'Starting process...');
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
 

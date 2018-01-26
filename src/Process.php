@@ -100,7 +100,7 @@ class Process
         string $connectionDelegatePath,
         array $options = []
     ) {
-        $this->options = array_merge($this->options, $options);
+        $this->applyOptions($options);
 
         $this->process = $this->createNewProcess($connectionDelegatePath);
 
@@ -143,6 +143,16 @@ class Process
         }
 
         return false;
+    }
+
+    /**
+     * Apply the options.
+     */
+    protected function applyOptions(array $options): void
+    {
+        $this->options = array_merge($this->options, $options);
+
+        $this->log(LogLevel::DEBUG, ['options'], json_encode($options));
     }
 
     /**

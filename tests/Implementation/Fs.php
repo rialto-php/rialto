@@ -7,9 +7,11 @@ use ExtractrIo\Rialto\AbstractEntryPoint;
 
 class Fs extends AbstractEntryPoint
 {
-    public function __construct(array $options = [])
+    protected $forbiddenOptions = ['stop_timeout', 'foo'];
+
+    public function __construct(array $userOptions = [])
     {
-        parent::__construct(new FsProcessDelegate, __DIR__.'/FsConnectionDelegate.js', $options);
+        parent::__construct(new FsProcessDelegate, __DIR__.'/FsConnectionDelegate.js', [], $userOptions);
     }
 
     public function getProcess(): Process
