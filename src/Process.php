@@ -52,6 +52,9 @@ class Process
 
         // A logger instance for debugging (must implement \Psr\Log\LoggerInterface)
         'logger' => null,
+
+        // Enables debugging mode (adds the --inspect flag to Node's command)
+        'debug' => false,
     ];
 
     /**
@@ -159,7 +162,9 @@ class Process
         $options = array_intersect_key($this->options, array_flip(['idle_timeout']));
 
         return new SymfonyProcess(array_merge(
-            [$this->options['executable_path'], __DIR__.'/node-process/serve.js'],
+            [$this->options['executable_path']],
+            $this->options['debug'] ? ['--inspect'] : [],
+            [__DIR__.'/node-process/serve.js'],
             [$realConnectionDelegatePath],
             [json_encode((object) $options)]
         ));
