@@ -1,6 +1,14 @@
 {
     "name": "extractr-io/rialto",
     "description": "Manage Node resources from PHP",
+    "keywords": [
+        "php",
+        "node",
+        "wrapper",
+        "communication",
+        "bridge",
+        "socket"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
