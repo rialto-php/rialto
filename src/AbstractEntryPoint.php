@@ -9,9 +9,9 @@ abstract class AbstractEntryPoint
     use Traits\CommunicatesWithProcess;
 
     /**
-     * Create the associated process.
+     * Instanciate the entry point of the implementation.
      */
-    protected function createProcess(
+    public function __construct(
         ShouldHandleProcessDelegation $processDelegate,
         string $connectionDelegatePath,
         array $options = []
