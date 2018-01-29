@@ -98,7 +98,7 @@ $stats->getResourceIdentity()->className(); // Returns "Stats"
 
 However, this is not convenient. That's why you can create specific resources to improve that. We will create 3 files:
 
-- **A process delegate** (`FileSystemProcessDelegate`): this PHP class implements [`ShouldHandleProcessDelegation`](../src/Interfaces/ShouldHandleProcessDelegation.php) and is responsible to return the class names of the specific and default resources.
+- **A process delegate** (`FileSystemProcessDelegate.php`): this PHP class implements [`ShouldHandleProcessDelegation`](../src/Interfaces/ShouldHandleProcessDelegation.php) and is responsible to return the class names of the specific and default resources.
 
 ```php
 use ExtractrIo\Rialto\Traits\UsesBasicResourceAsDefault;
@@ -155,7 +155,7 @@ class FileSystem extends AbstractEntryPoint
 }
 ```
 
-Now you can use the `instanceof` keyword on the returned values:
+Now you will get specific resources instead of the default one:
 
 ```php
 $fs->readFileSync('/valid/file/path'); // Returns BufferResource

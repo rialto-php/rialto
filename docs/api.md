@@ -2,7 +2,7 @@
 
 ## Options
 
-The entry points of Rialto bridges accept [multiple options](https://github.com/extractr-io/rialto/blob/2a2dbc7b431fb11a95945ed57caa1b88f7f2c76b/src/Process.php#L40-L60), here are some descriptions with the default values:
+The entry point of Rialto accepts [multiple options](https://github.com/extractr-io/rialto/blob/2a2dbc7b431fb11a95945ed57caa1b88f7f2c76b/src/Process.php#L40-L60), here are some descriptions with the default values:
 
 ```php
 [
@@ -78,13 +78,13 @@ class MyEntryPoint extends AbstractEntryPoint
 }
 ```
 
-By default, the user is forbidden to define the `stop_timeout` option.
+By default, users are forbidden to define the `stop_timeout` option.
 
 **Note:** You should authorize your users to define, at least, the `logger` and `debug` options.
 
 ## Node errors
 
-If an error (or a unhandled rejection) occurs in Node, a `Node\FatalException` will be thrown and the process closed, you will have to create a new instance of your entry point.
+If an error (or an unhandled rejection) occurs in Node, a `Node\FatalException` will be thrown and the process closed, you will have to create a new instance of your entry point.
 
 To avoid that, you can ask Node to catch these errors by prepending your instruction with `->tryCatch`:
 
