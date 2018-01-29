@@ -84,9 +84,7 @@ By default, the user is forbidden to define the `stop_timeout` option.
 
 ## Node errors
 
-A Node error or an unhandled rejection will throw a
-
-If an error (or a unhandled rejection) occurs in the context of Node, a `Node\FatalException` will be thrown and the process closed, you will have to create a new instance of your entry point.
+If an error (or a unhandled rejection) occurs in Node, a `Node\FatalException` will be thrown and the process closed, you will have to create a new instance of your entry point.
 
 To avoid that, you can ask Node to catch these errors by prepending your instruction with `->tryCatch`:
 
