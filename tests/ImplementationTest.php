@@ -171,6 +171,29 @@ class ImplementationTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
+    public function in_debug_mode_node_exceptions_contain_stack_trace_in_message()
+    {
+        $this->fs = new Fs(['debug' => true]);
+
+        $regex = '/\n\nError: "Object\.__inexistantMethod__ is not a function"\n\s+at /';
+
+        try {
+            $this->fs->tryCatch->__inexistantMethod__();
+        } catch (Node\Exception $exception) {
+            $this->assertRegExp($regex, $exception->getMessage());
+        }
+
+        try {
+            $this->fs->__inexistantMethod__();
+        } catch (Node\FatalException $exception) {
+            $this->assertRegExp($regex, $exception->getMessage());
+        }
+    }
+
     /** @test*/
     public function node_current_working_directory_is_the_same_as_php()
     {

@@ -9,8 +9,10 @@ class Exception extends \RuntimeException
     /**
      * Constructor.
      */
-    public function __construct($error)
+    public function __construct($error, bool $appendStackTraceToMessage = false)
     {
-        parent::__construct($this->setTraceAndGetMessage($error));
+        $message = $this->setTraceAndGetMessage($error, $appendStackTraceToMessage);
+
+        parent::__construct($message);
     }
 }

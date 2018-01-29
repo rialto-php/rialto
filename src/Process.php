@@ -53,7 +53,9 @@ class Process
         // A logger instance for debugging (must implement \Psr\Log\LoggerInterface)
         'logger' => null,
 
-        // Enables debugging mode (adds the --inspect flag to Node's command)
+        // Enables debugging mode:
+        //   - adds the --inspect flag to Node's command
+        //   - appends stack traces to Node exception messages
         'debug' => false,
     ];
 
@@ -220,9 +222,12 @@ class Process
 
         if (!empty($process->getErrorOutput())) {
             if (IdleTimeoutException::exceptionApplies($process)) {
-                throw new IdleTimeoutException($this->options['idle_timeout'], new NodeFatalException($process));
+                throw new IdleTimeoutException(
+                    $this->options['idle_timeout'],
+                    new NodeFatalException($process, $this->options['debug'])
+                );
             } else if (NodeFatalException::exceptionApplies($process)) {
-                throw new NodeFatalException($process);
+                throw new NodeFatalException($process, $this->options['debug']);
             } elseif ($process->isTerminated() && !$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
@@ -291,6 +296,7 @@ class Process
     /**
      * Read the next value written by the process.
      *
+     * @throws \ExtractrIo\Rialto\Exceptions\ReadSocketTimeoutException if reading the socket exceeded the timeout.
      * @throws \ExtractrIo\Rialto\Exceptions\Node\Exception if the process returned an error.
      */
     protected function readNextProcessValue()

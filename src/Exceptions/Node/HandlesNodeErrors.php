@@ -24,13 +24,19 @@ trait HandlesNodeErrors
     /**
      * Set the original trace and return the message.
      */
-    protected function setTraceAndGetMessage($error): string
+    protected function setTraceAndGetMessage($error, bool $appendStackTraceToMessage = false): string
     {
         $error = is_string($error) ? json_decode($error, true) : $error;
 
         $this->originalTrace = $error['stack'];
 
-        return $error['message'];
+        $message = $error['message'];
+
+        if ($appendStackTraceToMessage) {
+            $message .= "\n\n".$error['stack'];
+        }
+
+        return $message;
     }
 
     /**

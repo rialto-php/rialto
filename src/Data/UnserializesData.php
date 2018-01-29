@@ -18,7 +18,7 @@ trait UnserializesData
             return $value;
         } else {
             if (($value['__rialto_error__'] ?? false) === true) {
-                return new Exception($value);
+                return new Exception($value, $this->options['debug']);
             } else if (($value['__rialto_resource__'] ?? false) === true) {
                 $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name'])
                     ?: $this->delegate->defaultResource();
