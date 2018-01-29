@@ -109,6 +109,11 @@ class Process
         $this->delegate = $processDelegate;
 
         $this->client = $this->createNewClient($this->serverPort());
+
+        if ($this->options['debug']) {
+            // Clear error output made by the "--inspect" flag
+            $this->process->clearErrorOutput();
+        }
     }
 
     /**
