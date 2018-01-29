@@ -24,11 +24,7 @@ class Connection extends EventEmitter
 
         this.socket = this.configureSocket(socket);
 
-        if (delegate instanceof ConnectionDelegate) {
-            this.delegate = delegate;
-        } else {
-            throw new Error('The connection delegate must extend the ConnectionDelegate class.')
-        }
+        this.delegate = delegate;
 
         this.resources = new ResourceRepository;
 
