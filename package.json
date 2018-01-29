@@ -1,6 +1,6 @@
 {
   "name": "@extractr-io/rialto",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Manage Node resources from PHP",
   "keywords": [
     "php",
@@ -18,8 +18,8 @@
   "license": "MIT",
   "repository": "github:extractr-io/rialto",
   "main": "src/node-process",
-  "engines" : {
-    "node" : ">=8.0.0"
+  "engines": {
+    "node": ">=8.0.0"
   },
   "dependencies": {
     "lodash": "^4.17.4"
