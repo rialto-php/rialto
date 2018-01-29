@@ -1,6 +1,6 @@
 {
   "name": "@extractr-io/rialto",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Manage Node resources from PHP",
   "keywords": [
     "php",
