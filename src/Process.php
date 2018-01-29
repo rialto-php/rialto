@@ -16,7 +16,7 @@ use ExtractrIo\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 
 class Process
 {
-    use Data\UnserializesData;
+    use Data\UnserializesData, Traits\UsesBasicResourceAsDefault;
 
     /**
      * The size of a packet sent through the sockets.
@@ -98,8 +98,8 @@ class Process
      * Constructor.
      */
     public function __construct(
-        ShouldHandleProcessDelegation $processDelegate,
         string $connectionDelegatePath,
+        ?ShouldHandleProcessDelegation $processDelegate = null,
         array $options = []
     ) {
         $this->applyOptions($options);

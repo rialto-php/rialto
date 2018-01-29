@@ -9,8 +9,8 @@ use ExtractrIo\Rialto\Data\JsFunction;
 use ExtractrIo\Rialto\Exceptions\Node;
 use Symfony\Component\Process\Process;
 use ExtractrIo\Rialto\Data\BasicResource;
-use ExtractrIo\Rialto\Tests\Implementation\Fs;
 use ExtractrIo\Rialto\Tests\Implementation\Resources\Stats;
+use ExtractrIo\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
 
 class ImplementationTest extends TestCase
 {
@@ -21,7 +21,7 @@ class ImplementationTest extends TestCase
         $this->dirPath = realpath(__DIR__.'/resources');
         $this->filePath = "{$this->dirPath}/file";
 
-        $this->fs = $this->canPopulateProperty('fs') ? new Fs : null;
+        $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation : null;
     }
 
     public function tearDown(): void
@@ -71,6 +71,20 @@ class ImplementationTest extends TestCase
         $resource = $this->fs->statSync($this->filePath);
 
         $this->assertInstanceOf(Stats::class, $resource);
+    }
+
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
+    public function can_omit_process_delegation()
+    {
+        $this->fs = new FsWithoutProcessDelegation;
+
+        $resource = $this->fs->statSync($this->filePath);
+
+        $this->assertInstanceOf(BasicResource::class, $resource);
+        $this->assertNotInstanceOf(Stats::class, $resource);
     }
 
     /** @test */
@@ -177,7 +191,7 @@ class ImplementationTest extends TestCase
      */
     public function in_debug_mode_node_exceptions_contain_stack_trace_in_message()
     {
-        $this->fs = new Fs(['debug' => true]);
+        $this->fs = new FsWithProcessDelegation(['debug' => true]);
 
         $regex = '/\n\nError: "Object\.__inexistantMethod__ is not a function"\n\s+at /';
 
@@ -209,7 +223,7 @@ class ImplementationTest extends TestCase
      */
     public function executable_path_option_changes_the_process_prefix()
     {
-        new Fs(['executable_path' => '__inexistant_process__']);
+        new FsWithProcessDelegation(['executable_path' => '__inexistant_process__']);
     }
 
     /**
@@ -218,7 +232,7 @@ class ImplementationTest extends TestCase
      */
     public function idle_timeout_option_closes_node_once_timer_is_reached()
     {
-        $this->fs = new Fs(['idle_timeout' => 0.5]);
+        $this->fs = new FsWithProcessDelegation(['idle_timeout' => 0.5]);
 
         $this->fs->constants;
 
@@ -238,7 +252,7 @@ class ImplementationTest extends TestCase
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
     {
-        $this->fs = new Fs(['read_timeout' => 0.01]);
+        $this->fs = new FsWithProcessDelegation(['read_timeout' => 0.01]);
 
         $this->fs->wait(20);
     }
@@ -264,7 +278,7 @@ class ImplementationTest extends TestCase
             return true;
         });
 
-        $this->fs = new Fs([
+        $this->fs = new FsWithProcessDelegation([
             'logger' => $mock,
             'read_timeout' => 5,
             'stop_timeout' => 0,
@@ -291,7 +305,7 @@ class ImplementationTest extends TestCase
         $pgrep->run();
         $oldPids = explode("\n", $pgrep->getOutput());
 
-        $this->fs = new Fs;
+        $this->fs = new FsWithProcessDelegation;
 
         $pgrep->run();
         $newPids = explode("\n", $pgrep->getOutput());
@@ -345,7 +359,7 @@ class ImplementationTest extends TestCase
         $shouldLog(LogLevel::DEBUG, 'Starting process...');
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
 
-        $this->fs = new Fs(['logger' => $mock]);
+        $this->fs = new FsWithProcessDelegation(['logger' => $mock]);
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));

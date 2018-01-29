@@ -19,14 +19,14 @@ abstract class AbstractEntryPoint
      * Instanciate the entry point of the implementation.
      */
     public function __construct(
-        ShouldHandleProcessDelegation $processDelegate,
         string $connectionDelegatePath,
+        ?ShouldHandleProcessDelegation $processDelegate = null,
         array $implementationOptions = [],
         array $userOptions = []
     ) {
         $process = new Process(
-            $processDelegate,
             $connectionDelegatePath,
+            $processDelegate,
             $this->consolidateOptions($implementationOptions, $userOptions)
         );
 
