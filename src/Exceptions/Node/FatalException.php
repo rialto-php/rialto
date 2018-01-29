@@ -5,18 +5,16 @@ namespace ExtractrIo\Rialto\Exceptions\Node;
 use Symfony\Component\Process\Process;
 use ExtractrIo\Rialto\Exceptions\IdentifiesProcess;
 
-class FatalException extends Exception
+class FatalException extends \RuntimeException
 {
-    use IdentifiesProcess;
+    use HandlesNodeErrors, IdentifiesProcess;
 
     /**
      * Check if the exception can be applied to the process.
      */
     public static function exceptionApplies(Process $process): bool
     {
-        $error = json_decode($process->getErrorOutput(), true);
-
-        return ($error['__rialto_error__'] ?? false) === true;
+        return static::isNodeError($process->getErrorOutput());
     }
 
     /**
@@ -26,6 +24,6 @@ class FatalException extends Exception
     {
         $this->process = $process;
 
-        parent::__construct($process->getErrorOutput());
+        parent::__construct($this->setTraceAndGetMessage($process->getErrorOutput()));
     }
 }

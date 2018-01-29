@@ -6,6 +6,7 @@ use Mockery as m;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
 use ExtractrIo\Rialto\Data\JsFunction;
+use ExtractrIo\Rialto\Exceptions\Node;
 use Symfony\Component\Process\Process;
 use ExtractrIo\Rialto\Data\BasicResource;
 use ExtractrIo\Rialto\Tests\Implementation\Fs;
@@ -154,6 +155,20 @@ class ImplementationTest extends TestCase
     public function can_catch_errors()
     {
         $this->fs->tryCatch->__inexistantMethod__();
+    }
+
+    /**
+     * @test
+     * @expectedException \ExtractrIo\Rialto\Exceptions\Node\FatalException
+     * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
+     */
+    public function catching_a_node_exception_doesnt_catch_fatal_exceptions()
+    {
+        try {
+            $this->fs->__inexistantMethod__();
+        } catch (Node\Exception $exception) {
+            //
+        }
     }
 
     /** @test*/
