@@ -9,8 +9,9 @@ env:
   - COMPOSER_FLAGS=""
 
 install:
+  - pecl install weakref-beta
+  - travis_retry composer self-update
+  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
   - nvm install stable
   - nvm use stable
   - npm install
-  - travis_retry composer self-update
-  - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source

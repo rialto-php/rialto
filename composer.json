@@ -29,6 +29,9 @@
         "monolog/monolog": "^1.23",
         "phpunit/phpunit": "^6.5"
     },
+    "suggest": {
+        "ext-weakref": "Needed to run all the tests"
+    },
     "autoload": {
         "psr-4": {
             "ExtractrIo\\Rialto\\": "src/"
