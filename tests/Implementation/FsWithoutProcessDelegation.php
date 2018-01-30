@@ -2,7 +2,6 @@
 
 namespace ExtractrIo\Rialto\Tests\Implementation;
 
-use ExtractrIo\Rialto\Process;
 use ExtractrIo\Rialto\AbstractEntryPoint;
 
 class FsWithoutProcessDelegation extends AbstractEntryPoint

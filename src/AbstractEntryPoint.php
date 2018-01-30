@@ -6,7 +6,7 @@ use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
 
 abstract class AbstractEntryPoint
 {
-    use Traits\CommunicatesWithProcess;
+    use Traits\CommunicatesWithProcessSupervisor;
 
     /**
      * Forbidden options for the user.
@@ -24,13 +24,13 @@ abstract class AbstractEntryPoint
         array $implementationOptions = [],
         array $userOptions = []
     ) {
-        $process = new Process(
+        $process = new ProcessSupervisor(
             $connectionDelegatePath,
             $processDelegate,
             $this->consolidateOptions($implementationOptions, $userOptions)
         );
 
-        $this->setProcess($process);
+        $this->setProcessSupervisor($process);
     }
 
     /**

@@ -331,7 +331,7 @@ class ImplementationTest extends TestCase
             $this->markTestSkipped('This test requires weak references: http://php.net/weakref/');
         }
 
-        $ref = new \WeakRef($this->fs->getProcess());
+        $ref = new \WeakRef($this->fs->getProcessSupervisor());
 
         $resource = $this->fs->readFileSync($this->filePath);
 

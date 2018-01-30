@@ -2,7 +2,7 @@
 
 namespace ExtractrIo\Rialto\Tests\Implementation;
 
-use ExtractrIo\Rialto\Process;
+use ExtractrIo\Rialto\ProcessSupervisor;
 use ExtractrIo\Rialto\AbstractEntryPoint;
 
 class FsWithProcessDelegation extends AbstractEntryPoint
@@ -14,8 +14,8 @@ class FsWithProcessDelegation extends AbstractEntryPoint
         parent::__construct(__DIR__.'/FsConnectionDelegate.js', new FsProcessDelegate, [], $userOptions);
     }
 
-    public function getProcess(): Process
+    public function getProcessSupervisor(): ProcessSupervisor
     {
-        return parent::getProcess();
+        return parent::getProcessSupervisor();
     }
 }

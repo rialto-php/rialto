@@ -14,7 +14,7 @@ use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
 use ExtractrIo\Rialto\Exceptions\Node\Exception as NodeException;
 use ExtractrIo\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 
-class Process
+class ProcessSupervisor
 {
     use Data\UnserializesData, Traits\UsesBasicResourceAsDefault;
 

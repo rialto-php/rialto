@@ -2,10 +2,9 @@
 
 namespace ExtractrIo\Rialto\Data;
 
-use ExtractrIo\Rialto\Process;
 use ExtractrIo\Rialto\Exceptions\Node\Exception;
 use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
-use ExtractrIo\Rialto\Interfaces\{ShouldIdentifyResource, ShouldCommunicateWithProcess};
+use ExtractrIo\Rialto\Interfaces\{ShouldIdentifyResource, ShouldCommunicateWithProcessSupervisor};
 
 trait UnserializesData
 {
@@ -33,8 +32,8 @@ trait UnserializesData
                     $resource->setResourceIdentity(new ResourceIdentity($value['class_name'], $value['id']));
                 }
 
-                if ($resource instanceof ShouldCommunicateWithProcess) {
-                    $resource->setProcess($this);
+                if ($resource instanceof ShouldCommunicateWithProcessSupervisor) {
+                    $resource->setProcessSupervisor($this);
                 }
 
                 return $resource;

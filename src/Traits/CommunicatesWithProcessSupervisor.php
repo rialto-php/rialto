@@ -2,17 +2,17 @@
 
 namespace ExtractrIo\Rialto\Traits;
 
-use ExtractrIo\Rialto\{Instruction, Process};
+use ExtractrIo\Rialto\{Instruction, ProcessSupervisor};
 use ExtractrIo\Rialto\Interfaces\ShouldIdentifyResource;
 
-trait CommunicatesWithProcess
+trait CommunicatesWithProcessSupervisor
 {
     /**
-     * The process to communicate with.
+     * The process supervisor to communicate with.
      *
-     * @var \ExtractrIo\Rialto\Process
+     * @var \ExtractrIo\Rialto\ProcessSupervisor
      */
-    protected $process;
+    protected $processSupervisor;
 
     /**
      * Whether the current resource should catch instruction errors.
@@ -22,25 +22,25 @@ trait CommunicatesWithProcess
     protected $catchInstructionErrors = false;
 
     /**
-    * Get the process.
+    * Get the process supervisor.
     */
-    protected function getProcess(): Process
+    protected function getProcessSupervisor(): ProcessSupervisor
     {
-        return $this->process;
+        return $this->processSupervisor;
     }
 
     /**
-     * Set the process.
+     * Set the process supervisor.
      *
-     * @throws \RuntimeException if the process has already been set.
+     * @throws \RuntimeException if the process supervisor has already been set.
      */
-    public function setProcess(Process $process): void
+    public function setProcessSupervisor(ProcessSupervisor $processSupervisor): void
     {
-        if ($this->process !== null) {
-            throw new RuntimeException('The process has already been set.');
+        if ($this->processSupervisor !== null) {
+            throw new RuntimeException('The process supervisor has already been set.');
         }
 
-        $this->process = $process;
+        $this->processSupervisor = $processSupervisor;
     }
 
     /**
@@ -80,11 +80,11 @@ trait CommunicatesWithProcess
             $instruction->shouldCatchErrors(true);
         }
 
-        return $this->getProcess()->executeInstruction($instruction);
+        return $this->getProcessSupervisor()->executeInstruction($instruction);
     }
 
     /**
-     * Proxy the method call to the process.
+     * Proxy the method call to the process supervisor.
      */
     public function __call(string $name, array $arguments)
     {
@@ -92,7 +92,7 @@ trait CommunicatesWithProcess
     }
 
     /**
-     * Proxy the property reading to the process.
+     * Proxy the property reading to the process supervisor.
      */
     public function __get(string $name)
     {
@@ -104,7 +104,7 @@ trait CommunicatesWithProcess
     }
 
     /**
-     * Proxy the property writing to the process.
+     * Proxy the property writing to the process supervisor.
      */
     public function __set(string $name, $value)
     {
