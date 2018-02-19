@@ -24,10 +24,10 @@
         "symfony/process": "^3.3|^4.0"
     },
     "require-dev": {
-        "codedungeon/phpunit-result-printer": "^0.5.3",
+        "codedungeon/phpunit-result-printer": "^0.6.0",
         "mockery/mockery": "^1.0",
         "monolog/monolog": "^1.23",
-        "phpunit/phpunit": "^6.5"
+        "phpunit/phpunit": "^6.5|^7.0"
     },
     "suggest": {
         "ext-weakref": "Needed to run all the tests"
