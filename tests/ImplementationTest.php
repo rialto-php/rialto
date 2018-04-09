@@ -151,6 +151,15 @@ class ImplementationTest extends TestCase
         $this->assertEquals('Callback using scope and arguments: Hello world!', $value);
     }
 
+    /** @test */
+    public function can_receive_heavy_payloads_with_non_ascii_chars()
+    {
+        $payload = $this->fs->getHeavyPayloadWithNonAsciiChars();
+
+        $this->assertStringStartsWith('😘', $payload);
+        $this->assertStringEndsWith('😘', $payload);
+    }
+
     /**
      * @test
      * @expectedException \ExtractrIo\Rialto\Exceptions\Node\FatalException

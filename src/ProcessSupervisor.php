@@ -306,9 +306,9 @@ class ProcessSupervisor
 
         try {
             $startTimestamp = microtime(true);
-            $this->client->selectRead($readTimeout);
 
             do {
+                $this->client->selectRead($readTimeout);
                 $packet = $this->client->read(static::SOCKET_PACKET_SIZE);
 
                 $chunksLeft = (int) substr($packet, 0, static::SOCKET_HEADER_SIZE);
@@ -331,6 +331,8 @@ class ProcessSupervisor
 
             throw $exception;
         }
+
+        $output = base64_decode($output);
 
         $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
 

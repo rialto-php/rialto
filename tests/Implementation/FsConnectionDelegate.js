@@ -33,6 +33,16 @@ class FsConnectionDelegate extends ConnectionDelegate
 
         fs.multipleResourcesIsFile = resources => resources.map(resource => resource.isFile());
 
+        fs.getHeavyPayloadWithNonAsciiChars = () => {
+            let payload = '';
+
+            for (let i = 0 ; i < 1024 ; i++) {
+                payload += 'a';
+            }
+
+            return `😘${payload}😘`;
+        };
+
         fs.wait = ms => new Promise(resolve => setTimeout(resolve, ms));
 
         fs.runCallback = cb => cb(fs);

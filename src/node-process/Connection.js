@@ -103,21 +103,19 @@ class Connection extends EventEmitter
      */
     writeToSocket(str)
     {
-        const bodySize = Connection.SOCKET_PACKET_SIZE - Connection.SOCKET_HEADER_SIZE,
-            chunkCount = Math.ceil(str.length / bodySize);
+        const payload = Buffer.from(str).toString('base64');
 
-        const packets = [];
+        const bodySize = Connection.SOCKET_PACKET_SIZE - Connection.SOCKET_HEADER_SIZE,
+            chunkCount = Math.ceil(payload.length / bodySize);
 
         for (let i = 0 ; i < chunkCount ; i++) {
-            const chunk = str.substr(i * bodySize, bodySize);
+            const chunk = payload.substr(i * bodySize, bodySize);
 
             let chunksLeft = String(chunkCount - 1 - i);
             chunksLeft = chunksLeft.padStart(Connection.SOCKET_HEADER_SIZE - 1, '0');
 
-            packets.push(`${chunksLeft}:${chunk}`);
+            this.socket.write(`${chunksLeft}:${chunk}`);
         }
-
-        this.socket.write(packets.join(''));
     }
 
     /**
