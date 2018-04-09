@@ -305,6 +305,7 @@ class ProcessSupervisor
         $output = '';
 
         try {
+            $startTimestamp = microtime(true);
             $this->client->selectRead($readTimeout);
 
             do {
@@ -324,12 +325,11 @@ class ProcessSupervisor
             preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
             $socketErrorCode = constant($socketErrorMatches[1]);
 
-            switch ($socketErrorCode) {
-                case SOCKET_EAGAIN:
-                    throw new Exceptions\ReadSocketTimeoutException($readTimeout, $exception);
-                default:
-                    throw $exception;
+            if ($socketErrorCode === SOCKET_EAGAIN && microtime(true) - $startTimestamp >= $readTimeout) {
+                throw new Exceptions\ReadSocketTimeoutException($readTimeout, $exception);
             }
+
+            throw $exception;
         }
 
         $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
