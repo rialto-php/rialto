@@ -80,7 +80,7 @@ class MyEntryPoint extends AbstractEntryPoint
 
 By default, users are forbidden to define the `stop_timeout` option.
 
-**Note:** You should authorize your users to define, at least, the `logger` and `debug` options.
+**Note:** You should authorize your users to define, at least, the `executable_path`, `logger` and `debug` options.
 
 ## Node errors
 
