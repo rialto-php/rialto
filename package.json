@@ -22,6 +22,6 @@
     "node": ">=8.0.0"
   },
   "dependencies": {
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.10"
   }
 }
