@@ -1,6 +1,6 @@
 {
   "name": "@nesk/rialto",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Manage Node resources from PHP",
   "keywords": [
     "php",
