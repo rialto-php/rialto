@@ -1,18 +1,18 @@
 <?php
 
-namespace ExtractrIo\Rialto;
+namespace Nesk\Rialto;
 
 use RuntimeException;
 use Socket\Raw\Socket;
 use Psr\Log\{LoggerInterface, LogLevel};
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
-use ExtractrIo\Rialto\Exceptions\IdleTimeoutException;
+use Nesk\Rialto\Exceptions\IdleTimeoutException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
-use ExtractrIo\Rialto\Exceptions\Node\Exception as NodeException;
-use ExtractrIo\Rialto\Exceptions\Node\FatalException as NodeFatalException;
+use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Nesk\Rialto\Exceptions\Node\Exception as NodeException;
+use Nesk\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 
 class ProcessSupervisor
 {
@@ -76,7 +76,7 @@ class ProcessSupervisor
     /**
      * The process delegate.
      *
-     * @var \ExtractrIo\Rialto\ShouldHandleProcessDelegation;
+     * @var \Nesk\Rialto\ShouldHandleProcessDelegation;
      */
     protected $delegate;
 
@@ -296,8 +296,8 @@ class ProcessSupervisor
     /**
      * Read the next value written by the process.
      *
-     * @throws \ExtractrIo\Rialto\Exceptions\ReadSocketTimeoutException if reading the socket exceeded the timeout.
-     * @throws \ExtractrIo\Rialto\Exceptions\Node\Exception if the process returned an error.
+     * @throws \Nesk\Rialto\Exceptions\ReadSocketTimeoutException if reading the socket exceeded the timeout.
+     * @throws \Nesk\Rialto\Exceptions\Node\Exception if the process returned an error.
      */
     protected function readNextProcessValue()
     {

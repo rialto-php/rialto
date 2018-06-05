@@ -1,16 +1,16 @@
 <?php
 
-namespace ExtractrIo\Rialto\Traits;
+namespace Nesk\Rialto\Traits;
 
-use ExtractrIo\Rialto\{Instruction, ProcessSupervisor};
-use ExtractrIo\Rialto\Interfaces\ShouldIdentifyResource;
+use Nesk\Rialto\{Instruction, ProcessSupervisor};
+use Nesk\Rialto\Interfaces\ShouldIdentifyResource;
 
 trait CommunicatesWithProcessSupervisor
 {
     /**
      * The process supervisor to communicate with.
      *
-     * @var \ExtractrIo\Rialto\ProcessSupervisor
+     * @var \Nesk\Rialto\ProcessSupervisor
      */
     protected $processSupervisor;
 

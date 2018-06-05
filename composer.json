@@ -1,5 +1,5 @@
 {
-    "name": "extractr-io/rialto",
+    "name": "nesk/rialto",
     "description": "Manage Node resources from PHP",
     "keywords": [
         "php",
@@ -34,12 +34,12 @@
     },
     "autoload": {
         "psr-4": {
-            "ExtractrIo\\Rialto\\": "src/"
+            "Nesk\\Rialto\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ExtractrIo\\Rialto\\Tests\\": "tests/"
+            "Nesk\\Rialto\\Tests\\": "tests/"
         }
     },
     "scripts": {

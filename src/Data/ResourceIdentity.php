@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto\Data;
+namespace Nesk\Rialto\Data;
 
 class ResourceIdentity implements \JsonSerializable
 {

@@ -1,16 +1,16 @@
 <?php
 
-namespace ExtractrIo\Rialto\Tests;
+namespace Nesk\Rialto\Tests;
 
 use Mockery as m;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
-use ExtractrIo\Rialto\Data\JsFunction;
-use ExtractrIo\Rialto\Exceptions\Node;
+use Nesk\Rialto\Data\JsFunction;
+use Nesk\Rialto\Exceptions\Node;
 use Symfony\Component\Process\Process;
-use ExtractrIo\Rialto\Data\BasicResource;
-use ExtractrIo\Rialto\Tests\Implementation\Resources\Stats;
-use ExtractrIo\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
+use Nesk\Rialto\Data\BasicResource;
+use Nesk\Rialto\Tests\Implementation\Resources\Stats;
+use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
 
 class ImplementationTest extends TestCase
 {
@@ -162,7 +162,7 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \ExtractrIo\Rialto\Exceptions\Node\FatalException
+     * @expectedException \Nesk\Rialto\Exceptions\Node\FatalException
      * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function node_crash_throws_a_fatal_exception()
@@ -172,7 +172,7 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \ExtractrIo\Rialto\Exceptions\Node\Exception
+     * @expectedException \Nesk\Rialto\Exceptions\Node\Exception
      * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function can_catch_errors()
@@ -182,7 +182,7 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \ExtractrIo\Rialto\Exceptions\Node\FatalException
+     * @expectedException \Nesk\Rialto\Exceptions\Node\FatalException
      * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function catching_a_node_exception_doesnt_catch_fatal_exceptions()
@@ -247,7 +247,7 @@ class ImplementationTest extends TestCase
 
         sleep(1);
 
-        $this->expectException(\ExtractrIo\Rialto\Exceptions\IdleTimeoutException::class);
+        $this->expectException(\Nesk\Rialto\Exceptions\IdleTimeoutException::class);
         $this->expectExceptionMessageRegExp('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
 
         $this->fs->constants;
@@ -256,7 +256,7 @@ class ImplementationTest extends TestCase
     /**
      * @test
      * @dontPopulateProperties fs
-     * @expectedException \ExtractrIo\Rialto\Exceptions\ReadSocketTimeoutException
+     * @expectedException \Nesk\Rialto\Exceptions\ReadSocketTimeoutException
      * @expectedExceptionMessageRegExp /^The timeout \(0\.010 seconds\) has been exceeded/
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
@@ -327,7 +327,7 @@ class ImplementationTest extends TestCase
 
         $this->assertTrue($processKilled);
 
-        $this->expectException(\ExtractrIo\Rialto\Exceptions\ProcessUnexpectedlyTerminatedException::class);
+        $this->expectException(\Nesk\Rialto\Exceptions\ProcessUnexpectedlyTerminatedException::class);
         $this->expectExceptionMessage('The process has been unexpectedly terminated.');
 
         $this->fs->foo;

@@ -2,7 +2,7 @@
 
 ## Options
 
-The entry point of Rialto accepts [multiple options](https://github.com/extractr-io/rialto/blob/2a2dbc7b431fb11a95945ed57caa1b88f7f2c76b/src/Process.php#L40-L60), here are some descriptions with the default values:
+The entry point of Rialto accepts [multiple options](https://github.com/nesk/rialto/blob/2a2dbc7b431fb11a95945ed57caa1b88f7f2c76b/src/Process.php#L40-L60), here are some descriptions with the default values:
 
 ```php
 [
@@ -89,7 +89,7 @@ If an error (or an unhandled rejection) occurs in Node, a `Node\FatalException` 
 To avoid that, you can ask Node to catch these errors by prepending your instruction with `->tryCatch`:
 
 ```php
-use ExtractrIo\Rialto\Exceptions\Node;
+use Nesk\Rialto\Exceptions\Node;
 
 try {
     $someResource->tryCatch->inexistantMethod();
@@ -107,7 +107,7 @@ With Rialto you can create JavaScript functions and pass them to the Node proces
 - A function returning a value:
 
 ```php
-use ExtractrIo\Rialto\Data\JsFunction;
+use Nesk\Rialto\Data\JsFunction;
 
 $jsFunction = JsFunction::create("
     return process.uptime();
@@ -119,7 +119,7 @@ $someResource->someMethodWithCallback($jsFunction);
 - A function with arguments:
 
 ```php
-use ExtractrIo\Rialto\Data\JsFunction;
+use Nesk\Rialto\Data\JsFunction;
 
 $jsFunction = JsFunction::create(['str'], "
     return 'This is my string: ' + str;
@@ -131,7 +131,7 @@ $someResource->someMethodWithCallback($jsFunction);
 - A function with arguments and some scoped values:
 
 ```php
-use ExtractrIo\Rialto\Data\JsFunction;
+use Nesk\Rialto\Data\JsFunction;
 
 $functionScope = ['stringtoPrepend' => 'This is another string: ']
 

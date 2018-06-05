@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto\Tests;
+namespace Nesk\Rialto\Tests;
 
 use PHPUnit\Framework\TestCase as BaseTestCase;
 

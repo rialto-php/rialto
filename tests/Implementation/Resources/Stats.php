@@ -1,8 +1,8 @@
 <?php
 
-namespace ExtractrIo\Rialto\Tests\Implementation\Resources;
+namespace Nesk\Rialto\Tests\Implementation\Resources;
 
-use ExtractrIo\Rialto\Data\BasicResource;
+use Nesk\Rialto\Data\BasicResource;
 
 class Stats extends BasicResource
 {

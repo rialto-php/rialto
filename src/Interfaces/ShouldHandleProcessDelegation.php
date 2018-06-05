@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto\Interfaces;
+namespace Nesk\Rialto\Interfaces;
 
 interface ShouldHandleProcessDelegation
 {

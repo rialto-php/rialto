@@ -1,9 +1,9 @@
 <?php
 
-namespace ExtractrIo\Rialto\Tests\Implementation;
+namespace Nesk\Rialto\Tests\Implementation;
 
-use ExtractrIo\Rialto\Traits\UsesBasicResourceAsDefault;
-use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Nesk\Rialto\Traits\UsesBasicResourceAsDefault;
+use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
 
 class FsProcessDelegate implements ShouldHandleProcessDelegation
 {

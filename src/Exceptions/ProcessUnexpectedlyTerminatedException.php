@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto\Exceptions;
+namespace Nesk\Rialto\Exceptions;
 
 use Symfony\Component\Process\Process;
 

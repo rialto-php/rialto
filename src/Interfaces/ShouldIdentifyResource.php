@@ -1,8 +1,8 @@
 <?php
 
-namespace ExtractrIo\Rialto\Interfaces;
+namespace Nesk\Rialto\Interfaces;
 
-use ExtractrIo\Rialto\Data\ResourceIdentity;
+use Nesk\Rialto\Data\ResourceIdentity;
 
 interface ShouldIdentifyResource
 {

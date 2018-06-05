@@ -1,5 +1,5 @@
 {
-  "name": "@extractr-io/rialto",
+  "name": "@nesk/rialto",
   "version": "0.1.2",
   "description": "Manage Node resources from PHP",
   "keywords": [
@@ -16,7 +16,7 @@
     "url": "https://johann.pardanaud.com/"
   },
   "license": "MIT",
-  "repository": "github:extractr-io/rialto",
+  "repository": "github:nesk/rialto",
   "main": "src/node-process",
   "engines": {
     "node": ">=8.0.0"

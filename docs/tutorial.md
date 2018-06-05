@@ -7,8 +7,8 @@ We will create a bridge to use [Node's File System module](https://nodejs.org/ap
 Import Rialto in your project:
 
 ```
-composer require extractr-io/rialto
-npm install @extractr-io/rialto
+composer require nesk/rialto
+npm install @nesk/rialto
 ```
 
 ## The essential files
@@ -18,7 +18,7 @@ You will need to create at least two files for your package:
 - **An entry point** (`FileSystem.php`): this PHP class inherits [`AbstractEntryPoint`](../src/AbstractEntryPoint.php) and its instanciation creates the Node process. Every instruction (calling a method, setting a property, etc…) made on this class will be intercepted and sent to Node.
 
 ```php
-use ExtractrIo\Rialto\AbstractEntryPoint;
+use Nesk\Rialto\AbstractEntryPoint;
 
 class FileSystem extends AbstractEntryPoint
 {
@@ -33,7 +33,7 @@ class FileSystem extends AbstractEntryPoint
 
 ```js
 const fs = require('fs'),
-    {ConnectionDelegate} = require('@extractr-io/rialto');
+    {ConnectionDelegate} = require('@nesk/rialto');
 
 module.exports = class FileSystemConnectionDelegate extends ConnectionDelegate
 {
@@ -67,7 +67,7 @@ module.exports = class FileSystemConnectionDelegate extends ConnectionDelegate
 With these two files, you should already be able to use your bridge:
 
 ```php
-use ExtractrIo\Puphpeteer\Fs\FileSystem;
+use Nesk\Puphpeteer\Fs\FileSystem;
 
 $fs = new FileSystem;
 
@@ -101,8 +101,8 @@ However, this is not convenient. That's why you can create specific resources to
 - **A process delegate** (`FileSystemProcessDelegate.php`): this PHP class implements [`ShouldHandleProcessDelegation`](../src/Interfaces/ShouldHandleProcessDelegation.php) and is responsible to return the class names of the specific and default resources.
 
 ```php
-use ExtractrIo\Rialto\Traits\UsesBasicResourceAsDefault;
-use ExtractrIo\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Nesk\Rialto\Traits\UsesBasicResourceAsDefault;
+use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
 
 class FileSystemProcessDelegate implements ShouldHandleProcessDelegation
 {
@@ -123,7 +123,7 @@ class FileSystemProcessDelegate implements ShouldHandleProcessDelegation
 - **A resource to represent Buffer instances** (`BufferResource.php`): this class inherits `BasicResource` by convenience but the only requirement is to implement the [`ShouldIdentifyResource`](../src/Interfaces/ShouldIdentifyResource.php) interface.
 
 ```php
-use ExtractrIo\Rialto\Data\BasicResource;
+use Nesk\Rialto\Data\BasicResource;
 
 class BufferResource extends BasicResource
 {
@@ -133,7 +133,7 @@ class BufferResource extends BasicResource
 - **A resource to represent Stats instances** (`StatsResource.php`):
 
 ```php
-use ExtractrIo\Rialto\Data\BasicResource;
+use Nesk\Rialto\Data\BasicResource;
 
 class StatsResource extends BasicResource
 {
@@ -143,7 +143,7 @@ class StatsResource extends BasicResource
 Once those 3 files are created, you will have to register the process delegate in your entry point (`FileSystem.php`):
 
 ```php
-use ExtractrIo\Rialto\AbstractEntryPoint;
+use Nesk\Rialto\AbstractEntryPoint;
 
 class FileSystem extends AbstractEntryPoint
 {
@@ -168,7 +168,7 @@ $fs->statSync('/valid/file/path')->birthtime; // Returns a basic resource repres
 Specific resources can also help you to improve your API by adding methods to them:
 
 ```php
-use ExtractrIo\Rialto\Data\BasicResource;
+use Nesk\Rialto\Data\BasicResource;
 
 class StatsResource extends BasicResource
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace ExtractrIo\Rialto\Tests\Implementation;
+namespace Nesk\Rialto\Tests\Implementation;
 
-use ExtractrIo\Rialto\ProcessSupervisor;
-use ExtractrIo\Rialto\AbstractEntryPoint;
+use Nesk\Rialto\ProcessSupervisor;
+use Nesk\Rialto\AbstractEntryPoint;
 
 class FsWithProcessDelegation extends AbstractEntryPoint
 {

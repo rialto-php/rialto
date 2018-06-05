@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractrIo\Rialto\Exceptions\Node;
+namespace Nesk\Rialto\Exceptions\Node;
 
 class Exception extends \RuntimeException
 {
