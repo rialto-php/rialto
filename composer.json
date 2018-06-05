@@ -30,7 +30,7 @@
         "phpunit/phpunit": "^6.5|^7.0"
     },
     "suggest": {
-        "ext-weakref": "Needed to run all the tests"
+        "ext-weakref": "Required to run all the tests"
     },
     "autoload": {
         "psr-4": {
