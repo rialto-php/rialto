@@ -336,9 +336,7 @@ class ProcessSupervisor
 
         $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
 
-        $data = json_decode($output, true);
-
-        $value = !empty($data) ? $this->unserialize($data) : null;
+        $value = $this->unserialize(json_decode($output, true));
 
         if ($value instanceof NodeException) {
             throw $value;
