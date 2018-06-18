@@ -15,7 +15,7 @@ options = options !== undefined ? JSON.parse(options) : {};
 const server = new Server(connectionDelegate, options);
 
 // Write the server port to the process output
-server.writePortToOutput();
+server.started.then(() => server.writePortToOutput());
 
 // Throw unhandled rejections
 process.on('unhandledRejection', error => {

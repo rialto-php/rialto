@@ -18,7 +18,7 @@ class Server
     {
         this.options = options;
 
-        this.start(connectionDelegate);
+        this.started = this.start(connectionDelegate);
 
         this.resetIdleTimeout();
     }
@@ -26,7 +26,8 @@ class Server
     /**
      * Start the server and listen for new connections.
      *
-     * @return {Server}
+     * @param  {ConnectionDelegate} connectionDelegate
+     * @return {Promise}
      */
     start(connectionDelegate)
     {
@@ -38,7 +39,9 @@ class Server
             this.resetIdleTimeout();
         });
 
-        this.server.listen();
+        return new Promise(resolve => {
+            this.server.listen(() => resolve());
+        });
     }
 
     /**
