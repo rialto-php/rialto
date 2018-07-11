@@ -42,7 +42,7 @@ In progress…
 First release
 
 
-[Unreleased]: https://github.com/nesk/rialto/compare/1.1.0...HEAD
+[Unreleased]: https://github.com/nesk/rialto/compare/1.0.2...HEAD
 [1.0.2]: https://github.com/nesk/rialto/compare/1.0.1...1.0.2
 [1.0.1]: https://github.com/nesk/rialto/compare/1.0.0...1.0.1
 [1.0.0]: https://github.com/nesk/rialto/compare/0.1.2...1.0.0
