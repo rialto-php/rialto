@@ -1,7 +1,12 @@
 'use strict';
 
-const Value = require('./Value'),
-    ResourceIdentity = require('./ResourceIdentity');
+const path = require('path'),
+    Value = require('./Value'),
+    ResourceIdentity = require('./ResourceIdentity'),
+    ResourceRepository = require('./ResourceRepository');
+
+// Some unserialized functions require an access to the ResourceRepository class, so we must put it in the global scope.
+global.__rialto_ResourceRepository__ = ResourceRepository;
 
 class Unserializer
 {
@@ -35,6 +40,27 @@ class Unserializer
     }
 
     /**
+     * Return a string used to embed a value in a function.
+     *
+     * @param  {*} value
+     * @return {string}
+     */
+    embedFunctionValue(value)
+    {
+        value = this.unserialize(value);
+        const valueUniqueIdentifier = ResourceRepository.storeGlobal(value);
+
+        const a = Value.isResource(value)
+            ? `
+                __rialto_ResourceRepository__
+                    .retrieveGlobal(${JSON.stringify(valueUniqueIdentifier)})
+            `
+            : JSON.stringify(value);
+
+        return a;
+    }
+
+    /**
      * Unserialize a function.
      *
      * @param  {Object} value
@@ -45,7 +71,7 @@ class Unserializer
         const scopedVariables = [];
 
         for (let [varName, varValue] of Object.entries(value.scope)) {
-            scopedVariables.push(`var ${varName} = ${JSON.stringify(varValue)};`);
+            scopedVariables.push(`var ${varName} = ${this.embedFunctionValue(varValue)};`);
         }
 
         const parameters = [];
@@ -54,7 +80,7 @@ class Unserializer
             if (!isNaN(parseInt(paramKey, 10))) {
                 parameters.push(paramValue);
             } else {
-                parameters.push(`${paramKey} = ${JSON.stringify(paramValue)}`);
+                parameters.push(`${paramKey} = ${this.embedFunctionValue(paramValue)}`);
             }
         }
 

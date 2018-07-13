@@ -5,22 +5,12 @@ class ResourceIdentity
     /**
      * Constructor.
      *
-     * @param  {string} className
      * @param  {string} uniqueIdentifier
+     * @param  {string|null} className
      */
-    constructor(className, uniqueIdentifier)
+    constructor(uniqueIdentifier, className = null)
     {
-        this.resource = {className, uniqueIdentifier};
-    }
-
-    /**
-     * Return the class name of the resource.
-     *
-     * @return {string}
-     */
-    className()
-    {
-        return this.resource.className;
+        this.resource = {uniqueIdentifier, className};
     }
 
     /**
@@ -34,6 +24,16 @@ class ResourceIdentity
     }
 
     /**
+     * Return the class name of the resource.
+     *
+     * @return {string|null}
+     */
+    className()
+    {
+        return this.resource.className;
+    }
+
+    /**
      * Unserialize a resource identity.
      *
      * @param  {Object} identity
@@ -41,7 +41,7 @@ class ResourceIdentity
      */
     static unserialize(identity)
     {
-        return new ResourceIdentity(identity.class_name, identity.id);
+        return new ResourceIdentity(identity.id, identity.class_name);
     }
 
     /**
@@ -53,8 +53,8 @@ class ResourceIdentity
     {
         return {
             __rialto_resource__: true,
-            class_name: this.className(),
             id: this.uniqueIdentifier(),
+            class_name: this.className(),
         };
     }
 }

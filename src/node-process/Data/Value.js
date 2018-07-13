@@ -47,6 +47,17 @@ class Value
             return container;
         }
     }
+
+    /**
+     * Determine if the value is a resource.
+     *
+     * @param  {*} value
+     * @return {boolean}
+     */
+    static isResource(value)
+    {
+        return !Value.isContainer(value) && !Value.isScalar(value);
+    }
 }
 
 module.exports = Value;

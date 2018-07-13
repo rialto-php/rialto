@@ -2,7 +2,8 @@
 
 const ResourceIdentity = require('./ResourceIdentity');
 
-class ResourceRepository {
+class ResourceRepository
+{
     /**
      * Constructor.
      */
@@ -12,14 +13,15 @@ class ResourceRepository {
     }
 
     /**
-     * Retrieve a resource with its identity.
+     * Retrieve a resource with its identity from a specific storage.
      *
+     * @param  {Map} storage
      * @param  {ResourceIdentity} identity
      * @return {*}
      */
-    retrieve(identity)
+    static retrieveFrom(storage, identity)
     {
-        for (let [resource, id] of this.resources) {
+        for (let [resource, id] of storage) {
             if (identity.uniqueIdentifier() === id) {
                 return resource;
             }
@@ -29,24 +31,68 @@ class ResourceRepository {
     }
 
     /**
-     * Store a resource and return its identity.
+     * Retrieve a resource with its identity from the local storage.
+     *
+     * @param  {ResourceIdentity} identity
+     * @return {*}
+     */
+    retrieve(identity)
+    {
+        return ResourceRepository.retrieveFrom(this.resources, identity);
+    }
+
+    /**
+     * Retrieve a resource with its unique identifier from the global storage.
+     *
+     * @param  {string} uniqueIdentifier
+     * @return {*}
+     */
+    static retrieveGlobal(uniqueIdentifier)
+    {
+        const identity = new ResourceIdentity(uniqueIdentifier);
+        return ResourceRepository.retrieveFrom(ResourceRepository.globalResources, identity);
+    }
+
+    /**
+     * Store a resource in a specific storage and return its identity.
+     *
+     * @param  {Map} storage
+     * @param  {*} resource
+     * @return {ResourceIdentity}
+     */
+    static storeIn(storage, resource)
+    {
+        if (storage.has(resource)) {
+            return ResourceRepository.generateResourceIdentity(resource, storage.get(resource));
+        }
+
+        const id = String(Date.now() + Math.random());
+
+        storage.set(resource, id);
+
+        return ResourceRepository.generateResourceIdentity(resource, id);
+    }
+
+    /**
+     * Store a resource in the local storage and return its identity.
      *
      * @param  {*} resource
      * @return {ResourceIdentity}
      */
     store(resource)
     {
-        const {resources} = this;
+        return ResourceRepository.storeIn(this.resources, resource);
+    }
 
-        if (resources.has(resource)) {
-            return this.generateResourceIdentity(resource, resources.get(resource));
-        }
-
-        const id = String(Date.now() + Math.random());
-
-        resources.set(resource, id);
-
-        return this.generateResourceIdentity(resource, id);
+    /**
+     * Store a resource in the global storage and return its unique identifier.
+     *
+     * @param  {*} resource
+     * @return {string}
+     */
+    static storeGlobal(resource)
+    {
+        return ResourceRepository.storeIn(ResourceRepository.globalResources, resource).uniqueIdentifier();
     }
 
     /**
@@ -56,10 +102,12 @@ class ResourceRepository {
      * @param  {string} uniqueIdentifier
      * @return {ResourceIdentity}
      */
-    generateResourceIdentity(resource, uniqueIdentifier)
+    static generateResourceIdentity(resource, uniqueIdentifier)
     {
-        return new ResourceIdentity(resource.constructor.name, uniqueIdentifier);
+        return new ResourceIdentity(uniqueIdentifier, resource.constructor.name);
     }
 }
+
+ResourceRepository.globalResources = new Map;
 
 module.exports = ResourceRepository;

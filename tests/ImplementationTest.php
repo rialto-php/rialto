@@ -152,6 +152,24 @@ class ImplementationTest extends TestCase
     }
 
     /** @test */
+    public function can_use_resources_in_js_functions()
+    {
+        $fileStats = $this->fs->statSync($this->filePath);
+
+        $isFile = $this->fs->runCallback(JsFunction::create("
+            return fileStats.isFile();
+        ", ['fileStats' => $fileStats]));
+
+        $this->assertTrue($isFile);
+
+        $isFile = $this->fs->runCallback(JsFunction::create(['fs', 'fileStats' => $fileStats], "
+            return fileStats.isFile();
+        "));
+
+        $this->assertTrue($isFile);
+    }
+
+    /** @test */
     public function can_receive_heavy_payloads_with_non_ascii_chars()
     {
         $payload = $this->fs->getHeavyPayloadWithNonAsciiChars();
