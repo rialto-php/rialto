@@ -26,6 +26,13 @@ class JsFunction implements \JsonSerializable
     protected $scope;
 
     /**
+     * The async state of the function.
+     *
+     * @var bool
+     */
+    protected $async = false;
+
+    /**
      * Create a new JS function.
      *
      * @deprecated 2.0.0 Chaining methods should be used instead.
@@ -79,6 +86,15 @@ class JsFunction implements \JsonSerializable
     }
 
     /**
+     * Return a new instance with the specified async state.
+     */
+    public function async(bool $isAsync = true): self {
+        $clone = clone $this;
+        $clone->async = $isAsync;
+        return $clone;
+    }
+
+    /**
      * Serialize the object to a value that can be serialized natively by {@see json_encode}.
      */
     public function jsonSerialize(): array
@@ -88,6 +104,7 @@ class JsFunction implements \JsonSerializable
             'parameters' => (object) $this->parameters,
             'body' => $this->body,
             'scope' => (object) $this->scope,
+            'async' => $this->async,
         ];
     }
 

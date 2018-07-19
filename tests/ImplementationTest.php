@@ -209,6 +209,42 @@ class ImplementationTest extends TestCase
         }
     }
 
+    /**
+     * @test
+     * @group js-functions
+     */
+    public function can_use_async_with_js_functions()
+    {
+        $function = JsFunction::createWithAsync()
+            ->body("
+                await Promise.resolve();
+                return true;
+            ");
+
+        $this->assertTrue($this->fs->runCallback($function));
+
+        $function = $function->async(false);
+
+        $this->expectException(Node\FatalException::class);
+        $this->expectExceptionMessage('await is only valid in async function');
+
+        $this->fs->runCallback($function);
+    }
+
+    /**
+     * @test
+     * @group js-functions
+     */
+    public function js_functions_are_sync_by_default()
+    {
+        $function = JsFunction::createWithBody('await null');
+
+        $this->expectException(Node\FatalException::class);
+        $this->expectExceptionMessage('await is only valid in async function');
+
+        $this->fs->runCallback($function);
+    }
+
     /** @test */
     public function can_receive_heavy_payloads_with_non_ascii_chars()
     {

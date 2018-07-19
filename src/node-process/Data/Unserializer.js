@@ -84,8 +84,10 @@ class Unserializer
             }
         }
 
+        const asyncFlag = value.async ? 'async' : '';
+
         return new Function(`
-            return function (${parameters.join(', ')}) {
+            return ${asyncFlag} function (${parameters.join(', ')}) {
                 ${scopedVariables.join('\n')}
                 ${value.body}
             };

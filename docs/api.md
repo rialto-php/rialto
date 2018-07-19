@@ -102,7 +102,7 @@ Instead, a `Node\Exception` will be thrown, the Node process will stay alive and
 
 ## JavaScript functions
 
-With Rialto you can create JavaScript functions and pass them to the Node process, this can be useful to map some values or any other actions based on callbacks (as long as it is run synchronously).
+With Rialto you can create JavaScript functions and pass them to the Node process, this can be useful to map some values or any other actions based on callbacks.
 
 To create them, you need to use the `Nesk\Rialto\Data\JsFunction` class and call one or multiple methods in this list:
 
@@ -113,6 +113,9 @@ To create them, you need to use the `Nesk\Rialto\Data\JsFunction` class and call
 - `scope(array)`: Defines scope variables for your function. Say you have `$hello = 'Hello world!'` in your PHP and you want to use it in your JS code, you can write `->scope(['myVar' => $hello])` and you will be able to use it in your body `->body("console.log(myVar)")`.
 <br> **Note:** Scope variables must be JSON serializable values or resources created by Rialto.
 
+- `async(?bool)`: Makes your JS function async. Optionally, you can provide a boolean: `true` will make the function async, `false` will remove the `async` state.
+<br> **Note:** Like in the ECMAScript specification, JS functions _aren't_ async by default.
+
 To create a new JS function, use `JsFunction::createWith__METHOD_NAME__` with the method name you want (in the list just above):
 
 ```php
@@ -120,7 +123,7 @@ JsFunction::createWithParameters(['a', 'b'])
     ->body('return a + b;');
 ```
 
-Here we used `createWithParameters` to start the creation, but we could have used `createWithBody` or `createWithScope`.
+Here we used `createWithParameters` to start the creation, but we could have used `createWithBody`, `createWithScope`, etc…
 
 <details>
 <summary><strong>⚙️ Some examples showing how to use these methods</strong></summary> <br>
@@ -142,12 +145,13 @@ $jsFunction = JsFunction::createWithParameters(['str', 'str2' => 'Default value!
 $someResource->someMethodWithCallback($jsFunction);
 ```
 
-- A function with parameters, a body, and scoped values:
+- A function with parameters, a body, scoped values, and async flag:
 
 ```php
 $functionScope = ['stringtoPrepend' => 'This is another string: '];
 
-$jsFunction = JsFunction::createWithParameters(['str'])
+$jsFunction = JsFunction::createWithAsync()
+    ->parameters(['str'])
     ->body("return stringToPrepend + str")
     ->scope($functionScope);
 
@@ -181,7 +185,7 @@ $jsFunction = JsFunction::create(['str', 'str2' => 'Default value!'], "
 $someResource->someMethodWithCallback($jsFunction);
 ```
 
-- A function with parameters and some scoped values:
+- A function with parameters, a body, and scoped values:
 
 ```php
 $functionScope = ['stringtoPrepend' => 'This is another string: '];
