@@ -2,6 +2,7 @@
 
 namespace Nesk\Rialto\Tests;
 
+use PHPUnit\Util\ErrorHandler;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
@@ -23,5 +24,21 @@ class TestCase extends BaseTestCase
     public function canPopulateProperty(string $propertyName): bool
     {
         return !in_array($propertyName, $this->dontPopulateProperties);
+    }
+
+    public function ignoreUserDeprecation(string $messagePattern, callable $callback) {
+        set_error_handler(
+            function (int $errorNumber, string $errorString, string $errorFile, int $errorLine) use ($messagePattern) {
+                if ($errorNumber !== E_USER_DEPRECATED || preg_match($messagePattern, $errorString) !== 1) {
+                    ErrorHandler::handleError($errorNumber, $errorString, $errorFile, $errorLine);
+                }
+            }
+        );
+
+        $value = $callback();
+
+        restore_error_handler();
+
+        return $value;
     }
 }

@@ -8,6 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Support passing Node resources in JS functions
+- Add chaining methods to the `JsFunction` class
+
+### Deprecated
+- Deprecate the `JsFunction::create` method in favor of the new chaining methods
 
 ## [1.0.2] - 2018-06-18
 ### Fixed

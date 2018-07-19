@@ -26,10 +26,14 @@ class JsFunction implements \JsonSerializable
     protected $scope;
 
     /**
-     * Create a new JS function. Function parameters can be omitted.
+     * Create a new JS function.
+     *
+     * @deprecated 2.0.0 Chaining methods should be used instead.
      */
     public static function create(...$arguments)
     {
+        trigger_error(__METHOD__.'() has been deprecated and will be removed from v2.', E_USER_DEPRECATED);
+
         if (isset($arguments[0]) && is_string($arguments[0])) {
             return new static([], $arguments[0], $arguments[1] ?? []);
         }
@@ -40,11 +44,38 @@ class JsFunction implements \JsonSerializable
     /**
      * Constructor.
      */
-    public function __construct(array $parameters, string $body, array $scope = [])
+    public function __construct(array $parameters = [], string $body = '', array $scope = [])
     {
         $this->parameters = $parameters;
         $this->body = $body;
         $this->scope = $scope;
+    }
+
+    /**
+     * Return a new instance with the specified parameters.
+     */
+    public function parameters(array $parameters): self {
+        $clone = clone $this;
+        $clone->parameters = $parameters;
+        return $clone;
+    }
+
+    /**
+     * Return a new instance with the specified body.
+     */
+    public function body(string $body): self {
+        $clone = clone $this;
+        $clone->body = $body;
+        return $clone;
+    }
+
+    /**
+     * Return a new instance with the specified scope.
+     */
+    public function scope(array $scope): self {
+        $clone = clone $this;
+        $clone->scope = $scope;
+        return $clone;
     }
 
     /**
@@ -58,5 +89,19 @@ class JsFunction implements \JsonSerializable
             'body' => $this->body,
             'scope' => (object) $this->scope,
         ];
+    }
+
+    /**
+     * Proxy the "createWith*" static method calls to the "*" non-static method calls of a new instance.
+     */
+    public static function __callStatic(string $name, array $arguments)
+    {
+        $name = lcfirst(substr($name, strlen('createWith')));
+
+        if ($name === 'jsonSerialize') {
+            throw new BadMethodCallException;
+        }
+
+        return call_user_func([new self, $name], ...$arguments);
     }
 }

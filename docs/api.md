@@ -102,13 +102,68 @@ Instead, a `Node\Exception` will be thrown, the Node process will stay alive and
 
 ## JavaScript functions
 
-With Rialto you can create JavaScript functions and pass them to the Node process, this can be useful to map some values or any other actions based on callbacks (as long as it is run synchronously). Here's some examples:
+With Rialto you can create JavaScript functions and pass them to the Node process, this can be useful to map some values or any other actions based on callbacks (as long as it is run synchronously).
 
-- A function returning a value:
+To create them, you need to use the `Nesk\Rialto\Data\JsFunction` class and call one or multiple methods in this list:
+
+- `parameters(array)`: Sets parameters for your function, each string in the array is a parameter. You can define a default value for a parameter by using the parameter name as a key and its default value as the item value (e.g. `->parameters(['firstParam', 'secondParam' => 'Default string value'])`).
+
+- `body(string)`: Sets the body of your function, just write your JS code in a PHP string (e.g. `->body("return 'Hello world!'")`).
+
+- `scope(array)`: Defines scope variables for your function. Say you have `$hello = 'Hello world!'` in your PHP and you want to use it in your JS code, you can write `->scope(['myVar' => $hello])` and you will be able to use it in your body `->body("console.log(myVar)")`.
+<br> **Note:** Scope variables must be JSON serializable values or resources created by Rialto.
+
+To create a new JS function, use `JsFunction::createWith__METHOD_NAME__` with the method name you want (in the list just above):
 
 ```php
-use Nesk\Rialto\Data\JsFunction;
+JsFunction::createWithParameters(['a', 'b'])
+    ->body('return a + b;');
+```
 
+Here we used `createWithParameters` to start the creation, but we could have used `createWithBody` or `createWithScope`.
+
+<details>
+<summary><strong>⚙️ Some examples showing how to use these methods</strong></summary> <br>
+
+- A function with a body:
+
+```php
+$jsFunction = JsFunction::createWithBody("return process.uptime()");
+
+$someResource->someMethodWithCallback($jsFunction);
+```
+
+- A function with parameters and a body:
+
+```php
+$jsFunction = JsFunction::createWithParameters(['str', 'str2' => 'Default value!'])
+    ->body("return 'This is my string: ' + str");
+
+$someResource->someMethodWithCallback($jsFunction);
+```
+
+- A function with parameters, a body, and scoped values:
+
+```php
+$functionScope = ['stringtoPrepend' => 'This is another string: '];
+
+$jsFunction = JsFunction::createWithParameters(['str'])
+    ->body("return stringToPrepend + str")
+    ->scope($functionScope);
+
+$someResource->someMethodWithCallback($jsFunction);
+```
+
+</details>
+
+<br>
+
+<details>
+<summary><strong>⚠️ Deprecated examples of the <code>JsFunction::create()</code> method</strong></summary> <br>
+
+- A function with a body:
+
+```php
 $jsFunction = JsFunction::create("
     return process.uptime();
 ");
@@ -116,24 +171,20 @@ $jsFunction = JsFunction::create("
 $someResource->someMethodWithCallback($jsFunction);
 ```
 
-- A function with arguments:
+- A function with parameters:
 
 ```php
-use Nesk\Rialto\Data\JsFunction;
-
-$jsFunction = JsFunction::create(['str'], "
+$jsFunction = JsFunction::create(['str', 'str2' => 'Default value!'], "
     return 'This is my string: ' + str;
 ");
 
 $someResource->someMethodWithCallback($jsFunction);
 ```
 
-- A function with arguments and some scoped values:
+- A function with parameters and some scoped values:
 
 ```php
-use Nesk\Rialto\Data\JsFunction;
-
-$functionScope = ['stringtoPrepend' => 'This is another string: ']
+$functionScope = ['stringtoPrepend' => 'This is another string: '];
 
 $jsFunction = JsFunction::create(['str'], "
     return stringToPrepend + str;
@@ -141,6 +192,8 @@ $jsFunction = JsFunction::create(['str'], "
 
 $someResource->someMethodWithCallback($jsFunction);
 ```
+
+</details>
 
 ## Destruction
 

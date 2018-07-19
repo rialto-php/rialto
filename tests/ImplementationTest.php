@@ -14,6 +14,8 @@ use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessD
 
 class ImplementationTest extends TestCase
 {
+    const JS_FUNCTION_CREATE_DEPRECATION_PATTERN = '/^Nesk\\\\Rialto\\\\Data\\\\JsFunction::create\(\)/';
+
     public function setUp(): void
     {
         parent::setUp();
@@ -123,50 +125,88 @@ class ImplementationTest extends TestCase
         $this->assertEquals($stats1, $stats2);
     }
 
-    /** @test */
-    public function can_create_and_pass_js_functions()
+    /**
+     * @test
+     * @group js-functions
+     */
+    public function can_use_js_functions_with_a_body()
     {
-        $value = $this->fs->runCallback(JsFunction::create("
-            return 'Simple callback';
-        "));
+        $functions = [
+            $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                return JsFunction::create("return 'Simple callback';");
+            }),
+            JsFunction::createWithBody("return 'Simple callback';"),
+        ];
 
-        $this->assertEquals('Simple callback', $value);
-
-        $value = $this->fs->runCallback(JsFunction::create(['fs'], "
-            return 'Callback using arguments: ' + fs.constructor.name;
-        "));
-
-        $this->assertEquals('Callback using arguments: Object', $value);
-
-        $value = $this->fs->runCallback(JsFunction::create("
-            return 'Callback using scope: ' + foo;
-        ", ['foo' => 'bar']));
-
-        $this->assertEquals('Callback using scope: bar', $value);
-
-        $value = $this->fs->runCallback(JsFunction::create(['fs'], "
-            return 'Callback using scope and arguments: ' + fs.readFileSync(path);
-        ", ['path' => $this->filePath]));
-
-        $this->assertEquals('Callback using scope and arguments: Hello world!', $value);
+        foreach ($functions as $function) {
+            $value = $this->fs->runCallback($function);
+            $this->assertEquals('Simple callback', $value);
+        }
     }
 
-    /** @test */
+    /**
+     * @test
+     * @group js-functions
+     */
+    public function can_use_js_functions_with_parameters()
+    {
+        $functions = [
+            $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                return JsFunction::create(['fs'], "
+                    return 'Callback using arguments: ' + fs.constructor.name;
+                ");
+            }),
+            JsFunction::createWithParameters(['fs'])
+                ->body("return 'Callback using arguments: ' + fs.constructor.name;"),
+        ];
+
+        foreach ($functions as $function) {
+            $value = $this->fs->runCallback($function);
+            $this->assertEquals('Callback using arguments: Object', $value);
+        }
+    }
+
+    /**
+     * @test
+     * @group js-functions
+     */
+    public function can_use_js_functions_with_scope()
+    {
+        $functions = [
+            $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                return JsFunction::create("
+                    return 'Callback using scope: ' + foo;
+                ", ['foo' => 'bar']);
+            }),
+            JsFunction::createWithScope(['foo' => 'bar'])
+                ->body("return 'Callback using scope: ' + foo;"),
+        ];
+
+        foreach ($functions as $function) {
+            $value = $this->fs->runCallback($function);
+            $this->assertEquals('Callback using scope: bar', $value);
+        }
+    }
+
+    /**
+     * @test
+     * @group js-functions
+     */
     public function can_use_resources_in_js_functions()
     {
         $fileStats = $this->fs->statSync($this->filePath);
 
-        $isFile = $this->fs->runCallback(JsFunction::create("
-            return fileStats.isFile();
-        ", ['fileStats' => $fileStats]));
+        $functions = [
+            JsFunction::createWithParameters(['fs', 'fileStats' => $fileStats])
+                ->body("return fileStats.isFile();"),
+            JsFunction::createWithScope(['fileStats' => $fileStats])
+                ->body("return fileStats.isFile();"),
+        ];
 
-        $this->assertTrue($isFile);
-
-        $isFile = $this->fs->runCallback(JsFunction::create(['fs', 'fileStats' => $fileStats], "
-            return fileStats.isFile();
-        "));
-
-        $this->assertTrue($isFile);
+        foreach ($functions as $function) {
+            $isFile = $this->fs->runCallback($function);
+            $this->assertTrue($isFile);
+        }
     }
 
     /** @test */
@@ -392,17 +432,13 @@ class ImplementationTest extends TestCase
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::NOTICE, m::pattern('/^\[PID \d+\] \[stdout\] Hello World!$/'));
 
-        $this->fs->runCallback(JsFunction::create("
-            process.stdout.write('Hello World!');
-        "));
+        $this->fs->runCallback(JsFunction::createWithBody("process.stdout.write('Hello World!');"));
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::ERROR, m::pattern('/^\[PID \d+\] \[stderr\] Goodbye World!$/'));
 
-        $this->fs->runCallback(JsFunction::create("
-            process.stderr.write('Goodbye World!');
-        "));
+        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!');"));
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopping process...$/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopped process$/'));
