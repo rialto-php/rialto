@@ -9,10 +9,10 @@ The entry point of Rialto accepts [multiple options](https://github.com/nesk/ria
     // Node's executable path
     'executable_path' => 'node',
 
-    // How much time (in seconds) the process can stay inactive before being killed
+    // How much time (in seconds) the process can stay inactive before being killed (set to null to disable)
     'idle_timeout' => 60,
 
-    // How much time (in seconds) an instruction can take to return a value
+    // How much time (in seconds) an instruction can take to return a value (set to null to disable)
     'read_timeout' => 30,
 
     // How much time (in seconds) the process can take to shutdown properly before being killed

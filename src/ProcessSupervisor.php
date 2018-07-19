@@ -41,10 +41,10 @@ class ProcessSupervisor
         // Node's executable path
         'executable_path' => 'node',
 
-        // How much time (in seconds) the process can stay inactive before being killed
+        // How much time (in seconds) the process can stay inactive before being killed (set to null to disable)
         'idle_timeout' => 60,
 
-        // How much time (in seconds) an instruction can take to return a value
+        // How much time (in seconds) an instruction can take to return a value (set to null to disable)
         'read_timeout' => 30,
 
         // How much time (in seconds) the process can take to shutdown properly before being killed
@@ -325,7 +325,8 @@ class ProcessSupervisor
             preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
             $socketErrorCode = constant($socketErrorMatches[1]);
 
-            if ($socketErrorCode === SOCKET_EAGAIN && microtime(true) - $startTimestamp >= $readTimeout) {
+            $elapsedTime = microtime(true) - $startTimestamp;
+            if ($socketErrorCode === SOCKET_EAGAIN && $readTimeout !== null && $elapsedTime >= $readTimeout) {
                 throw new Exceptions\ReadSocketTimeoutException($readTimeout, $exception);
             }
 

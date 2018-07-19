@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Support passing Node resources in JS functions
 - Add chaining methods to the `JsFunction` class
 - Add an `async()` method to the `JsFunction` class to allow developers to write `await` instructions in their JS code
+- The `idle_timeout` and `read_timeout` options can be disabled by setting them to `null`
 
 ### Deprecated
 - Deprecate the `JsFunction::create` method in favor of the new chaining methods

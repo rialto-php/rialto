@@ -63,7 +63,7 @@ class Server
 
         const {idle_timeout: idleTimeout} = this.options;
 
-        if (idleTimeout) {
+        if (idleTimeout !== null) {
             this.idleTimer = setTimeout(() => {
                 throw new Error('The idle timeout has been reached.');
             }, idleTimeout * 1000);
