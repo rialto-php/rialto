@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Show the command line of the process in the logs
 
+### Fixed
+- Improve the way process standard streams are logged
+
 ## [1.1.0] - 2018-07-20
 ### Added
 - Support passing Node resources in JS functions

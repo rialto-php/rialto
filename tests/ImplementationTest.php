@@ -465,14 +465,14 @@ class ImplementationTest extends TestCase
         $this->fs = new FsWithProcessDelegation(['logger' => $mock]);
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::NOTICE, m::pattern('/^\[PID \d+\] \[stdout\] Hello World!$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
 
         $this->fs->runCallback(JsFunction::createWithBody("process.stdout.write('Hello World!');"));
 
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
         $shouldLog(LogLevel::ERROR, m::pattern('/^\[PID \d+\] \[stderr\] Goodbye World!$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
 
         $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!');"));
 

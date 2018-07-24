@@ -153,6 +153,20 @@ class ProcessSupervisor
     }
 
     /**
+     * Log a message with an arbitrary level.
+     */
+    protected function logProcessStandardStreams(): void
+    {
+        if (!empty($output = $this->process->getIncrementalOutput())) {
+            $this->log(LogLevel::NOTICE, ["PID {$this->processPid}", "stdout"], $output);
+        }
+
+        if (!empty($errorOutput = $this->process->getIncrementalErrorOutput())) {
+            $this->log(LogLevel::ERROR, ["PID {$this->processPid}", "stderr"], $errorOutput);
+        }
+    }
+
+    /**
      * Apply the options.
      */
     protected function applyOptions(array $options): void
@@ -210,15 +224,9 @@ class ProcessSupervisor
      */
     protected function checkProcessStatus(): void
     {
+        $this->logProcessStandardStreams();
+
         $process = $this->process;
-
-        if (!empty($output = $process->getIncrementalOutput())) {
-            $this->log(LogLevel::NOTICE, ["PID {$this->processPid}", "stdout"], $output);
-        }
-
-        if (!empty($errorOutput = $process->getIncrementalErrorOutput())) {
-            $this->log(LogLevel::ERROR, ["PID {$this->processPid}", "stderr"], $errorOutput);
-        }
 
         if (!empty($process->getErrorOutput())) {
             if (IdleTimeoutException::exceptionApplies($process)) {
@@ -333,10 +341,10 @@ class ProcessSupervisor
             throw $exception;
         }
 
+        $this->logProcessStandardStreams();
+
         $output = base64_decode($output);
-
         $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
-
         $value = $this->unserialize(json_decode($output, true));
 
         if ($value instanceof NodeException) {
