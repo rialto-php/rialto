@@ -192,7 +192,7 @@ class ProcessSupervisor
      */
     protected function startProcess(SymfonyProcess $process): int
     {
-        $this->log(LogLevel::DEBUG, [], 'Starting process...');
+        $this->log(LogLevel::DEBUG, [], "Starting process: {$process->getCommandLine()}");
 
         $process->start();
 

@@ -6,7 +6,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-_In progress…_
+### Changed
+- Show the command line of the process in the logs
 
 ## [1.1.0] - 2018-07-20
 ### Added

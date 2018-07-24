@@ -458,8 +458,8 @@ class ImplementationTest extends TestCase
             $mock->shouldReceive('log')->with($level, $message)->ordered()->once();
         };
 
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[options] \{.*\}$/'));
-        $shouldLog(LogLevel::DEBUG, 'Starting process...');
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[options\] \{.*\}$/'));
+        $shouldLog(LogLevel::DEBUG, m::pattern('/^Starting process: .+/'));
         $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
 
         $this->fs = new FsWithProcessDelegation(['logger' => $mock]);
