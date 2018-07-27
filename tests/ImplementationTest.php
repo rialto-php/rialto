@@ -359,6 +359,7 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
+     * @group logs
      * @dontPopulateProperties fs
      */
     public function forbidden_options_are_removed()
@@ -372,13 +373,11 @@ class ImplementationTest extends TestCase
             ->method('log')
             ->with(
                 $this->isLogLevel(),
-                $this->callback(function ($message) {
-                    $content = substr($message, strlen('[options] '));
-                    $options = json_decode($content, true);
-
-                    $this->assertArrayHasKey('read_timeout', $options);
-                    $this->assertArrayNotHasKey('stop_timeout', $options);
-                    $this->assertArrayNotHasKey('foo', $options);
+                'Applying options...',
+                $this->callback(function ($context) {
+                    $this->assertArrayHasKey('read_timeout', $context['options']);
+                    $this->assertArrayNotHasKey('stop_timeout', $context['options']);
+                    $this->assertArrayNotHasKey('foo', $context['options']);
 
                     return true;
                 })
@@ -451,6 +450,7 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
+     * @group logs
      * @dontPopulateProperties fs
      */
     public function logger_is_used_when_provided()
@@ -460,15 +460,20 @@ class ImplementationTest extends TestCase
             ->setMethods(['log'])
             ->getMock();
 
-        $loggerMock->expects($this->atLeast(9))
+        $loggerMock->expects($this->atLeast(12))
             ->method('log')
             ->with(
                 $this->isLogLevel(),
-                $this->matchesRegularExpression('/^(\[[a-z]( \d*)]\] )*.+$/i')
+                $this->isType('string'),
+                $this->logicalAnd(
+                    $this->isType('array'),
+                    $this->logicalNot($this->isEmpty())
+                )
             );
 
         $this->fs = new FsWithProcessDelegation(['logger' => $loggerMock]);
-        $this->fs->runCallback(JsFunction::createWithBody("process.stdout.write('Hello World!')"));
+        $this->fs->Stats;
+        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Hello World!')"));
         $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!')"));
     }
 }

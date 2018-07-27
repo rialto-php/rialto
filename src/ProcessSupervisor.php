@@ -4,7 +4,6 @@ namespace Nesk\Rialto;
 
 use RuntimeException;
 use Socket\Raw\Socket;
-use Psr\Log\{LoggerInterface, LogLevel};
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Exception as SocketException;
 use Nesk\Rialto\Exceptions\IdleTimeoutException;
@@ -95,6 +94,13 @@ class ProcessSupervisor
     protected $serverPort;
 
     /**
+     * The logger instance.
+     *
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
+
+    /**
      * Constructor.
      */
     public function __construct(
@@ -102,6 +108,8 @@ class ProcessSupervisor
         ?ShouldHandleProcessDelegation $processDelegate = null,
         array $options = []
     ) {
+        $this->logger = new Logger($options['logger'] ?? null);
+
         $this->applyOptions($options);
 
         $this->process = $this->createNewProcess($connectionDelegatePath);
@@ -124,45 +132,33 @@ class ProcessSupervisor
     public function __destruct()
     {
         if ($this->process !== null) {
-            $this->log(LogLevel::DEBUG, ["PID {$this->processPid}"], 'Stopping process...');
+            $this->logger->info('Stopping process with PID {pid}...', ['pid' => $this->processPid]);
 
             $this->process->stop($this->options['stop_timeout']);
 
-            $this->log(LogLevel::DEBUG, ["PID {$this->processPid}"], 'Stopped process');
+            $this->logger->info('Stopped process with PID {pid}', ['pid' => $this->processPid]);
         }
     }
 
     /**
-     * Log a message with an arbitrary level.
-     */
-    protected function log(string $level, array $sections, string $message): bool
-    {
-        ['logger' => $logger] = $this->options;
-
-        if ($logger instanceof LoggerInterface) {
-            $sections = implode(' ', array_map(function ($section) {
-                return "[$section]";
-            }, $sections));
-
-            $logger->log($level, empty($sections) ? $message : "$sections $message");
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Log a message with an arbitrary level.
+     * Log data from the process standard streams.
      */
     protected function logProcessStandardStreams(): void
     {
         if (!empty($output = $this->process->getIncrementalOutput())) {
-            $this->log(LogLevel::NOTICE, ["PID {$this->processPid}", "stdout"], $output);
+            $this->logger->notice('Received data on stdout: {output}', [
+                'pid' => $this->processPid,
+                'stream' => 'stdout',
+                'output' => $output,
+            ]);
         }
 
         if (!empty($errorOutput = $this->process->getIncrementalErrorOutput())) {
-            $this->log(LogLevel::ERROR, ["PID {$this->processPid}", "stderr"], $errorOutput);
+            $this->logger->error('Received data on stderr: {output}', [
+                'pid' => $this->processPid,
+                'stream' => 'stderr',
+                'output' => $errorOutput,
+            ]);
         }
     }
 
@@ -171,9 +167,11 @@ class ProcessSupervisor
      */
     protected function applyOptions(array $options): void
     {
+        $this->logger->info('Applying options...', ['options' => $options]);
+
         $this->options = array_merge($this->options, $options);
 
-        $this->log(LogLevel::DEBUG, ['options'], json_encode($options));
+        $this->logger->debug('Options applied and merged with defaults', ['options' => $this->options]);
     }
 
     /**
@@ -206,13 +204,15 @@ class ProcessSupervisor
      */
     protected function startProcess(SymfonyProcess $process): int
     {
-        $this->log(LogLevel::DEBUG, [], "Starting process: {$process->getCommandLine()}");
+        $this->logger->info('Starting process with command line: {commandline}', [
+            'commandline' => $process->getCommandLine(),
+        ]);
 
         $process->start();
 
         $pid = $process->getPid();
 
-        $this->log(LogLevel::DEBUG, ["PID $pid"], 'Process started');
+        $this->logger->info('Process started with PID {pid}', ['pid' => $pid]);
 
         return $pid;
     }
@@ -284,11 +284,19 @@ class ProcessSupervisor
         // Check the process status because it could have crash in idle status.
         $this->checkProcessStatus();
 
-        $instruction = json_encode($instruction);
-        $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "sending"], $instruction);
+        $serializedInstruction = json_encode($instruction);
+
+        $this->logger->debug('Sending an instruction to the port {port}...', [
+            'pid' => $this->processPid,
+            'port' => $this->serverPort(),
+
+            // The instruction must be fully encoded and decoded to appear properly in the logs (this way, JS functions
+            // and resources are serialized too).
+            'instruction' => json_decode($serializedInstruction, true),
+        ]);
 
         $this->client->selectWrite(1);
-        $this->client->write($instruction);
+        $this->client->write($serializedInstruction);
 
         $value = $this->readNextProcessValue();
 
@@ -310,7 +318,7 @@ class ProcessSupervisor
     protected function readNextProcessValue()
     {
         $readTimeout = $this->options['read_timeout'];
-        $output = '';
+        $payload = '';
 
         try {
             $startTimestamp = microtime(true);
@@ -322,7 +330,7 @@ class ProcessSupervisor
                 $chunksLeft = (int) substr($packet, 0, static::SOCKET_HEADER_SIZE);
                 $chunk = substr($packet, static::SOCKET_HEADER_SIZE);
 
-                $output .= $chunk;
+                $payload .= $chunk;
             } while ($chunksLeft > 0);
         } catch (SocketException $exception) {
             // Let the process terminate and output its errors before checking its status
@@ -343,14 +351,20 @@ class ProcessSupervisor
 
         $this->logProcessStandardStreams();
 
-        $output = base64_decode($output);
-        $this->log(LogLevel::DEBUG, ["PORT {$this->serverPort()}", "receiving"], $output);
-        $value = $this->unserialize(json_decode($output, true));
+        $payload = base64_decode($payload);
+        $payload = json_decode($payload, true);
+        $payload = $this->unserialize($payload);
 
-        if ($value instanceof NodeException) {
-            throw $value;
+        $this->logger->debug('Received data from the port {port}...', [
+            'pid' => $this->processPid,
+            'port' => $this->serverPort(),
+            'data' => $payload,
+        ]);
+
+        if ($payload instanceof NodeException) {
+            throw $payload;
         }
 
-        return $value;
+        return $payload;
     }
 }
