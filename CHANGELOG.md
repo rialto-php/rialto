@@ -7,10 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Changed
-- Show the command line of the process in the logs
+- Drastically improve the log contents
 
 ### Fixed
-- Improve the way process standard streams are logged
+- Fix a bug where some standard streams logs were missing
 
 ## [1.1.0] - 2018-07-20
 ### Added
