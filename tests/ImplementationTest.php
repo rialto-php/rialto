@@ -2,7 +2,6 @@
 
 namespace Nesk\Rialto\Tests;
 
-use Mockery as m;
 use Monolog\Logger;
 use Psr\Log\LogLevel;
 use Nesk\Rialto\Data\JsFunction;
@@ -28,8 +27,6 @@ class ImplementationTest extends TestCase
 
     public function tearDown(): void
     {
-        m::close();
-
         $this->fs = null;
     }
 
@@ -366,23 +363,29 @@ class ImplementationTest extends TestCase
      */
     public function forbidden_options_are_removed()
     {
-        $mock = m::mock(new Logger('rialto'));
+        $loggerMock = $this->getMockBuilder(Logger::class)
+            ->setConstructorArgs(['rialto'])
+            ->setMethods(['log'])
+            ->getMock();
 
-        $mock->shouldReceive('log')->withArgs(function ($level, $message) {
-            if (substr($message, 0, strlen('[options]')) === '[options]') {
-                $content = substr($message, strlen('[options] '));
-                $options = json_decode($content, true);
+        $loggerMock->expects($this->at(0))
+            ->method('log')
+            ->with(
+                $this->isLogLevel(),
+                $this->callback(function ($message) {
+                    $content = substr($message, strlen('[options] '));
+                    $options = json_decode($content, true);
 
-                $this->assertArrayHasKey('read_timeout', $options);
-                $this->assertArrayNotHasKey('stop_timeout', $options);
-                $this->assertArrayNotHasKey('foo', $options);
-            }
+                    $this->assertArrayHasKey('read_timeout', $options);
+                    $this->assertArrayNotHasKey('stop_timeout', $options);
+                    $this->assertArrayNotHasKey('foo', $options);
 
-            return true;
-        });
+                    return true;
+                })
+            );
 
         $this->fs = new FsWithProcessDelegation([
-            'logger' => $mock,
+            'logger' => $loggerMock,
             'read_timeout' => 5,
             'stop_timeout' => 0,
             'foo' => 'bar',
@@ -452,33 +455,20 @@ class ImplementationTest extends TestCase
      */
     public function logger_is_used_when_provided()
     {
-        $mock = m::mock(new Logger('rialto'));
+        $loggerMock = $this->getMockBuilder(Logger::class)
+            ->setConstructorArgs(['rialto'])
+            ->setMethods(['log'])
+            ->getMock();
 
-        $shouldLog = function ($level, $message) use ($mock) {
-            $mock->shouldReceive('log')->with($level, $message)->ordered()->once();
-        };
+        $loggerMock->expects($this->atLeast(9))
+            ->method('log')
+            ->with(
+                $this->isLogLevel(),
+                $this->matchesRegularExpression('/^(\[[a-z]( \d*)]\] )*.+$/i')
+            );
 
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[options\] \{.*\}$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^Starting process: .+/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Process started$/'));
-
-        $this->fs = new FsWithProcessDelegation(['logger' => $mock]);
-
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
-        $shouldLog(LogLevel::NOTICE, m::pattern('/^\[PID \d+\] \[stdout\] Hello World!$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
-
-        $this->fs->runCallback(JsFunction::createWithBody("process.stdout.write('Hello World!');"));
-
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[sending\] \{.*\}$/'));
-        $shouldLog(LogLevel::ERROR, m::pattern('/^\[PID \d+\] \[stderr\] Goodbye World!$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PORT \d+\] \[receiving\] null$/'));
-
-        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!');"));
-
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopping process...$/'));
-        $shouldLog(LogLevel::DEBUG, m::pattern('/^\[PID \d+\] Stopped process$/'));
-
-        $this->assertNull($this->fs = null);
+        $this->fs = new FsWithProcessDelegation(['logger' => $loggerMock]);
+        $this->fs->runCallback(JsFunction::createWithBody("process.stdout.write('Hello World!')"));
+        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!')"));
     }
 }

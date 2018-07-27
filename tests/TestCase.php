@@ -2,11 +2,36 @@
 
 namespace Nesk\Rialto\Tests;
 
+use Monolog\Logger;
+use Psr\Log\LogLevel;
 use PHPUnit\Util\ErrorHandler;
+use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {
+    private const PSR_LOG_LEVELS = [
+        LogLevel::DEBUG,
+        LogLevel::INFO,
+        LogLevel::NOTICE,
+        LogLevel::WARNING,
+        LogLevel::ERROR,
+        LogLevel::CRITICAL,
+        LogLevel::ALERT,
+        LogLevel::EMERGENCY,
+    ];
+
+    private const MONOLOG_LEVELS = [
+        Logger::DEBUG,
+        Logger::INFO,
+        Logger::NOTICE,
+        Logger::WARNING,
+        Logger::ERROR,
+        Logger::CRITICAL,
+        Logger::ALERT,
+        Logger::EMERGENCY,
+    ];
+
     private $dontPopulateProperties = [];
 
     public function setUp(): void
@@ -40,5 +65,17 @@ class TestCase extends BaseTestCase
         restore_error_handler();
 
         return $value;
+    }
+
+    public function isLogLevel(): Callback {
+        return $this->callback(function ($level) {
+            if (is_string($level)) {
+                return in_array($level, self::PSR_LOG_LEVELS, true);
+            } else if (is_int($level)) {
+                return in_array($level, self::MONOLOG_LEVELS, true);
+            }
+
+            return false;
+        });
     }
 }
