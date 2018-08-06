@@ -460,7 +460,7 @@ class ImplementationTest extends TestCase
             ->setMethods(['log'])
             ->getMock();
 
-        $loggerMock->expects($this->atLeast(12))
+        $loggerMock->expects($this->exactly(12))
             ->method('log')
             ->with(
                 $this->isLogLevel(),
@@ -472,8 +472,9 @@ class ImplementationTest extends TestCase
             );
 
         $this->fs = new FsWithProcessDelegation(['logger' => $loggerMock]);
-        $this->fs->Stats;
         $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Hello World!')"));
         $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!')"));
+
+        $this->fs = null;
     }
 }
