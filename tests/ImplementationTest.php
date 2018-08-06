@@ -3,11 +3,10 @@
 namespace Nesk\Rialto\Tests;
 
 use Monolog\Logger;
-use Psr\Log\LogLevel;
 use Nesk\Rialto\Data\JsFunction;
 use Nesk\Rialto\Exceptions\Node;
-use Symfony\Component\Process\Process;
 use Nesk\Rialto\Data\BasicResource;
+use Symfony\Component\Process\Process;
 use Nesk\Rialto\Tests\Implementation\Resources\Stats;
 use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
 
@@ -364,14 +363,9 @@ class ImplementationTest extends TestCase
      */
     public function forbidden_options_are_removed()
     {
-        $loggerMock = $this->getMockBuilder(Logger::class)
-            ->setConstructorArgs(['rialto'])
-            ->setMethods(['log'])
-            ->getMock();
-
-        $loggerMock->expects($this->at(0))
-            ->method('log')
-            ->with(
+        $this->fs = new FsWithProcessDelegation([
+            'logger' => $this->loggerMock(
+                $this->at(0),
                 $this->isLogLevel(),
                 'Applying options...',
                 $this->callback(function ($context) {
@@ -381,10 +375,8 @@ class ImplementationTest extends TestCase
 
                     return true;
                 })
-            );
+            ),
 
-        $this->fs = new FsWithProcessDelegation([
-            'logger' => $loggerMock,
             'read_timeout' => 5,
             'stop_timeout' => 0,
             'foo' => 'bar',
@@ -455,26 +447,64 @@ class ImplementationTest extends TestCase
      */
     public function logger_is_used_when_provided()
     {
-        $loggerMock = $this->getMockBuilder(Logger::class)
-            ->setConstructorArgs(['rialto'])
-            ->setMethods(['log'])
-            ->getMock();
-
-        $loggerMock->expects($this->exactly(12))
-            ->method('log')
-            ->with(
+        $this->fs = new FsWithProcessDelegation([
+            'logger' => $this->loggerMock(
+                $this->atLeastOnce(),
                 $this->isLogLevel(),
-                $this->isType('string'),
-                $this->logicalAnd(
-                    $this->isType('array'),
-                    $this->logicalNot($this->isEmpty())
-                )
-            );
+                $this->isType('string')
+            ),
+        ]);
+    }
 
-        $this->fs = new FsWithProcessDelegation(['logger' => $loggerMock]);
-        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Hello World!')"));
-        $this->fs->runCallback(JsFunction::createWithBody("process.stderr.write('Goodbye World!')"));
+    /**
+     * @test
+     * @group logs
+     * @dontPopulateProperties fs
+     */
+    public function node_console_calls_are_logged()
+    {
+        $setups = [
+            [false, 'Received data on stdout:'],
+            [true, 'Received a Node log:'],
+        ];
 
+        foreach ($setups as [$logNodeConsole, $startsWith]) {
+            $this->fs = new FsWithProcessDelegation([
+                'log_node_console' => $logNodeConsole,
+                'logger' => $this->loggerMock(
+                    $this->at(5),
+                    $this->isLogLevel(),
+                    $this->stringStartsWith($startsWith)
+                ),
+            ]);
+
+            $this->fs->runCallback(JsFunction::createWithBody("console.log('Hello World!')"));
+        }
+    }
+
+    /**
+     * @test
+     * @group logs
+     * @dontPopulateProperties fs
+     */
+    public function delayed_node_console_calls_and_data_on_standard_streams_are_logged()
+    {
+        $this->fs = new FsWithProcessDelegation([
+            'log_node_console' => true,
+            'logger' => $this->loggerMock([
+                [$this->at(6), $this->isLogLevel(), $this->stringStartsWith('Received data on stdout:')],
+                [$this->at(7), $this->isLogLevel(), $this->stringStartsWith('Received a Node log:')],
+            ]),
+        ]);
+
+        $this->fs->runCallback(JsFunction::createWithBody("
+            setTimeout(() => {
+                process.stdout.write('Hello Stdout!');
+                console.log('Hello Console!');
+            });
+        "));
+
+        usleep(10000); // 10ms, to be sure the delayed instructions just above are executed.
         $this->fs = null;
     }
 }

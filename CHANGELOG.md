@@ -6,6 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+- Add a `log_node_console` option to log the output of console methods (`console.log`, `console.debug`, `console.table`, etc…) to the PHP logger
+
 ### Changed
 - Drastically improve the log contents
 

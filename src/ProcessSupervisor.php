@@ -2,6 +2,7 @@
 
 namespace Nesk\Rialto;
 
+use Psr\Log\LogLevel;
 use RuntimeException;
 use Socket\Raw\Socket;
 use Socket\Raw\Factory as SocketFactory;
@@ -18,14 +19,21 @@ class ProcessSupervisor
     use Data\UnserializesData, Traits\UsesBasicResourceAsDefault;
 
     /**
-     * The size of a packet sent through the sockets.
+     * A reasonable delay to let the process terminate itself (in milliseconds).
+     *
+     * @var int
+     */
+    protected const PROCESS_TERMINATION_DELAY = 200;
+
+    /**
+     * The size of a packet sent through the sockets (in bytes).
      *
      * @var int
      */
     protected const SOCKET_PACKET_SIZE = 1024;
 
     /**
-     * The size of the header in each packet sent through the sockets.
+     * The size of the header in each packet sent through the sockets (in bytes).
      *
      * @var int
      */
@@ -51,6 +59,9 @@ class ProcessSupervisor
 
         // A logger instance for debugging (must implement \Psr\Log\LoggerInterface)
         'logger' => null,
+
+        // Logs the output of console methods (console.log, console.debug, console.table, etc...) to the PHP logger
+        'log_node_console' => false,
 
         // Enables debugging mode:
         //   - adds the --inspect flag to Node's command
@@ -133,11 +144,13 @@ class ProcessSupervisor
     {
         $logContext = ['pid' => $this->processPid];
 
+        $this->waitForProcessTermination();
+
         if ($this->process->isRunning()) {
+            $this->executeInstruction(Instruction::noop(), false); // Fetch the missing remote logs
+
             $this->logger->info('Stopping process with PID {pid}...', $logContext);
-
             $this->process->stop($this->options['stop_timeout']);
-
             $this->logger->info('Stopped process with PID {pid}', $logContext);
         } else {
             $this->logger->warning("The process cannot because be stopped because it's no longer running", $logContext);
@@ -227,7 +240,7 @@ class ProcessSupervisor
         }
 
         // Keep only the "idle_timeout" option
-        $options = array_intersect_key($this->options, array_flip(['idle_timeout']));
+        $options = array_intersect_key($this->options, array_flip(['idle_timeout', 'log_node_console']));
 
         return new SymfonyProcess(array_merge(
             [$this->options['executable_path']],
@@ -286,6 +299,16 @@ class ProcessSupervisor
     }
 
     /**
+     * Wait for process termination.
+     *
+     * The process might take a while to stop itself. So, before trying to check its status or reading its standard
+     * streams, this method should be executed.
+     */
+    protected function waitForProcessTermination(): void {
+        usleep(self::PROCESS_TERMINATION_DELAY * 1000);
+    }
+
+    /**
      * Return the port of the server.
      */
     protected function serverPort(): int
@@ -318,26 +341,28 @@ class ProcessSupervisor
     /**
      * Send an instruction to the process for execution.
      */
-    public function executeInstruction(Instruction $instruction)
+    public function executeInstruction(Instruction $instruction, bool $instructionShouldBeLogged = true)
     {
         // Check the process status because it could have crash in idle status.
         $this->checkProcessStatus();
 
         $serializedInstruction = json_encode($instruction);
 
-        $this->logger->debug('Sending an instruction to the port {port}...', [
-            'pid' => $this->processPid,
-            'port' => $this->serverPort(),
+        if ($instructionShouldBeLogged) {
+            $this->logger->debug('Sending an instruction to the port {port}...', [
+                'pid' => $this->processPid,
+                'port' => $this->serverPort(),
 
-            // The instruction must be fully encoded and decoded to appear properly in the logs (this way, JS functions
-            // and resources are serialized too).
-            'instruction' => json_decode($serializedInstruction, true),
-        ]);
+                // The instruction must be fully encoded and decoded to appear properly in the logs (this way,
+                // JS functions and resources are serialized too).
+                'instruction' => json_decode($serializedInstruction, true),
+            ]);
+        }
 
         $this->client->selectWrite(1);
         $this->client->write($serializedInstruction);
 
-        $value = $this->readNextProcessValue();
+        $value = $this->readNextProcessValue($instructionShouldBeLogged);
 
         // Check the process status if the value is null because, if the process crash while executing the instruction,
         // the socket closes and returns an empty value (which is converted to `null`).
@@ -354,7 +379,7 @@ class ProcessSupervisor
      * @throws \Nesk\Rialto\Exceptions\ReadSocketTimeoutException if reading the socket exceeded the timeout.
      * @throws \Nesk\Rialto\Exceptions\Node\Exception if the process returned an error.
      */
-    protected function readNextProcessValue()
+    protected function readNextProcessValue(bool $valueShouldBeLogged = true)
     {
         $readTimeout = $this->options['read_timeout'];
         $payload = '';
@@ -372,8 +397,7 @@ class ProcessSupervisor
                 $payload .= $chunk;
             } while ($chunksLeft > 0);
         } catch (SocketException $exception) {
-            // Let the process terminate and output its errors before checking its status
-            usleep(200000);
+            $this->waitForProcessTermination();
             $this->checkProcessStatus();
 
             // Extract the socket error code to throw more specific exceptions
@@ -390,20 +414,34 @@ class ProcessSupervisor
 
         $this->logProcessStandardStreams();
 
-        $payload = base64_decode($payload);
-        $payload = json_decode($payload, true);
-        $payload = $this->unserialize($payload);
+        ['logs' => $logs, 'value' => $value] = json_decode(base64_decode($payload), true);
 
-        $this->logger->debug('Received data from the port {port}...', [
-            'pid' => $this->processPid,
-            'port' => $this->serverPort(),
-            'data' => $payload,
-        ]);
+        foreach ($logs ?: [] as $log) {
+            $level = (new \ReflectionClass(LogLevel::class))->getConstant($log['level']);
+            $messageContainsLineBreaks = strstr($log['message'], PHP_EOL) !== false;
+            $formattedMessage = $messageContainsLineBreaks ? "\n{log}\n" : '{log}';
 
-        if ($payload instanceof NodeException) {
-            throw $payload;
+            $this->logger->log($level, "Received a $log[origin] log: $formattedMessage", [
+                'pid' => $this->processPid,
+                'port' => $this->serverPort(),
+                'log' => $log['message'],
+            ]);
         }
 
-        return $payload;
+        $value = $this->unserialize($value);
+
+        if ($valueShouldBeLogged) {
+            $this->logger->debug('Received data from the port {port}...', [
+                'pid' => $this->processPid,
+                'port' => $this->serverPort(),
+                'data' => $value,
+            ]);
+        }
+
+        if ($value instanceof NodeException) {
+            throw $value;
+        }
+
+        return $value;
     }
 }

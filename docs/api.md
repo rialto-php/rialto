@@ -21,6 +21,9 @@ The entry point of Rialto accepts [multiple options](https://github.com/nesk/ria
     // A logger instance for debugging (must implement \Psr\Log\LoggerInterface)
     'logger' => null,
 
+    // Logs the output of console methods (console.log, console.debug, console.table, etc...) to the PHP logger
+    'log_node_console' => false,
+
     // Enables debugging mode:
     //   - adds the --inspect flag to Node's command
     //   - appends stack traces to Node exception messages

@@ -3,35 +3,15 @@
 namespace Nesk\Rialto\Tests;
 
 use Monolog\Logger;
+use ReflectionClass;
 use Psr\Log\LogLevel;
 use PHPUnit\Util\ErrorHandler;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\TestCase as BaseTestCase;
+use PHPUnit\Framework\MockObject\Matcher\Invocation;
 
 class TestCase extends BaseTestCase
 {
-    private const PSR_LOG_LEVELS = [
-        LogLevel::DEBUG,
-        LogLevel::INFO,
-        LogLevel::NOTICE,
-        LogLevel::WARNING,
-        LogLevel::ERROR,
-        LogLevel::CRITICAL,
-        LogLevel::ALERT,
-        LogLevel::EMERGENCY,
-    ];
-
-    private const MONOLOG_LEVELS = [
-        Logger::DEBUG,
-        Logger::INFO,
-        Logger::NOTICE,
-        Logger::WARNING,
-        Logger::ERROR,
-        Logger::CRITICAL,
-        Logger::ALERT,
-        Logger::EMERGENCY,
-    ];
-
     private $dontPopulateProperties = [];
 
     public function setUp(): void
@@ -67,12 +47,38 @@ class TestCase extends BaseTestCase
         return $value;
     }
 
+    public function loggerMock($expectations) {
+        $loggerMock = $this->getMockBuilder(Logger::class)
+            ->setConstructorArgs(['rialto'])
+            ->setMethods(['log'])
+            ->getMock();
+
+        if ($expectations instanceof Invocation) {
+            $expectations = [func_get_args()];
+        }
+
+        foreach ($expectations as $expectation) {
+            [$matcher] = $expectation;
+            $with = array_slice($expectation, 1);
+
+            $loggerMock->expects($matcher)
+                ->method('log')
+                ->with(...$with);
+        }
+
+        return $loggerMock;
+    }
+
     public function isLogLevel(): Callback {
-        return $this->callback(function ($level) {
+        $psrLogLevels = (new ReflectionClass(LogLevel::class))->getConstants();
+        $monologLevels = (new ReflectionClass(Logger::class))->getConstants();
+        $monologLevels = array_intersect_key($monologLevels, $psrLogLevels);
+
+        return $this->callback(function ($level) use ($psrLogLevels, $monologLevels) {
             if (is_string($level)) {
-                return in_array($level, self::PSR_LOG_LEVELS, true);
+                return in_array($level, $psrLogLevels, true);
             } else if (is_int($level)) {
-                return in_array($level, self::MONOLOG_LEVELS, true);
+                return in_array($level, $monologLevels, true);
             }
 
             return false;

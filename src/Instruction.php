@@ -12,18 +12,19 @@ class Instruction implements \JsonSerializable
     public const TYPE_CALL = 'call';
     public const TYPE_GET = 'get';
     public const TYPE_SET = 'set';
+    public const TYPE_NOOP = 'noop';
 
     /**
      * The instruction type.
      *
      * @var string
      */
-    protected $type;
+    protected $type = self::TYPE_NOOP;
 
     /**
      * The name the instruction refers to.
      *
-     * @var string
+     * @var string|null
      */
     protected $name;
 
@@ -37,7 +38,7 @@ class Instruction implements \JsonSerializable
     /**
      * The resource associated to the instruction.
      *
-     * @var \Nesk\Rialto\Traits\IdentifiesResource
+     * @var \Nesk\Rialto\Traits\IdentifiesResource|null
      */
     protected $resource;
 
@@ -47,6 +48,14 @@ class Instruction implements \JsonSerializable
      * @var boolean
      */
     protected $shouldCatchErrors = false;
+
+    /**
+     * Create a no-op instruction.
+     */
+    public static function noop(): self
+    {
+        return new self;
+    }
 
     /**
      * Define a method call.
@@ -135,18 +144,21 @@ class Instruction implements \JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        $instruction = [
-            'type' => $this->type,
-            'name' => $this->name,
-            'catched' => $this->shouldCatchErrors,
-        ];
+        $instruction = ['type' => $this->type];
 
-        if ($this->type !== self::TYPE_GET) {
-            $instruction['value'] = $this->value;
-        }
+        if ($this->type !== self::TYPE_NOOP) {
+            $instruction = array_merge($instruction, [
+                'name' => $this->name,
+                'catched' => $this->shouldCatchErrors,
+            ]);
 
-        if ($this->resource !== null) {
-            $instruction['resource'] = $this->resource;
+            if ($this->type !== self::TYPE_GET) {
+                $instruction['value'] = $this->value;
+            }
+
+            if ($this->resource !== null) {
+                $instruction['resource'] = $this->resource;
+            }
         }
 
         return $instruction;

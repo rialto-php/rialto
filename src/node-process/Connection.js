@@ -5,7 +5,8 @@ const EventEmitter = require('events'),
     ResourceRepository = require('./Data/ResourceRepository'),
     Instruction = require('./Instruction'),
     DataSerializer = require('./Data/Serializer'),
-    DataUnserializer = require('./Data/Unserializer');
+    DataUnserializer = require('./Data/Unserializer'),
+    Logger = require('./Logger');
 
 /**
  * Handle a connection interacting with this process.
@@ -73,27 +74,23 @@ class Connection extends EventEmitter
     {
         let handlerHasBeenCalled = false;
 
-        const updateHandlerCallStatus = () => {
+        const handler = (serializingMethod, value) => {
             if (handlerHasBeenCalled) {
                 throw new Error('You can call only once the response/error handler.');
             }
 
             handlerHasBeenCalled = true;
+
+            this.writeToSocket(JSON.stringify({
+                logs: Logger.logs(),
+                value: this[serializingMethod](value),
+            }));
         };
 
-        const responseHandler = data => {
-            updateHandlerCallStatus();
-
-            this.writeToSocket(JSON.stringify(this.serializeValue(data)));
+        return {
+            responseHandler: handler.bind(this, 'serializeValue'),
+            errorHandler: handler.bind(this, 'serializeError'),
         };
-
-        const errorHandler = error => {
-            updateHandlerCallStatus();
-
-            this.writeToSocket(JSON.stringify(this.serializeError(error)));
-        };
-
-        return {responseHandler, errorHandler};
     }
 
     /**
