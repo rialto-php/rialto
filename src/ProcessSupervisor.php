@@ -131,12 +131,16 @@ class ProcessSupervisor
      */
     public function __destruct()
     {
-        if ($this->process !== null) {
-            $this->logger->info('Stopping process with PID {pid}...', ['pid' => $this->processPid]);
+        $logContext = ['pid' => $this->processPid];
+
+        if ($this->process->isRunning()) {
+            $this->logger->info('Stopping process with PID {pid}...', $logContext);
 
             $this->process->stop($this->options['stop_timeout']);
 
-            $this->logger->info('Stopped process with PID {pid}', ['pid' => $this->processPid]);
+            $this->logger->info('Stopped process with PID {pid}', $logContext);
+        } else {
+            $this->logger->warning("The process cannot because be stopped because it's no longer running", $logContext);
         }
     }
 
