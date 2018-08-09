@@ -2,7 +2,7 @@
 
 ## Options
 
-The entry point of Rialto accepts [multiple options](https://github.com/nesk/rialto/blob/2a2dbc7b431fb11a95945ed57caa1b88f7f2c76b/src/Process.php#L40-L60), here are some descriptions with the default values:
+The entry point of Rialto accepts [multiple options](https://github.com/nesk/rialto/blob/75b5a9464235a597e3ab71ac90246779a40fe145/src/ProcessSupervisor.php#L42-L70), here are some descriptions with the default values:
 
 ```php
 [
