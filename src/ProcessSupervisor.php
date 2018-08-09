@@ -23,7 +23,7 @@ class ProcessSupervisor
      *
      * @var int
      */
-    protected const PROCESS_TERMINATION_DELAY = 200;
+    protected const PROCESS_TERMINATION_DELAY = 100;
 
     /**
      * The size of a packet sent through the sockets (in bytes).
