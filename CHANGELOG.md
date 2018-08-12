@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Fixed
 - Fix a bug where some standard streams logs were missing
+- Fix double declarations of some JS classes due to a require with two different paths.
 
 ## [1.1.0] - 2018-07-20
 ### Added

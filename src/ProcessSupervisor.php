@@ -179,6 +179,41 @@ class ProcessSupervisor
     }
 
     /**
+     * Return the script path of the Node process.
+     *
+     * In production, the script path must target the NPM package. In local development, the script path targets the
+     * Composer package (since the NPM package is not installed).
+     *
+     * This avoids double declarations of some JS classes in production, due to a require with two different paths (one
+     * with the NPM path, the other one with the Composer path).
+     */
+    protected function getProcessScriptPath(): string {
+        static $scriptPath = null;
+
+        if ($scriptPath !== null) {
+            return $scriptPath;
+        }
+
+        // The script path in local development
+        $scriptPath = __DIR__.'/node-process/serve.js';
+
+        $process = new SymfonyProcess([
+            $this->options['executable_path'],
+            '-e',
+            "process.stdout.write(require.resolve('@nesk/rialto/src/node-process/serve.js'))",
+        ]);
+
+        $exitCode = $process->run();
+
+        if ($exitCode === 0) {
+            // The script path in production
+            $scriptPath = $process->getOutput();
+        }
+
+        return $scriptPath;
+    }
+
+    /**
      * Create a new Node process.
      *
      * @throws RuntimeException if the path to the connection delegate cannot be found.
@@ -197,7 +232,7 @@ class ProcessSupervisor
         return new SymfonyProcess(array_merge(
             [$this->options['executable_path']],
             $this->options['debug'] ? ['--inspect'] : [],
-            [__DIR__.'/node-process/serve.js'],
+            [$this->getProcessScriptPath()],
             [$realConnectionDelegatePath],
             [json_encode((object) $options)]
         ));
