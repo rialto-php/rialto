@@ -47,6 +47,8 @@ class FsConnectionDelegate extends ConnectionDelegate
 
         fs.runCallback = cb => cb(fs);
 
+        fs.getOption = name => this.options[name];
+
         return fs;
     }
 }

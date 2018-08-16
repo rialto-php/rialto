@@ -40,6 +40,15 @@ class ProcessSupervisor
     protected const SOCKET_HEADER_SIZE = 5;
 
     /**
+     * Options to remove before sending them for the process.
+     *
+     * @var string[]
+     */
+    protected const USELESS_OPTIONS_FOR_PROCESS = [
+        'executable_path', 'read_timeout', 'stop_timeout', 'logger', 'debug',
+    ];
+
+    /**
      * The associative array containing the options.
      *
      * @var array
@@ -239,15 +248,15 @@ class ProcessSupervisor
             throw new RuntimeException("Cannot find file or directory '$connectionDelegatePath'.");
         }
 
-        // Keep only the "idle_timeout" option
-        $options = array_intersect_key($this->options, array_flip(['idle_timeout', 'log_node_console']));
+        // Remove useless options for the process
+        $processOptions = array_diff_key($this->options, array_flip(self::USELESS_OPTIONS_FOR_PROCESS));
 
         return new SymfonyProcess(array_merge(
             [$this->options['executable_path']],
             $this->options['debug'] ? ['--inspect'] : [],
             [$this->getProcessScriptPath()],
             [$realConnectionDelegatePath],
-            [json_encode((object) $options)]
+            [json_encode((object) $processOptions)]
         ));
     }
 

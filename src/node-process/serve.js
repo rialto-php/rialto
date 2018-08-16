@@ -31,7 +31,7 @@ if (options.log_node_console === true) {
 }
 
 // Instanciate the custom connection delegate
-const connectionDelegate = new (require(process.argv.slice(2)[0]));
+const connectionDelegate = new (require(process.argv.slice(2)[0]))(options);
 
 // Start the server with the custom connection delegate
 const server = new Server(connectionDelegate, options);

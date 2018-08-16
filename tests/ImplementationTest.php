@@ -307,7 +307,7 @@ class ImplementationTest extends TestCase
         }
     }
 
-    /** @test*/
+    /** @test */
     public function node_current_working_directory_is_the_same_as_php()
     {
         $result = $this->fs->accessSync('tests/resources/file');
@@ -381,6 +381,22 @@ class ImplementationTest extends TestCase
             'stop_timeout' => 0,
             'foo' => 'bar',
         ]);
+    }
+
+    /**
+     * @test
+     * @dontPopulateProperties fs
+     */
+    public function connection_delegate_receives_options()
+    {
+        $this->fs = new FsWithProcessDelegation([
+            'log_node_console' => true,
+            'new_option' => false,
+        ]);
+
+        $this->assertNull($this->fs->getOption('read_timeout')); // Assert this option is stripped by the supervisor
+        $this->assertTrue($this->fs->getOption('log_node_console'));
+        $this->assertFalse($this->fs->getOption('new_option'));
     }
 
     /**

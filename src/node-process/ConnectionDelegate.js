@@ -16,6 +16,16 @@
 class ConnectionDelegate
 {
     /**
+     * Constructor.
+     *
+     * @param  {Object} options
+     */
+    constructor(options)
+    {
+        this.options = options;
+    }
+
+    /**
      * Handle the provided instruction and respond to it.
      *
      * @param  {Instruction} instruction
