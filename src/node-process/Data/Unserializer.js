@@ -1,6 +1,6 @@
 'use strict';
 
-const path = require('path'),
+const _ = require('lodash'),
     Value = require('./Value'),
     ResourceIdentity = require('./ResourceIdentity'),
     ResourceRepository = require('./ResourceRepository');
@@ -28,9 +28,9 @@ class Unserializer
      */
     unserialize(value)
     {
-        if (value.__rialto_resource__ === true) {
+        if (_.get(value, '__rialto_resource__') === true) {
             return this.resources.retrieve(ResourceIdentity.unserialize(value));
-        } else if (value.__rialto_function__ === true) {
+        } else if (_.get(value, '__rialto_function__') === true) {
             return this.unserializeFunction(value);
         } else if (Value.isContainer(value)) {
             return Value.mapContainer(value, this.unserialize.bind(this));

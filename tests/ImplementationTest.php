@@ -49,10 +49,10 @@ class ImplementationTest extends TestCase
     public function can_set_property()
     {
         $this->fs->foo = 'bar';
+        $this->assertEquals('bar', $this->fs->foo);
 
-        $value = $this->fs->foo;
-
-        $this->assertEquals('bar', $value);
+        $this->fs->foo = null;
+        $this->assertNull($this->fs->foo);
     }
 
     /** @test */
