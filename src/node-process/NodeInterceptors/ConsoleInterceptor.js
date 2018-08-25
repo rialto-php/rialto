@@ -29,9 +29,12 @@ class ConsoleInterceptor
      * @param  {logInterceptor} interceptor
      */
     static startInterceptingLogs(interceptor) {
-        global.console = new Proxy(console, {
+        const consoleProxy = new Proxy(console, {
             get: (_, type) => this.getLoggingMethod(type, interceptor),
         });
+
+        // Define the property instead of directly setting the property, the latter is forbidden in some environments.
+        Object.defineProperty(global, 'console', {value: consoleProxy});
     }
 
     /**
