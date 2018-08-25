@@ -40,6 +40,14 @@ class ProcessSupervisor
     protected const SOCKET_HEADER_SIZE = 5;
 
     /**
+     * A short period to wait before reading the next chunk (in milliseconds), this avoids the next chunk to be read as
+     * an empty string when PuPHPeteer is running on a slow environment.
+     *
+     * @var int
+     */
+    protected const SOCKET_NEXT_CHUNK_DELAY = 1;
+
+    /**
      * Options to remove before sending them for the process.
      *
      * @var string[]
@@ -404,6 +412,11 @@ class ProcessSupervisor
                 $chunk = substr($packet, static::SOCKET_HEADER_SIZE);
 
                 $payload .= $chunk;
+
+                if ($chunksLeft > 0) {
+                    // The next chunk might be an empty string if don't wait a short period on slow environments.
+                    usleep(self::SOCKET_NEXT_CHUNK_DELAY * 1000);
+                }
             } while ($chunksLeft > 0);
         } catch (SocketException $exception) {
             $this->waitForProcessTermination();

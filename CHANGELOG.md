@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Fixed
+- Heavy socket payloads are no longer unreadable in slow environments
 - Fix an issue where the console object can't be set in some environments
 
 ## [1.2.0] - 2018-08-20
