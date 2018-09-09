@@ -5,7 +5,7 @@ namespace Nesk\Rialto\Interfaces;
 interface ShouldHandleProcessDelegation
 {
     /**
-     * Return the fully qualified name of the defaut resource.
+     * Return the fully qualified name of the default resource.
      */
     public function defaultResource(): string;
 
