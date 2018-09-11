@@ -62,7 +62,11 @@ class Connection extends EventEmitter
         const instruction = new Instruction(JSON.parse(data), this.resources, this.dataUnserializer),
             {responseHandler, errorHandler} = this.createInstructionHandlers();
 
-        this.delegate.handleInstruction(instruction, responseHandler, errorHandler);
+        this.delegate.handleInstruction(
+            this.delegate.prepareInstruction(instruction),
+            responseHandler,
+            errorHandler
+        );
     }
 
     /**

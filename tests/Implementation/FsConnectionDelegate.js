@@ -8,23 +8,9 @@ const fs = require('fs'),
  */
 class FsConnectionDelegate extends ConnectionDelegate
 {
-    async handleInstruction(instruction, responseHandler, errorHandler)
+    prepareInstruction(instruction)
     {
-        instruction.setDefaultResource(this.extendFsModule(fs));
-
-        let value = null;
-
-        try {
-            value = await instruction.execute();
-        } catch (error) {
-            if (instruction.shouldCatchErrors()) {
-                return errorHandler(error);
-            }
-
-            throw error;
-        }
-
-        responseHandler(value);
+        return instruction.setDefaultResource(this.extendFsModule(fs));
     }
 
     extendFsModule(fs)

@@ -29,7 +29,7 @@ class FileSystem extends AbstractEntryPoint
 }
 ```
 
-- **A connection delegate** (`FileSystemConnectionDelegate.js`): this JavaScript class inherits [`ConnectionDelegate`](../src/node-process/ConnectionDelegate.js) and will execute the instructions made with PHP (calling a method, setting a property, etc…).
+- **A connection delegate** (`FileSystemConnectionDelegate.js`): this JavaScript class inherits [`ConnectionDelegate`](../src/node-process/ConnectionDelegate.js) and will prepare and execute the instructions made with PHP (calling a method, setting a property, etc…).
 
 ```js
 const fs = require('fs'),
@@ -37,29 +37,11 @@ const fs = require('fs'),
 
 module.exports = class FileSystemConnectionDelegate extends ConnectionDelegate
 {
-    handleInstruction(instruction, responseHandler, errorHandler)
+    prepareInstruction(instruction)
     {
         // Define on which resource the instruction should be applied by default,
-        // here we want to apply them on the "fs" module.
-        instruction.setDefaultResource(fs);
-
-        let value = null;
-
-        try {
-            // Try to execute the instruction
-            value = instruction.execute();
-        } catch (error) {
-            // If the instruction fails and the user asked to catch errors (see the `tryCatch` property in the API),
-            // send it with the error handler.
-            if (instruction.shouldCatchErrors()) {
-                return errorHandler(error);
-            }
-
-            throw error;
-        }
-
-        // Send back the value returned by the instruction
-        responseHandler(value);
+        // here we want to apply it to the "fs" module.
+        return instruction.setDefaultResource(fs);
     }
 }
 ```

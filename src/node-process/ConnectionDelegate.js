@@ -26,15 +26,38 @@ class ConnectionDelegate
     }
 
     /**
+     * Prepare and return the instruction before handling it.
+     *
+     * @param  {Instruction} instruction
+     * @return {Instruction}
+     */
+    prepareInstruction(instruction)
+    {
+        return instruction;
+    }
+
+    /**
      * Handle the provided instruction and respond to it.
      *
      * @param  {Instruction} instruction
      * @param  {responseHandler} responseHandler
      * @param  {errorHandler} errorHandler
      */
-    handleInstruction(instruction, responseHandler, errorHandler)
+    async handleInstruction(instruction, responseHandler, errorHandler)
     {
-        responseHandler(null);
+        let value = null;
+
+        try {
+            value = await instruction.execute();
+        } catch (error) {
+            if (instruction.shouldCatchErrors()) {
+                return errorHandler(error);
+            }
+
+            throw error;
+        }
+
+        responseHandler(value);
     }
 }
 
