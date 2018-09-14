@@ -413,22 +413,19 @@ class ImplementationTest extends TestCase
             $this->markTestSkipped('The "pgrep" command is not available.');
         }
 
-        $pgrep = new Process('pgrep node');
-
-        $pgrep->run();
-        $oldPids = explode("\n", $pgrep->getOutput());
-
+        $oldPids = $this->getPidsForProcessName('node');
         $this->fs = new FsWithProcessDelegation;
-
-        $pgrep->run();
-        $newPids = explode("\n", $pgrep->getOutput());
+        $newPids = $this->getPidsForProcessName('node');
 
         $newNodeProcesses = array_values(array_diff($newPids, $oldPids));
+        $newNodeProcessesCount = count($newNodeProcesses);
+        $this->assertCount(
+            1,
+            $newNodeProcesses,
+            "One Node process should have been created instead of $newNodeProcessesCount. Try running again."
+        );
 
-        $this->assertCount(1, $newNodeProcesses, 'Only one Node process should have been created. Try running again.');
-
-        $processKilled = posix_kill((int) $newNodeProcesses[0], SIGKILL);
-
+        $processKilled = posix_kill($newNodeProcesses[0], SIGKILL);
         $this->assertTrue($processKilled);
 
         $this->expectException(\Nesk\Rialto\Exceptions\ProcessUnexpectedlyTerminatedException::class);

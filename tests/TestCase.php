@@ -6,6 +6,7 @@ use Monolog\Logger;
 use ReflectionClass;
 use Psr\Log\LogLevel;
 use PHPUnit\Util\ErrorHandler;
+use Symfony\Component\Process\Process;
 use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\TestCase as BaseTestCase;
 use PHPUnit\Framework\MockObject\Matcher\Invocation;
@@ -45,6 +46,23 @@ class TestCase extends BaseTestCase
         restore_error_handler();
 
         return $value;
+    }
+
+    public function getPidsForProcessName(string $processName) {
+        $pgrep = new Process(['pgrep', $processName]);
+        $pgrep->run();
+
+        $pids = explode("\n", $pgrep->getOutput());
+
+        $pids = array_filter($pids, function ($pid) {
+            return !empty($pid);
+        });
+
+        $pids = array_map(function ($pid) {
+            return (int) $pid;
+        }, $pids);
+
+        return $pids;
     }
 
     public function loggerMock($expectations) {
