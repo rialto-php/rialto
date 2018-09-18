@@ -7,8 +7,8 @@ use Nesk\Rialto\Data\JsFunction;
 use Nesk\Rialto\Exceptions\Node;
 use Nesk\Rialto\Data\BasicResource;
 use Symfony\Component\Process\Process;
+use Nesk\Rialto\Tests\Implementation\Fs;
 use Nesk\Rialto\Tests\Implementation\Resources\Stats;
-use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
 
 class ImplementationTest extends TestCase
 {
@@ -21,7 +21,7 @@ class ImplementationTest extends TestCase
         $this->dirPath = realpath(__DIR__.'/resources');
         $this->filePath = "{$this->dirPath}/file";
 
-        $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation : null;
+        $this->fs = $this->canPopulateProperty('fs') ? new Fs : null;
     }
 
     public function tearDown(): void
@@ -77,7 +77,7 @@ class ImplementationTest extends TestCase
      */
     public function can_omit_process_delegation()
     {
-        $this->fs = new FsWithoutProcessDelegation;
+        $this->fs = new Fs(['use_process_delegate' => false]);
 
         $resource = $this->fs->statSync($this->filePath);
 
@@ -290,7 +290,7 @@ class ImplementationTest extends TestCase
      */
     public function in_debug_mode_node_exceptions_contain_stack_trace_in_message()
     {
-        $this->fs = new FsWithProcessDelegation(['debug' => true]);
+        $this->fs = new Fs(['debug' => true]);
 
         $regex = '/\n\nError: "Object\.__inexistantMethod__ is not a function"\n\s+at /';
 
@@ -322,7 +322,7 @@ class ImplementationTest extends TestCase
      */
     public function executable_path_option_changes_the_process_prefix()
     {
-        new FsWithProcessDelegation(['executable_path' => '__inexistant_process__']);
+        new Fs(['executable_path' => '__inexistant_process__']);
     }
 
     /**
@@ -331,7 +331,7 @@ class ImplementationTest extends TestCase
      */
     public function idle_timeout_option_closes_node_once_timer_is_reached()
     {
-        $this->fs = new FsWithProcessDelegation(['idle_timeout' => 0.5]);
+        $this->fs = new Fs(['idle_timeout' => 0.5]);
 
         $this->fs->constants;
 
@@ -351,7 +351,7 @@ class ImplementationTest extends TestCase
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
     {
-        $this->fs = new FsWithProcessDelegation(['read_timeout' => 0.01]);
+        $this->fs = new Fs(['read_timeout' => 0.01]);
 
         $this->fs->wait(20);
     }
@@ -363,7 +363,7 @@ class ImplementationTest extends TestCase
      */
     public function forbidden_options_are_removed()
     {
-        $this->fs = new FsWithProcessDelegation([
+        $this->fs = new Fs([
             'logger' => $this->loggerMock(
                 $this->at(0),
                 $this->isLogLevel(),
@@ -389,7 +389,7 @@ class ImplementationTest extends TestCase
      */
     public function connection_delegate_receives_options()
     {
-        $this->fs = new FsWithProcessDelegation([
+        $this->fs = new Fs([
             'log_node_console' => true,
             'new_option' => false,
         ]);
@@ -414,7 +414,7 @@ class ImplementationTest extends TestCase
         }
 
         $oldPids = $this->getPidsForProcessName('node');
-        $this->fs = new FsWithProcessDelegation;
+        $this->fs = new Fs;
         $newPids = $this->getPidsForProcessName('node');
 
         $newNodeProcesses = array_values(array_diff($newPids, $oldPids));
@@ -460,7 +460,7 @@ class ImplementationTest extends TestCase
      */
     public function logger_is_used_when_provided()
     {
-        $this->fs = new FsWithProcessDelegation([
+        $this->fs = new Fs([
             'logger' => $this->loggerMock(
                 $this->atLeastOnce(),
                 $this->isLogLevel(),
@@ -482,7 +482,7 @@ class ImplementationTest extends TestCase
         ];
 
         foreach ($setups as [$logNodeConsole, $startsWith]) {
-            $this->fs = new FsWithProcessDelegation([
+            $this->fs = new Fs([
                 'log_node_console' => $logNodeConsole,
                 'logger' => $this->loggerMock(
                     $this->at(5),
@@ -502,7 +502,7 @@ class ImplementationTest extends TestCase
      */
     public function delayed_node_console_calls_and_data_on_standard_streams_are_logged()
     {
-        $this->fs = new FsWithProcessDelegation([
+        $this->fs = new Fs([
             'log_node_console' => true,
             'logger' => $this->loggerMock([
                 [$this->at(6), $this->isLogLevel(), $this->stringStartsWith('Received data on stdout:')],
