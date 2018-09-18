@@ -252,6 +252,44 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
+     * @group execution-types
+     */
+    public function eager_execution_type_by_default_is_supported()
+    {
+        $value = $this->fs->hello();
+        $this->assertEquals('Hello world!', $value);
+
+        // $eagerValue = $this->fs->eager->hello();
+        // $this->assertEquals('Hello world!', $eagerValue);
+
+        // $lazyValue = $this->fs->lazy->hello();
+        // $this->assertInstanceOf(BasicResource::class, $lazyValue);
+        // $this->assertEquals('Promise', $lazyValue->getResourceIdentity()->className());
+    }
+
+    /**
+     * @test
+     * @group execution-types
+     * @dontPopulateProperties fs
+     */
+    public function lazy_execution_type_by_default_is_supported()
+    {
+        $this->fs = new Fs(['eager_by_default' => false]);
+
+        $value = $this->fs->hello();
+        $this->assertInstanceOf(BasicResource::class, $value);
+        $this->assertEquals('Promise', $value->getResourceIdentity()->className());
+
+        // $lazyValue = $this->fs->lazy->hello();
+        // $this->assertInstanceOf(BasicResource::class, $lazyValue);
+        // $this->assertEquals('Promise', $lazyValue->getResourceIdentity()->className());
+
+        // $eagerValue = $this->fs->eager->hello();
+        // $this->assertEquals('Hello world!', $eagerValue);
+    }
+
+    /**
+     * @test
      * @expectedException \Nesk\Rialto\Exceptions\Node\FatalException
      * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */

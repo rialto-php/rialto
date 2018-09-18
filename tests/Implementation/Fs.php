@@ -12,11 +12,12 @@ class Fs extends AbstractEntryPoint
     public function __construct(array $userOptions = [])
     {
         $useProcessDelegate = $userOptions['use_process_delegate'] ?? true;
+        $defaultOptions = ['eager_by_default' => true];
 
         parent::__construct(
             __DIR__.'/FsConnectionDelegate.js',
             $useProcessDelegate ? new FsProcessDelegate : null,
-            [],
+            $defaultOptions,
             $userOptions
         );
     }

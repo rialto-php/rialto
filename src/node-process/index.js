@@ -2,4 +2,5 @@
 
 module.exports = {
     ConnectionDelegate: require('./ConnectionDelegate'),
+    Instruction: require('./Instruction'),
 };

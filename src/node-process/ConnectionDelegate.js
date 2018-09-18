@@ -1,5 +1,7 @@
 'use strict';
 
+const Instruction = require('./Instruction');
+
 /**
  * @callback responseHandler
  * @param  {*} value
@@ -45,10 +47,17 @@ class ConnectionDelegate
      */
     async handleInstruction(instruction, responseHandler, errorHandler)
     {
-        let value = null;
-
         try {
-            value = await instruction.execute();
+            const executionType = instruction.executionType(true);
+            const value = instruction.execute();
+
+            if (executionType === Instruction.EXECUTION_EAGER) {
+                responseHandler(await value);
+            } else if (executionType === Instruction.EXECUTION_LAZY) {
+                responseHandler(value);
+            } else {
+                throw new Error(`Unknow execution type "${executionType}".`);
+            }
         } catch (error) {
             if (instruction.shouldCatchErrors()) {
                 return errorHandler(error);
@@ -56,8 +65,6 @@ class ConnectionDelegate
 
             throw error;
         }
-
-        responseHandler(value);
     }
 }
 

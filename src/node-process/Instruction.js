@@ -16,7 +16,8 @@ class Instruction
         this.instruction = serializedInstruction;
         this.resources = resources;
         this.dataUnserializer = dataUnserializer;
-        this.defaultResource = process;
+        this.defaultResource = global.process;
+        this.defaultExecutionType = Instruction.EXECUTION_EAGER;
     }
 
     /**
@@ -91,17 +92,54 @@ class Instruction
     }
 
     /**
+     * Return the execution type of the instruction.
+     *
+     * @param  {boolean} returnDefaultIfNull
+     * @return {executionTypeEnum}
+     */
+    executionType(returnDefaultIfNull = false)
+    {
+        const executionType = this.instruction.execution_type;
+        return returnDefaultIfNull ? executionType || this.defaultExecutionType : executionType;
+    }
+
+    /**
+     * Override the execution type of the instruction.
+     *
+     * @param  {executionTypeEnum} executionType
+     * @return {this}
+     */
+    overrideExecutionType(executionType)
+    {
+        this.instruction.execution_type = executionType;
+
+        return this;
+    }
+
+    /**
+     * Set the default execution type to use.
+     *
+     * @param  {executionTypeEnum} executionType
+     * @return {this}
+     */
+    setDefaultExecutionType(executionType)
+    {
+        this.defaultExecutionType = executionType;
+
+        return this;
+    }
+
+    /**
      * Return the resource of the instruction.
      *
+     * @param  {boolean} returnDefaultIfNull
      * @return {Object|null}
      */
-    resource()
+    resource(returnDefaultIfNull = false)
     {
         const {resource} = this.instruction;
-
-        return resource
-            ? this.resources.retrieve(ResourceIdentity.unserialize(resource))
-            : null;
+        const retrievedResource = resource ? this.resources.retrieve(ResourceIdentity.unserialize(resource)) : null;
+        return returnDefaultIfNull ? retrievedResource || this.defaultResource : retrievedResource;
     }
 
     /**
@@ -147,12 +185,13 @@ class Instruction
      *
      * @return {*}
      */
-    execute()
+    async execute()
     {
         const type = this.type(),
             name = this.name(),
             value = this.value(),
-            resource = this.resource() || this.defaultResource;
+            resource = this.resource(true),
+            executionType = this.executionType(true);
 
         let output = null;
 
@@ -168,7 +207,13 @@ class Instruction
                 break;
         }
 
-        return output;
+        if (executionType === Instruction.EXECUTION_EAGER) {
+            return await output;
+        } else if (executionType === Instruction.EXECUTION_LAZY) {
+            return output;
+        } else {
+            throw new Error(`Unknow execution type "${executionType}".`);
+        }
     }
 
     /**
@@ -220,6 +265,17 @@ Object.assign(Instruction, {
     TYPE_CALL: 'call',
     TYPE_GET: 'get',
     TYPE_SET: 'set',
+});
+
+/**
+ * Execution types.
+ *
+ * @enum {executionTypeEnum}
+ * @readonly
+ */
+Object.assign(Instruction, {
+    EXECUTION_LAZY: 'lazy',
+    EXECUTION_EAGER: 'eager',
 });
 
 module.exports = Instruction;
