@@ -7,9 +7,9 @@ trait HandlesNodeErrors
     /**
      * The original stack trace.
      *
-     * @var string
+     * @var string|null
      */
-    protected $originalTrace;
+    protected $originalTrace = null;
 
     /**
      * Determines if the string contains a Node error.
@@ -28,7 +28,7 @@ trait HandlesNodeErrors
     {
         $error = is_string($error) ? json_decode($error, true) : $error;
 
-        $this->originalTrace = $error['stack'];
+        $this->originalTrace = $error['stack'] ?? null;
 
         $message = $error['message'];
 
@@ -42,7 +42,7 @@ trait HandlesNodeErrors
     /**
      * Return the original stack trace.
      */
-    public function getOriginalTrace(): string
+    public function getOriginalTrace(): ?string
     {
         return $this->originalTrace;
     }
