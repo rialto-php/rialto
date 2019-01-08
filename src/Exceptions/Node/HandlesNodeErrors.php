@@ -28,7 +28,7 @@ trait HandlesNodeErrors
     {
         $error = is_string($error) ? json_decode($error, true) : $error;
 
-        $this->originalTrace = $error['stack'];
+        $this->originalTrace = $error['stack'] ?? '';
 
         $message = $error['message'];
 
