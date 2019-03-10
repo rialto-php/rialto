@@ -85,6 +85,14 @@ trait CommunicatesWithProcessSupervisor
     }
 
     /**
+     * Proxy the string casting to the process supervisor.
+     */
+    public function __toString(): string
+    {
+        return $this->proxyAction(Instruction::TYPE_CALL, 'toString');
+    }
+
+    /**
      * Proxy the method call to the process supervisor.
      */
     public function __call(string $name, array $arguments)

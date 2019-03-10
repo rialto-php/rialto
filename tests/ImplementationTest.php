@@ -71,6 +71,14 @@ class ImplementationTest extends TestCase
         $this->assertInstanceOf(Stats::class, $resource);
     }
 
+    /** @test */
+    public function can_cast_resources_to_string()
+    {
+        $resource = $this->fs->statSync($this->filePath);
+
+        $this->assertEquals('[object Object]', (string) $resource);
+    }
+
     /**
      * @test
      * @dontPopulateProperties fs
