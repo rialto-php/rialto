@@ -62,6 +62,7 @@ trait CommunicatesWithProcessSupervisor
     {
         switch ($actionType) {
             case Instruction::TYPE_CALL:
+                $value = $value ?? [];
                 $instruction = Instruction::withCall($name, ...$value);
                 break;
             case Instruction::TYPE_GET:
