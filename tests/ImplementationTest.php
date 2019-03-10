@@ -438,7 +438,9 @@ class ImplementationTest extends TestCase
     public function process_is_properly_shutdown_when_there_are_no_more_references()
     {
         if (!class_exists('WeakRef')) {
-            $this->markTestSkipped('This test requires weak references: http://php.net/weakref/');
+            $this->markTestSkipped(
+                'This test requires weak references (unavailable for PHP 7.3): http://php.net/weakref/'
+            );
         }
 
         $ref = new \WeakRef($this->fs->getProcessSupervisor());

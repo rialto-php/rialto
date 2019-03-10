@@ -3,13 +3,14 @@ language: php
 php:
   - 7.1
   - 7.2
+  - 7.3
 
 env:
   - COMPOSER_FLAGS="--prefer-lowest"
   - COMPOSER_FLAGS=""
 
 install:
-  - pecl install weakref-beta
+  - php -v | grep '^PHP 7.[^3]' && pecl install weakref-beta || true
   - travis_retry composer self-update
   - travis_retry composer update ${COMPOSER_FLAGS} --no-interaction --prefer-source
   - nvm install stable
