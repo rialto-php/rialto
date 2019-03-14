@@ -6,7 +6,7 @@
 [![NPM Version](https://img.shields.io/npm/v/@nesk/rialto.svg?style=flat-square&label=NPM)](https://www.npmjs.com/package/@nesk/rialto)
 [![Build Status](https://img.shields.io/travis/nesk/rialto.svg?style=flat-square&label=Build%20Status)](https://travis-ci.org/nesk/rialto)
 
-A package to manage Node resources from PHP. It can be used to create bridges to interact with Node librairies in PHP, like [PuPHPeteer](https://github.com/nesk/puphpeteer/).
+A package to manage Node resources from PHP. It can be used to create bridges to interact with Node libraries in PHP, like [PuPHPeteer](https://github.com/nesk/puphpeteer/).
 
 It works by creating a Node process and communicates with it through sockets.
 
