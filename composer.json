@@ -24,7 +24,6 @@
         "symfony/process": "^3.3|^4.0|^5.0"
     },
     "require-dev": {
-        "codedungeon/phpunit-result-printer": ">=0.6 <1.0",
         "monolog/monolog": "^1.23",
         "phpunit/phpunit": "^6.5|^7.0"
     },
