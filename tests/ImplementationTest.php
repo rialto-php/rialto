@@ -436,6 +436,8 @@ class ImplementationTest extends TestCase
         $processKilled = posix_kill($newNodeProcesses[0], SIGKILL);
         $this->assertTrue($processKilled);
 
+        \usleep(10000); # To make sure the process had enough time to be killed.
+
         $this->expectException(\Nesk\Rialto\Exceptions\ProcessUnexpectedlyTerminatedException::class);
         $this->expectExceptionMessage('The process has been unexpectedly terminated.');
 
