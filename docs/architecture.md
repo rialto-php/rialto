@@ -15,7 +15,42 @@ When you write a Rialto implementation, you start by creating an entrypoint, it'
 
 ## The connection delegate
 
-- default resource
+The connection delegate is required and its main task is to define the default resource used by Rialto.
+
+### The default resource
+
+The default resource is the underlying JavaScript object you will use when calling instructions on the PHP entrypoint.
+
+For example, [PuPHPeteer defines its default resource](https://github.com/rialto-php/puphpeteer/blob/f9a9c17d62076e5e5652df38d38fe26fc565b6f8/src/PuppeteerConnectionDelegate.js#L31) with the result of `require('puppeteer')`:
+
+```js
+const puppeteer = require('puppeteer')
+instruction.setDefaultResource(puppeteer)
+```
+
+That means, when you instanciate the `Nesk\Puphpeteer\Puppeteer` class and call a method on it, on the JS side the method will be called on the default resource.
+
+When you write:
+
+```php
+$puppeteer = new Nesk\Puphpeteer\Puppeteer;
+$puppeteer->launch();
+```
+
+Node will execute:
+
+```js
+const puppeteer = require('puppeteer')
+puppeteer.launch()
+```
+
+### Other usages 
+
+- useful things, like closing the puppeteer browsers
+
+## Instruction flow
+
+- describe basic resources and the way they are used in the whole communication
 
 # TODO
 
