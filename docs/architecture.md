@@ -15,7 +15,11 @@ When you write a Rialto implementation, you start by creating an entrypoint, it'
 
 ## The connection delegate
 
-The connection delegate is required and its main task is to define the default resource used by Rialto.
+The connection delegate is required and its main tasks are:
+
+- defining the default resource;
+- executing the instructions;
+- handling errors.
 
 ### The default resource
 
@@ -24,8 +28,12 @@ The default resource is the underlying JavaScript object you will use when calli
 For example, [PuPHPeteer defines its default resource](https://github.com/rialto-php/puphpeteer/blob/f9a9c17d62076e5e5652df38d38fe26fc565b6f8/src/PuppeteerConnectionDelegate.js#L31) with the result of `require('puppeteer')`:
 
 ```js
-const puppeteer = require('puppeteer')
-instruction.setDefaultResource(puppeteer)
+async handleInstruction(instruction, responseHandler, errorHandler) {
+    const puppeteer = require('puppeteer')
+    instruction.setDefaultResource(puppeteer)
+    
+    // ...
+}
 ```
 
 That means, when you instanciate the `Nesk\Puphpeteer\Puppeteer` class and call a method on it, on the JS side the method will be called on the default resource.
@@ -44,9 +52,35 @@ const puppeteer = require('puppeteer')
 puppeteer.launch()
 ```
 
+### Instruction execution and error handling
+
+Instructions are not automatically executed by Rialto, instead it provides the necessary objects to let the connection delegate execute the instructions the way it wants. For example, [here's how PuPHPeteer implements this whole process](https://github.com/rialto-php/puphpeteer/blob/f9a9c17d62076e5e5652df38d38fe26fc565b6f8/src/PuppeteerConnectionDelegate.js#L35-L43):
+
+```js
+async handleInstruction(instruction, responseHandler, errorHandler) {
+    // ...
+
+    try {
+        // The "instruction" object has a simple "execute()" method which will run the code sent by PHP.
+        value = await instruction.execute()
+    } catch (error) {
+        // We always catch the errors, however we rethrow them if the code
+        // sent by PHP doesn't explicitly require the errors to be catched.
+        // See: https://github.com/rialto-php/rialto/blob/3f3420ad/docs/api.md#node-errors
+        if (instruction.shouldCatchErrors()) {
+            return errorHandler(error)
+        }
+
+        throw error
+    }
+
+    responseHandler(value)
+}
+```
+
 ### Other usages 
 
-- useful things, like closing the puppeteer browsers
+The connection delegate can also be used to track some resources for various tasks. For example, PuPHPeteer tracks [the `Page` objects](https://pptr.dev/#?product=Puppeteer&version=v5.3.1&show=api-class-page) to [log the console messages](https://github.com/rialto-php/puphpeteer/blob/f9a9c17d62076e5e5652df38d38fe26fc565b6f8/src/PuppeteerConnectionDelegate.js#L54-L56) and output them in the PHP logger [if the user asked for it](https://github.com/rialto-php/puphpeteer/tree/f9a9c17d62076e5e5652df38d38fe26fc565b6f8#puppeteers-class-must-be-instantiated).
 
 ## Instruction flow
 
