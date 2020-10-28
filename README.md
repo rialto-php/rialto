@@ -1,12 +1,10 @@
-# Rialto – SEARCHING FOR A NEW MAINTAINER
+# Rialto
 
 [![PHP Version](https://img.shields.io/packagist/php-v/nesk/rialto.svg?style=flat-square)](http://php.net/)
 [![Composer Version](https://img.shields.io/packagist/v/nesk/rialto.svg?style=flat-square&label=Composer)](https://packagist.org/packages/nesk/rialto)
 [![Node Version](https://img.shields.io/node/v/@nesk/rialto.svg?style=flat-square&label=Node)](https://nodejs.org/)
 [![NPM Version](https://img.shields.io/npm/v/@nesk/rialto.svg?style=flat-square&label=NPM)](https://www.npmjs.com/package/@nesk/rialto)
 [![Build Status](https://img.shields.io/travis/nesk/rialto.svg?style=flat-square&label=Build%20Status)](https://travis-ci.org/nesk/rialto)
-
->Rialto is searching for a new maintainer, I don't have time or motivation to maintain this project anymore. Please [contact me](https://github.com/nesk) if you're interested.
 
 A package to manage Node resources from PHP. It can be used to create bridges to interact with Node libraries in PHP, like [PuPHPeteer](https://github.com/nesk/puphpeteer/).
 
