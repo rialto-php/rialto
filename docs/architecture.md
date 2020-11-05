@@ -84,7 +84,22 @@ The connection delegate can also be used to track some resources for various tas
 
 ## Instruction flow
 
-- describe basic resources and the way they are used in the whole communication
+When you execute an instruction on the PHP side, it will be:
+
+- intercepted by the [`CommunicatesWithProcessSupervisor` trait](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/Traits/CommunicatesWithProcessSupervisor.php);
+- converted to a [PHP `Instruction`](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/Instruction.php#L10) and serialized;
+- sent to the Node process;
+- [unserialized](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/node-process/Data/Unserializer.js) and converted to a [JS `Instruction`](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/node-process/Instruction.js);
+- sent to the connection delegate.
+
+Once the connection delegate produces a return value, it will be:
+
+- [serialized](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/node-process/Data/Serializer.js);
+- sent back to the PHP process, which is in a blocking state until a response is provided (or until [`read_timeout`](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/docs/api.md#options) is reached);
+- [unserialized](https://github.com/rialto-php/rialto/blob/df5a6b1b2c15a742773f48baaf1ac763664591de/src/Data/UnserializesData.php);
+- provided as the return value of the original instruction.
+
+>describe resources and how they are tracked
 
 # TODO
 
