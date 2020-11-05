@@ -1,6 +1,6 @@
 # Understanding the code architecture behind Rialto
 
-This guide is here to help you understand how Rialto works behind the scene. Before reading it, make sure you understand the basic usage of Rialto [by reading the tutorial](https://github.com/rialto-php/rialto/blob/dev/docs/tutorial.md).
+This guide is here to help you understand how Rialto works behind the scene and ease code contributions. Before reading it, make sure you understand the basic usage of Rialto [by reading the tutorial](https://github.com/rialto-php/rialto/blob/dev/docs/tutorial.md).
 
 ## Process communication
 
