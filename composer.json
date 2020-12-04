@@ -24,7 +24,7 @@
         "symfony/process": "^3.3|^4.0|^5.0"
     },
     "require-dev": {
-        "monolog/monolog": "^1.23",
+        "monolog/monolog": "^2.0",
         "phpunit/phpunit": "^6.5|^7.0"
     },
     "suggest": {
