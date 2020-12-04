@@ -32,7 +32,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Nesk\\Rialto\\": "src/"
+            "Nesk\\Rialto\\": "src/php"
         }
     },
     "autoload-dev": {

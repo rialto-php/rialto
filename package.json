@@ -17,7 +17,7 @@
   },
   "license": "MIT",
   "repository": "github:nesk/rialto",
-  "main": "src/node-process",
+  "main": "src/node",
   "engines": {
     "node": ">=8.0.0"
   },

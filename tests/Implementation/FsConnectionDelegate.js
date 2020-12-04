@@ -1,7 +1,7 @@
 'use strict';
 
 const fs = require('fs'),
-    {ConnectionDelegate} = require('../../src/node-process');
+    {ConnectionDelegate} = require('../../src/node');
 
 /**
  * Handle the requests of a connection to control the "fs" module.

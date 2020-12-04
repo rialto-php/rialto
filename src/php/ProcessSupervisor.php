@@ -225,12 +225,12 @@ class ProcessSupervisor
         }
 
         // The script path in local development
-        $scriptPath = __DIR__.'/node-process/serve.js';
+        $scriptPath = __DIR__.'/../node/serve.js';
 
         $process = new SymfonyProcess([
             $this->options['executable_path'],
             '-e',
-            "process.stdout.write(require.resolve('@nesk/rialto/src/node-process/serve.js'))",
+            "process.stdout.write(require.resolve('@nesk/rialto/src/node/serve.js'))",
         ]);
 
         $exitCode = $process->run();

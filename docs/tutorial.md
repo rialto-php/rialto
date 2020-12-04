@@ -15,7 +15,7 @@ npm install @nesk/rialto
 
 You will need to create at least two files for your package:
 
-- **An entry point** (`FileSystem.php`): this PHP class inherits [`AbstractEntryPoint`](../src/AbstractEntryPoint.php) and its instanciation creates the Node process. Every instruction (calling a method, setting a property, etc…) made on this class will be intercepted and sent to Node.
+- **An entry point** (`FileSystem.php`): this PHP class inherits [`AbstractEntryPoint`](../src/php/AbstractEntryPoint.php) and its instanciation creates the Node process. Every instruction (calling a method, setting a property, etc…) made on this class will be intercepted and sent to Node.
 
 ```php
 use Nesk\Rialto\AbstractEntryPoint;
@@ -29,7 +29,7 @@ class FileSystem extends AbstractEntryPoint
 }
 ```
 
-- **A connection delegate** (`FileSystemConnectionDelegate.js`): this JavaScript class inherits [`ConnectionDelegate`](../src/node-process/ConnectionDelegate.js) and will execute the instructions made with PHP (calling a method, setting a property, etc…).
+- **A connection delegate** (`FileSystemConnectionDelegate.js`): this JavaScript class inherits [`ConnectionDelegate`](../src/node/ConnectionDelegate.js) and will execute the instructions made with PHP (calling a method, setting a property, etc…).
 
 ```js
 const fs = require('fs'),
@@ -80,7 +80,7 @@ $stats->isFile(); // Returns true if the path points to a file
 
 ## Creating specific resources
 
-The example above returns a [`BasicResource`](../src/Data/BasicResource.php) class when the JavaScript API returns a resource (typically, a class instance). See this example:
+The example above returns a [`BasicResource`](../src/php/Data/BasicResource.php) class when the JavaScript API returns a resource (typically, a class instance). See this example:
 
 ```php
 $buffer = $fs->readFileSync('/valid/file/path'); // Returns a basic resource representing a Buffer instance
@@ -98,7 +98,7 @@ $stats->getResourceIdentity()->className(); // Returns "Stats"
 
 However, this is not convenient. That's why you can create specific resources to improve that. We will create 3 files:
 
-- **A process delegate** (`FileSystemProcessDelegate.php`): this PHP class implements [`ShouldHandleProcessDelegation`](../src/Interfaces/ShouldHandleProcessDelegation.php) and is responsible to return the class names of the specific and default resources.
+- **A process delegate** (`FileSystemProcessDelegate.php`): this PHP class implements [`ShouldHandleProcessDelegation`](../src/php/Interfaces/ShouldHandleProcessDelegation.php) and is responsible to return the class names of the specific and default resources.
 
 ```php
 use Nesk\Rialto\Traits\UsesBasicResourceAsDefault;
@@ -120,7 +120,7 @@ class FileSystemProcessDelegate implements ShouldHandleProcessDelegation
 }
 ```
 
-- **A resource to represent Buffer instances** (`BufferResource.php`): this class inherits `BasicResource` by convenience but the only requirement is to implement the [`ShouldIdentifyResource`](../src/Interfaces/ShouldIdentifyResource.php) interface.
+- **A resource to represent Buffer instances** (`BufferResource.php`): this class inherits `BasicResource` by convenience but the only requirement is to implement the [`ShouldIdentifyResource`](../src/php/Interfaces/ShouldIdentifyResource.php) interface.
 
 ```php
 use Nesk\Rialto\Data\BasicResource;
