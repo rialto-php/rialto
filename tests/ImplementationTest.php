@@ -469,13 +469,11 @@ class ImplementationTest extends TestCase
      */
     public function logger_is_used_when_provided()
     {
-        $this->fs = new FsWithProcessDelegation([
-            'logger' => $this->loggerMock(
-                $this->atLeastOnce(),
-                $this->isLogLevel(),
-                $this->isType('string')
-            ),
-        ]);
+        $loggerHandler = new TestHandler();
+        $logger = new Logger('test', [$loggerHandler]);
+        $this->fs = new FsWithProcessDelegation(['logger' => $logger]);
+
+        $this->assertNotCount(0, $loggerHandler->getRecords());
     }
 
     /**
