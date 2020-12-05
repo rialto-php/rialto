@@ -12,7 +12,7 @@ class IdleTimeoutException extends \RuntimeException
     public static function exceptionApplies(Process $process): bool
     {
         if (Node\FatalException::exceptionApplies($process)) {
-            $error = json_decode($process->getErrorOutput(), true);
+            $error = json_decode($process->getErrorOutput(), true, 512, JSON_THROW_ON_ERROR);
 
             return $error['message'] === 'The idle timeout has been reached.';
         }

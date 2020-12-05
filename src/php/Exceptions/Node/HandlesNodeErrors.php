@@ -16,7 +16,11 @@ trait HandlesNodeErrors
      */
     protected static function isNodeError(string $error): bool
     {
-        $error = json_decode($error, true);
+        try {
+            $error = json_decode($error, true, 512, JSON_THROW_ON_ERROR);
+        } catch (\JsonException $exception) {
+            return false;
+        }
 
         return ($error['__rialto_error__'] ?? false) === true;
     }
@@ -26,7 +30,7 @@ trait HandlesNodeErrors
      */
     protected function setTraceAndGetMessage($error, bool $appendStackTraceToMessage = false): string
     {
-        $error = is_string($error) ? json_decode($error, true) : $error;
+        $error = is_string($error) ? json_decode($error, true, 512, JSON_THROW_ON_ERROR) : $error;
 
         $this->originalTrace = $error['stack'] ?? null;
 

@@ -12,7 +12,7 @@ It works by creating a Node process and communicates with it through sockets.
 
 ## Requirements and installation
 
-Rialto requires PHP >= 7.1 and Node >= 8.
+Rialto requires PHP >= 7.3 and Node >= 8.
 
 Install it in your project:
 

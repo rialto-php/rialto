@@ -264,7 +264,7 @@ class ProcessSupervisor
             $this->options['debug'] ? ['--inspect'] : [],
             [$this->getProcessScriptPath()],
             [$realConnectionDelegatePath],
-            [json_encode((object) $processOptions)]
+            [json_encode((object) $processOptions, JSON_THROW_ON_ERROR)]
         ));
     }
 
@@ -363,7 +363,7 @@ class ProcessSupervisor
         // Check the process status because it could have crash in idle status.
         $this->checkProcessStatus();
 
-        $serializedInstruction = json_encode($instruction);
+        $serializedInstruction = json_encode($instruction, JSON_THROW_ON_ERROR);
 
         if ($instructionShouldBeLogged) {
             $this->logger->debug('Sending an instruction to the port {port}...', [
@@ -372,7 +372,7 @@ class ProcessSupervisor
 
                 // The instruction must be fully encoded and decoded to appear properly in the logs (this way,
                 // JS functions and resources are serialized too).
-                'instruction' => json_decode($serializedInstruction, true),
+                'instruction' => json_decode($serializedInstruction, true, 512, JSON_THROW_ON_ERROR),
             ]);
         }
 
@@ -436,11 +436,13 @@ class ProcessSupervisor
 
         $this->logProcessStandardStreams();
 
-        ['logs' => $logs, 'value' => $value] = json_decode(base64_decode($payload), true);
+        $data = base64_decode($payload);
+        $data = \strlen($data) > 0 ? json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
+        ['logs' => $logs, 'value' => $value] = $data;
 
         foreach ($logs ?: [] as $log) {
             $level = (new \ReflectionClass(LogLevel::class))->getConstant($log['level']);
-            $messageContainsLineBreaks = strstr($log['message'], PHP_EOL) !== false;
+            $messageContainsLineBreaks = strstr($log['message'], (string) PHP_EOL) !== false;
             $formattedMessage = $messageContainsLineBreaks ? "\n{log}\n" : '{log}';
 
             $this->logger->log($level, "Received a $log[origin] log: $formattedMessage", [
