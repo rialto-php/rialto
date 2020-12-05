@@ -13,8 +13,6 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php-version }}
-          tools: pecl
-          extensions: weakref-beta
           coverage: none
       - run: composer update ${{ matrix.composer-flags }} --no-interaction --no-progress --prefer-dist --ansi
       - run: npm install

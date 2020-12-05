@@ -444,13 +444,11 @@ class ImplementationTest extends TestCase
     /** @test */
     public function process_is_properly_shutdown_when_there_are_no_more_references()
     {
-        if (!class_exists('WeakRef')) {
-            $this->markTestSkipped(
-                'This test requires weak references (unavailable for PHP 7.3): http://php.net/weakref/'
-            );
+        if (!class_exists('WeakReference')) {
+            $this->markTestSkipped('This test requires weak references: https://www.php.net/weakreference');
         }
 
-        $ref = new \WeakRef($this->fs->getProcessSupervisor());
+        $ref = \WeakReference::create($this->fs->getProcessSupervisor());
 
         $resource = $this->fs->readFileSync($this->filePath);
 
@@ -459,7 +457,7 @@ class ImplementationTest extends TestCase
         $this->fs = null;
         unset($resource);
 
-        $this->assertFalse($ref->valid());
+        $this->assertNull($ref->get());
     }
 
     /**
