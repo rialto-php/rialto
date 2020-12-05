@@ -65,42 +65,4 @@ class TestCase extends BaseTestCase
 
         return $pids;
     }
-
-    public function loggerMock($expectations) {
-        $loggerMock = $this->getMockBuilder(Logger::class)
-            ->setConstructorArgs(['rialto'])
-            ->setMethods(['log'])
-            ->getMock();
-
-        if ($expectations instanceof Invocation) {
-            $expectations = [func_get_args()];
-        }
-
-        foreach ($expectations as $expectation) {
-            [$matcher] = $expectation;
-            $with = array_slice($expectation, 1);
-
-            $loggerMock->expects($matcher)
-                ->method('log')
-                ->with(...$with);
-        }
-
-        return $loggerMock;
-    }
-
-    public function isLogLevel(): Callback {
-        $psrLogLevels = (new ReflectionClass(LogLevel::class))->getConstants();
-        $monologLevels = (new ReflectionClass(Logger::class))->getConstants();
-        $monologLevels = array_intersect_key($monologLevels, $psrLogLevels);
-
-        return $this->callback(function ($level) use ($psrLogLevels, $monologLevels) {
-            if (is_string($level)) {
-                return in_array($level, $psrLogLevels, true);
-            } else if (is_int($level)) {
-                return in_array($level, $monologLevels, true);
-            }
-
-            return false;
-        });
-    }
 }
