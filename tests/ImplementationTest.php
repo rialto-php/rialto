@@ -2,6 +2,7 @@
 
 namespace Nesk\Rialto\Tests;
 
+use Monolog\Handler\TestHandler;
 use Monolog\Logger;
 use Nesk\Rialto\Data\JsFunction;
 use Nesk\Rialto\Exceptions\Node;
@@ -371,24 +372,20 @@ class ImplementationTest extends TestCase
      */
     public function forbidden_options_are_removed()
     {
+        $loggerHandler = new TestHandler();
+        $logger = new Logger('test', [$loggerHandler]);
+
         $this->fs = new FsWithProcessDelegation([
-            'logger' => $this->loggerMock(
-                $this->at(0),
-                $this->isLogLevel(),
-                'Applying options...',
-                $this->callback(function ($context) {
-                    $this->assertArrayHasKey('read_timeout', $context['options']);
-                    $this->assertArrayNotHasKey('stop_timeout', $context['options']);
-                    $this->assertArrayNotHasKey('foo', $context['options']);
-
-                    return true;
-                })
-            ),
-
+            'logger' => $logger,
             'read_timeout' => 5,
             'stop_timeout' => 0,
             'foo' => 'bar',
         ]);
+
+        $options = $loggerHandler->getRecords()[0]['context']['options'];
+        $this->assertArrayHasKey('read_timeout', $options);
+        $this->assertArrayNotHasKey('stop_timeout', $options);
+        $this->assertArrayNotHasKey('foo', $options);
     }
 
     /**
@@ -483,28 +480,28 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
+     * @dataProvider shouldLogNodeConsoleProvider
      * @group logs
      * @dontPopulateProperties fs
      */
-    public function node_console_calls_are_logged()
+    public function node_console_calls_are_logged(bool $shouldLogNodeConsole)
     {
-        $setups = [
-            [false, 'Received data on stdout:'],
-            [true, 'Received a Node log:'],
-        ];
+        $loggerHandler = new TestHandler();
+        $logger = new Logger('test', [$loggerHandler]);
+        $this->fs = new FsWithProcessDelegation([
+            'log_node_console' => $shouldLogNodeConsole,
+            'logger' => $logger,
+        ]);
 
-        foreach ($setups as [$logNodeConsole, $startsWith]) {
-            $this->fs = new FsWithProcessDelegation([
-                'log_node_console' => $logNodeConsole,
-                'logger' => $this->loggerMock(
-                    $this->at(5),
-                    $this->isLogLevel(),
-                    $this->stringStartsWith($startsWith)
-                ),
-            ]);
+        $this->fs->runCallback(JsFunction::createWithBody("console.log('Hello World!')"));
 
-            $this->fs->runCallback(JsFunction::createWithBody("console.log('Hello World!')"));
-        }
+        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
+    }
+
+    public function shouldLogNodeConsoleProvider(): \Generator
+    {
+        yield [false];
+        yield [true];
     }
 
     /**
@@ -514,12 +511,11 @@ class ImplementationTest extends TestCase
      */
     public function delayed_node_console_calls_and_data_on_standard_streams_are_logged()
     {
+        $loggerHandler = new TestHandler();
+        $logger = new Logger('test', [$loggerHandler]);
         $this->fs = new FsWithProcessDelegation([
             'log_node_console' => true,
-            'logger' => $this->loggerMock([
-                [$this->at(6), $this->isLogLevel(), $this->stringStartsWith('Received data on stdout:')],
-                [$this->at(7), $this->isLogLevel(), $this->stringStartsWith('Received a Node log:')],
-            ]),
+            'logger' => $logger,
         ]);
 
         $this->fs->runCallback(JsFunction::createWithBody("
@@ -530,6 +526,17 @@ class ImplementationTest extends TestCase
         "));
 
         usleep(10000); // 10ms, to be sure the delayed instructions just above are executed.
-        $this->fs = null;
+
+        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received data on stdout:'));
+        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
+    }
+
+    private static function logHandlerContainsRecord(TestHandler $testHandler, string $messageStartWith): bool
+    {
+        $records = \array_filter($testHandler->getRecords(), function (array $record) use ($messageStartWith): bool {
+            return \strpos($record['message'], $messageStartWith) === 0;
+        });
+
+        return $records > 1;
     }
 }
