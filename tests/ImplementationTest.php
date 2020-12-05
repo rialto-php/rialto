@@ -43,7 +43,7 @@ class ImplementationTest extends TestCase
     {
         $constants = $this->fs->constants;
 
-        $this->assertInternalType('array', $constants);
+        $this->assertIsArray($constants);
     }
 
     /** @test */
@@ -261,31 +261,34 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Nesk\Rialto\Exceptions\Node\FatalException
-     * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function node_crash_throws_a_fatal_exception()
     {
+        $this->expectException(\Nesk\Rialto\Exceptions\Node\FatalException::class);
+        $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
+
         $this->fs->__inexistantMethod__();
     }
 
     /**
      * @test
-     * @expectedException \Nesk\Rialto\Exceptions\Node\Exception
-     * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function can_catch_errors()
     {
+        $this->expectException(\Nesk\Rialto\Exceptions\Node\Exception::class);
+        $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
+
         $this->fs->tryCatch->__inexistantMethod__();
     }
 
     /**
      * @test
-     * @expectedException \Nesk\Rialto\Exceptions\Node\FatalException
-     * @expectedExceptionMessage Object.__inexistantMethod__ is not a function
      */
     public function catching_a_node_exception_doesnt_catch_fatal_exceptions()
     {
+        $this->expectException(\Nesk\Rialto\Exceptions\Node\FatalException::class);
+        $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
+
         try {
             $this->fs->__inexistantMethod__();
         } catch (Node\Exception $exception) {
@@ -306,13 +309,13 @@ class ImplementationTest extends TestCase
         try {
             $this->fs->tryCatch->__inexistantMethod__();
         } catch (Node\Exception $exception) {
-            $this->assertRegExp($regex, $exception->getMessage());
+            $this->assertMatchesRegularExpression($regex, $exception->getMessage());
         }
 
         try {
             $this->fs->__inexistantMethod__();
         } catch (Node\FatalException $exception) {
-            $this->assertRegExp($regex, $exception->getMessage());
+            $this->assertMatchesRegularExpression($regex, $exception->getMessage());
         }
     }
 
@@ -326,11 +329,12 @@ class ImplementationTest extends TestCase
 
     /**
      * @test
-     * @expectedException \Symfony\Component\Process\Exception\ProcessFailedException
-     * @expectedExceptionMessageRegExp /Error Output:\n=+\n.*__inexistant_process__.*not found/
      */
     public function executable_path_option_changes_the_process_prefix()
     {
+        $this->expectException(\Symfony\Component\Process\Exception\ProcessFailedException::class);
+        $this->expectExceptionMessageMatches('/Error Output:\n=+\n.*__inexistant_process__.*not found/');
+
         new FsWithProcessDelegation(['executable_path' => '__inexistant_process__']);
     }
 
@@ -347,7 +351,7 @@ class ImplementationTest extends TestCase
         sleep(1);
 
         $this->expectException(\Nesk\Rialto\Exceptions\IdleTimeoutException::class);
-        $this->expectExceptionMessageRegExp('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
+        $this->expectExceptionMessageMatches('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
 
         $this->fs->constants;
     }
@@ -355,11 +359,12 @@ class ImplementationTest extends TestCase
     /**
      * @test
      * @dontPopulateProperties fs
-     * @expectedException \Nesk\Rialto\Exceptions\ReadSocketTimeoutException
-     * @expectedExceptionMessageRegExp /^The timeout \(0\.010 seconds\) has been exceeded/
      */
     public function read_timeout_option_throws_an_exception_on_long_actions()
     {
+        $this->expectException(\Nesk\Rialto\Exceptions\ReadSocketTimeoutException::class);
+        $this->expectExceptionMessageMatches('/^The timeout \(0\.010 seconds\) has been exceeded/');
+
         $this->fs = new FsWithProcessDelegation(['read_timeout' => 0.01]);
 
         $this->fs->wait(20);

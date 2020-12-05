@@ -25,7 +25,7 @@
     },
     "require-dev": {
         "monolog/monolog": "^2.0",
-        "phpunit/phpunit": "^6.5|^7.0"
+        "phpunit/phpunit": "^9.1"
     },
     "suggest": {
         "ext-weakref": "Required to run all the tests"
