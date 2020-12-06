@@ -25,6 +25,7 @@
     },
     "require-dev": {
         "monolog/monolog": "^2.0",
+        "php-parallel-lint/php-parallel-lint": "^1.2",
         "phpunit/phpunit": "^9.1"
     },
     "suggest": {

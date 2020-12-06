@@ -1,0 +1,9 @@
+name: Analysis
+on: [push, pull_request]
+jobs:
+  parallel-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: composer update --no-interaction --no-progress --prefer-dist --ansi
+      - run: ./vendor/bin/parallel-lint --colors ./src ./tests
