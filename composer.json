@@ -26,7 +26,8 @@
     "require-dev": {
         "monolog/monolog": "^2.0",
         "php-parallel-lint/php-parallel-lint": "^1.2",
-        "phpunit/phpunit": "^9.1"
+        "phpunit/phpunit": "^9.1",
+        "slevomat/coding-standard": "^6.4"
     },
     "suggest": {
         "ext-weakref": "Required to run all the tests"
