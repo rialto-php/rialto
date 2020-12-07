@@ -1,0 +1,762 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__construct\\(\\) has parameter \\$implementationOptions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__construct\\(\\) has parameter \\$userOptions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:consolidateOptions\\(\\) has parameter \\$implementationOptions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:consolidateOptions\\(\\) has parameter \\$userOptions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:consolidateOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Instantiated class Nesk\\\\Rialto\\\\Traits\\\\RuntimeException not found\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Throwing object of an unknown class Nesk\\\\Rialto\\\\Traits\\\\RuntimeException\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:createCatchingResource\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:proxyAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:proxyAction\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withCall\\(\\)\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withGet\\(\\)\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withSet\\(\\)\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Variable \\$instruction might not be defined\\.$#"
+			count: 3
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__call\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__call\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__get\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__set\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\AbstractEntryPoint\\:\\:__set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/AbstractEntryPoint.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:jsonSerialize\\(\\) should return Nesk\\\\Rialto\\\\Data\\\\ResourceIdentity but returns Nesk\\\\Rialto\\\\Data\\\\ResourceIdentity\\|null\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Instantiated class Nesk\\\\Rialto\\\\Traits\\\\RuntimeException not found\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Throwing object of an unknown class Nesk\\\\Rialto\\\\Traits\\\\RuntimeException\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:createCatchingResource\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:proxyAction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:proxyAction\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withCall\\(\\)\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withGet\\(\\)\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Instruction\\:\\:withSet\\(\\)\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Variable \\$instruction might not be defined\\.$#"
+			count: 3
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:__call\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:__call\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:__get\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:__set\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:__set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:\\$resourceIdentity has unknown class Nesk\\\\Rialto\\\\ResourceIdentity as its type\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:getResourceIdentity\\(\\) should return Nesk\\\\Rialto\\\\Data\\\\ResourceIdentity\\|null but returns Nesk\\\\Rialto\\\\ResourceIdentity\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Data\\\\BasicResource\\:\\:\\$resourceIdentity \\(Nesk\\\\Rialto\\\\ResourceIdentity\\) does not accept Nesk\\\\Rialto\\\\Data\\\\ResourceIdentity\\.$#"
+			count: 1
+			path: src/php/Data/BasicResource.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:\\$parameters type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:\\$scope type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:create\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:create\\(\\) has parameter \\$arguments with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Unsafe usage of new static\\(\\)\\.$#"
+			count: 2
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:__construct\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:__construct\\(\\) has parameter \\$scope with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:parameters\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:scope\\(\\) has parameter \\$scope with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:jsonSerialize\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:__callStatic\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:__callStatic\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Instantiated class Nesk\\\\Rialto\\\\Data\\\\BadMethodCallException not found\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Throwing object of an unknown class Nesk\\\\Rialto\\\\Data\\\\BadMethodCallException\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\(Nesk\\\\Rialto\\\\Data\\\\JsFunction, string\\) given\\.$#"
+			count: 1
+			path: src/php/Data/JsFunction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Data\\\\ResourceIdentity\\:\\:jsonSerialize\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Data/ResourceIdentity.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:unserialize\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:unserialize\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Call to method resourceFromOriginalClassName\\(\\) on an unknown class Nesk\\\\Rialto\\\\ShouldHandleProcessDelegation\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Call to method defaultResource\\(\\) on an unknown class Nesk\\\\Rialto\\\\ShouldHandleProcessDelegation\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:\\$options type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:\\$process type has no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:\\$delegate has unknown class Nesk\\\\Rialto\\\\ShouldHandleProcessDelegation as its type\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:__construct\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:\\$delegate \\(Nesk\\\\Rialto\\\\ShouldHandleProcessDelegation\\) does not accept Nesk\\\\Rialto\\\\Interfaces\\\\ShouldHandleProcessDelegation\\|null\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:applyOptions\\(\\) has parameter \\$options with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:createNewProcess\\(\\) return type has no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:startProcess\\(\\) has parameter \\$process with no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:startProcess\\(\\) should return int but returns int\\|null\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:serverPort\\(\\) should return int but return statement is missing\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:executeInstruction\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\ProcessSupervisor\\:\\:readNextProcessValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Variable \\$startTimestamp might not be defined\\.$#"
+			count: 1
+			path: src/php/ProcessSupervisor.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:\\$process type has no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Return typehint of method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:getProcess\\(\\) has invalid type Nesk\\\\Rialto\\\\Exceptions\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:getProcess\\(\\) should return Nesk\\\\Rialto\\\\Exceptions\\\\Process but returns Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:exceptionApplies\\(\\) has parameter \\$process with no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:__construct\\(\\) has parameter \\$process with no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\FatalException\\:\\:setTraceAndGetMessage\\(\\) has parameter \\$error with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/FatalException.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Exceptions\\\\ProcessUnexpectedlyTerminatedException\\:\\:\\$process type has no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/ProcessUnexpectedlyTerminatedException.php
+
+		-
+			message: "#^Return typehint of method Nesk\\\\Rialto\\\\Exceptions\\\\ProcessUnexpectedlyTerminatedException\\:\\:getProcess\\(\\) has invalid type Nesk\\\\Rialto\\\\Exceptions\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/ProcessUnexpectedlyTerminatedException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\ProcessUnexpectedlyTerminatedException\\:\\:getProcess\\(\\) should return Nesk\\\\Rialto\\\\Exceptions\\\\Process but returns Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/ProcessUnexpectedlyTerminatedException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\ProcessUnexpectedlyTerminatedException\\:\\:__construct\\(\\) has parameter \\$process with no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/ProcessUnexpectedlyTerminatedException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\IdleTimeoutException\\:\\:exceptionApplies\\(\\) has parameter \\$process with no value type specified in iterable type Symfony\\\\Component\\\\Process\\\\Process\\.$#"
+			count: 1
+			path: src/php/Exceptions/IdleTimeoutException.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\Exception\\:\\:__construct\\(\\) has parameter \\$error with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/Exception.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Exceptions\\\\Node\\\\Exception\\:\\:setTraceAndGetMessage\\(\\) has parameter \\$error with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Exceptions/Node/Exception.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Instruction\\:\\:\\$resource has invalid type Nesk\\\\Rialto\\\\Traits\\\\IdentifiesResource\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:call\\(\\) has parameter \\$arguments with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:set\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Instruction\\:\\:\\$resource \\(Nesk\\\\Rialto\\\\Traits\\\\IdentifiesResource\\|null\\) does not accept Nesk\\\\Rialto\\\\Interfaces\\\\ShouldIdentifyResource\\|null\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:setValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:setValue\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:validateValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:validateValue\\(\\) has parameter \\$value with no typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Class Nesk\\\\Rialto\\\\Closure not found\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:jsonSerialize\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:__callStatic\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Instruction\\:\\:__callStatic\\(\\) has parameter \\$arguments with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Parameter \\#1 \\$function of function call_user_func expects callable\\(\\)\\: mixed, array\\(Nesk\\\\Rialto\\\\Instruction, string\\) given\\.$#"
+			count: 1
+			path: src/php/Instruction.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Logger\\:\\:\\$logger \\(Psr\\\\Log\\\\LoggerInterface\\) does not accept Psr\\\\Log\\\\LoggerInterface\\|null\\.$#"
+			count: 1
+			path: src/php/Logger.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Logger\\:\\:interpolate\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/php/Logger.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:__construct\\(\\) has parameter \\$userOptions with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: tests/Implementation/FsWithProcessDelegation.php
+
+		-
+			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:\\$dirPath\\.$#"
+			count: 3
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:\\$filePath\\.$#"
+			count: 10
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:\\$fs\\.$#"
+			count: 48
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanCallMethodAndGetItsReturnValue\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanGetProperty\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanSetProperty\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanReturnBasicResources\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanReturnSpecificResources\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanCastResourcesToString\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanOmitProcessDelegation\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithoutProcessDelegation\\:\\:statSync\\(\\)\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseNestedResources\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseMultipleResourcesWithoutConfusion\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanReturnMultipleTimesTheSameResource\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseJsFunctionsWithABody\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:createWithBody\\(\\)\\.$#"
+			count: 4
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseJsFunctionsWithParameters\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:createWithParameters\\(\\)\\.$#"
+			count: 2
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseJsFunctionsWithScope\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:createWithScope\\(\\)\\.$#"
+			count: 2
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseResourcesInJsFunctions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanUseAsyncWithJsFunctions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined static method Nesk\\\\Rialto\\\\Data\\\\JsFunction\\:\\:createWithAsync\\(\\)\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testJsFunctionsAreSyncByDefault\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanReceiveHeavyPayloadsWithNonAsciiChars\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testNodeCrashThrowsAFatalException\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCanCatchErrors\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testCatchingANodeExceptionDoesntCatchFatalExceptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testInDebugModeNodeExceptionsContainStackTraceInMessage\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:\\$tryCatch\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testNodeCurrentWorkingDirectoryIsTheSameAsPhp\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testExecutablePathOptionChangesTheProcessPrefix\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testIdleTimeoutOptionClosesNodeOnceTimerIsReached\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:\\$constants\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Expression \"\\$this\\-\\>fs\\-\\>constants\" on a separate line does not do anything\\.$#"
+			count: 2
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testReadTimeoutOptionThrowsAnExceptionOnLongActions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:wait\\(\\)\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testForbiddenOptionsAreRemoved\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testConnectionDelegateReceivesOptions\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:getOption\\(\\)\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testProcessStatusIsTracked\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Expression \"\\$this\\-\\>fs\\-\\>foo\" on a separate line does not do anything\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testProcessIsProperlyShutdownWhenThereAreNoMoreReferences\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testLoggerIsUsedWhenProvided\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testNodeConsoleCallsAreLogged\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Call to an undefined method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:runCallback\\(\\)\\.$#"
+			count: 2
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:shouldLogNodeConsoleProvider\\(\\) return type has no value type specified in iterable type Generator\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:testDelayedNodeConsoleCallsAndDataOnStandardStreamsAreLogged\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/ImplementationTest.php
+
+		-
+			message: "#^Property Nesk\\\\Rialto\\\\Tests\\\\TestCase\\:\\:\\$dontPopulateProperties has no typehint specified\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Parameter \\#2 \\$subject of function preg_match expects string, string\\|false given\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\TestCase\\:\\:ignoreUserDeprecation\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Call to an undefined static method PHPUnit\\\\Util\\\\ErrorHandler\\:\\:handleError\\(\\)\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
+		-
+			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\TestCase\\:\\:getPidsForProcessName\\(\\) has no return typehint specified\\.$#"
+			count: 1
+			path: tests/TestCase.php
+
