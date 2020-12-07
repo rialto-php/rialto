@@ -129,6 +129,7 @@ class ImplementationTest extends TestCase
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                // @phpstan-ignore-next-line
                 return JsFunction::create("return 'Simple callback';");
             }),
             JsFunction::createWithBody("return 'Simple callback';"),
@@ -147,6 +148,7 @@ class ImplementationTest extends TestCase
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                // @phpstan-ignore-next-line
                 return JsFunction::create(['fs'], "
                     return 'Callback using arguments: ' + fs.constructor.name;
                 ");
@@ -168,6 +170,7 @@ class ImplementationTest extends TestCase
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
+                // @phpstan-ignore-next-line
                 return JsFunction::create("
                     return 'Callback using scope: ' + foo;
                 ", ['foo' => 'bar']);
