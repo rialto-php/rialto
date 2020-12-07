@@ -481,11 +481,6 @@ parameters:
 			path: src/php/Instruction.php
 
 		-
-			message: "#^Property Nesk\\\\Rialto\\\\Logger\\:\\:\\$logger \\(Psr\\\\Log\\\\LoggerInterface\\) does not accept Psr\\\\Log\\\\LoggerInterface\\|null\\.$#"
-			count: 1
-			path: src/php/Logger.php
-
-		-
 			message: "#^Method Nesk\\\\Rialto\\\\Logger\\:\\:interpolate\\(\\) has parameter \\$context with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/php/Logger.php
@@ -507,7 +502,7 @@ parameters:
 
 		-
 			message: "#^Access to an undefined property Nesk\\\\Rialto\\\\Tests\\\\ImplementationTest\\:\\:\\$fs\\.$#"
-			count: 48
+			count: 45
 			path: tests/ImplementationTest.php
 
 		-
@@ -692,7 +687,7 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Nesk\\\\Rialto\\\\Tests\\\\Implementation\\\\FsWithProcessDelegation\\:\\:getOption\\(\\)\\.$#"
-			count: 1
+			count: 3
 			path: tests/ImplementationTest.php
 
 		-

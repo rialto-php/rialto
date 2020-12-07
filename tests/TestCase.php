@@ -21,23 +21,30 @@ class TestCase extends BaseTestCase
         $docComment = $testMethod->getDocComment();
         $docComment = $docComment !== false ? $docComment : '';
 
-        if (preg_match('/@dontPopulateProperties (.*)/', $docComment, $matches)) {
+        if (preg_match('/@dontPopulateProperties (.*)/', $docComment, $matches) !== 0) {
             $this->dontPopulateProperties = \array_values(\array_filter(\explode(' ', $matches[1])));
         }
     }
 
     public function canPopulateProperty(string $propertyName): bool
     {
-        return !\in_array($propertyName, $this->dontPopulateProperties);
+        return !\in_array($propertyName, $this->dontPopulateProperties, true);
     }
 
     public function ignoreUserDeprecation(string $messagePattern, callable $callback)
     {
         \set_error_handler(
-            function (int $errorNumber, string $errorString, string $errorFile, int $errorLine) use ($messagePattern) {
+            function (
+                int $errorNumber,
+                string $errorString,
+                string $errorFile,
+                int $errorLine
+            ) use ($messagePattern): bool {
                 if ($errorNumber !== E_USER_DEPRECATED || preg_match($messagePattern, $errorString) !== 1) {
                     ErrorHandler::handleError($errorNumber, $errorString, $errorFile, $errorLine);
                 }
+
+                return true;
             }
         );
 
@@ -55,12 +62,12 @@ class TestCase extends BaseTestCase
 
         $pids = \explode("\n", $pgrep->getOutput());
 
-        $pids = \array_filter($pids, function ($pid) {
-            return !empty($pid);
+        $pids = \array_filter($pids, function ($pid): bool {
+            return \strlen(\trim($pid)) > 0;
         });
 
-        $pids = \array_map(function ($pid) {
-            return (int) $pid;
+        $pids = \array_map(function ($pid): int {
+            return (int) \trim($pid);
         }, $pids);
 
         return $pids;

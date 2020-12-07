@@ -187,7 +187,8 @@ class ProcessSupervisor
      */
     protected function logProcessStandardStreams(): void
     {
-        if (!empty($output = $this->process->getIncrementalOutput())) {
+        $output = $this->process->getIncrementalOutput();
+        if (\strlen($output) > 0) {
             $this->logger->notice('Received data on stdout: {output}', [
                 'pid' => $this->processPid,
                 'stream' => 'stdout',
@@ -195,7 +196,8 @@ class ProcessSupervisor
             ]);
         }
 
-        if (!empty($errorOutput = $this->process->getIncrementalErrorOutput())) {
+        $errorOutput = $this->process->getIncrementalErrorOutput();
+        if (\strlen($errorOutput) > 0) {
             $this->logger->error('Received data on stderr: {output}', [
                 'pid' => $this->processPid,
                 'stream' => 'stderr',
@@ -306,7 +308,7 @@ class ProcessSupervisor
 
         $process = $this->process;
 
-        if (!empty($process->getErrorOutput())) {
+        if (\strlen($process->getErrorOutput()) > 0) {
             if (IdleTimeoutException::exceptionApplies($process)) {
                 throw new IdleTimeoutException(
                     $this->options['idle_timeout'],
@@ -455,9 +457,9 @@ class ProcessSupervisor
         $data = \strlen($data) > 0 ? \json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
         ['logs' => $logs, 'value' => $value] = $data;
 
-        foreach ($logs ?: [] as $log) {
+        foreach ($logs ?? [] as $log) {
             $level = (new \ReflectionClass(LogLevel::class))->getConstant($log['level']);
-            $messageContainsLineBreaks = \strstr($log['message'], (string) PHP_EOL) !== false;
+            $messageContainsLineBreaks = \strstr($log['message'], PHP_EOL) !== false;
             $formattedMessage = $messageContainsLineBreaks ? "\n{log}\n" : '{log}';
 
             $this->logger->log($level, "Received a $log[origin] log: $formattedMessage", [

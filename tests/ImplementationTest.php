@@ -39,44 +39,44 @@ class ImplementationTest extends TestCase
     {
         $content = $this->fs->readFileSync($this->filePath, 'utf8');
 
-        $this->assertEquals('Hello world!', $content);
+        self::assertEquals('Hello world!', $content);
     }
 
     public function testCanGetProperty()
     {
         $constants = $this->fs->constants;
 
-        $this->assertIsArray($constants);
+        self::assertIsArray($constants);
     }
 
     public function testCanSetProperty()
     {
         $this->fs->foo = 'bar';
-        $this->assertEquals('bar', $this->fs->foo);
+        self::assertEquals('bar', $this->fs->foo);
 
         $this->fs->foo = null;
-        $this->assertNull($this->fs->foo);
+        self::assertNull($this->fs->foo);
     }
 
     public function testCanReturnBasicResources()
     {
         $resource = $this->fs->readFileSync($this->filePath);
 
-        $this->assertInstanceOf(BasicResource::class, $resource);
+        self::assertInstanceOf(BasicResource::class, $resource);
     }
 
     public function testCanReturnSpecificResources()
     {
         $resource = $this->fs->statSync($this->filePath);
 
-        $this->assertInstanceOf(Stats::class, $resource);
+        self::assertInstanceOf(Stats::class, $resource);
     }
 
     public function testCanCastResourcesToString()
     {
         $resource = $this->fs->statSync($this->filePath);
 
-        $this->assertEquals('[object Object]', (string) $resource);
+        self::assertEquals('[object Object]', (string) $resource);
     }
 
     /**
@@ -89,21 +89,21 @@ class ImplementationTest extends TestCase
 
         $resource = $this->fs->statSync($this->filePath);
 
-        $this->assertInstanceOf(BasicResource::class, $resource);
-        $this->assertNotInstanceOf(Stats::class, $resource);
+        self::assertInstanceOf(BasicResource::class, $resource);
+        self::assertNotInstanceOf(Stats::class, $resource);
     }
 
     public function testCanUseNestedResources()
     {
         $resources = $this->fs->multipleStatSync($this->dirPath, $this->filePath);
 
-        $this->assertCount(2, $resources);
-        $this->assertContainsOnlyInstancesOf(Stats::class, $resources);
+        self::assertCount(2, $resources);
+        self::assertContainsOnlyInstancesOf(Stats::class, $resources);
 
         $isFile = $this->fs->multipleResourcesIsFile($resources);
 
-        $this->assertFalse($isFile[0]);
-        $this->assertTrue($isFile[1]);
+        self::assertFalse($isFile[0]);
+        self::assertTrue($isFile[1]);
     }
 
     public function testCanUseMultipleResourcesWithoutConfusion()
@@ -111,11 +111,11 @@ class ImplementationTest extends TestCase
         $dirStats = $this->fs->statSync($this->dirPath);
         $fileStats = $this->fs->statSync($this->filePath);
 
-        $this->assertInstanceOf(Stats::class, $dirStats);
-        $this->assertInstanceOf(Stats::class, $fileStats);
+        self::assertInstanceOf(Stats::class, $dirStats);
+        self::assertInstanceOf(Stats::class, $fileStats);
 
-        $this->assertTrue($dirStats->isDirectory());
-        $this->assertTrue($fileStats->isFile());
+        self::assertTrue($dirStats->isDirectory());
+        self::assertTrue($fileStats->isFile());
     }
 
     public function testCanReturnMultipleTimesTheSameResource()
@@ -123,7 +123,7 @@ class ImplementationTest extends TestCase
         $stats1 = $this->fs->Stats;
         $stats2 = $this->fs->Stats;
 
-        $this->assertEquals($stats1, $stats2);
+        self::assertEquals($stats1, $stats2);
     }
 
     /**
@@ -141,7 +141,7 @@ class ImplementationTest extends TestCase
 
         foreach ($functions as $function) {
             $value = $this->fs->runCallback($function);
-            $this->assertEquals('Simple callback', $value);
+            self::assertEquals('Simple callback', $value);
         }
     }
 
@@ -163,7 +163,7 @@ class ImplementationTest extends TestCase
 
         foreach ($functions as $function) {
             $value = $this->fs->runCallback($function);
-            $this->assertEquals('Callback using arguments: Object', $value);
+            self::assertEquals('Callback using arguments: Object', $value);
         }
     }
 
@@ -185,7 +185,7 @@ class ImplementationTest extends TestCase
 
         foreach ($functions as $function) {
             $value = $this->fs->runCallback($function);
-            $this->assertEquals('Callback using scope: bar', $value);
+            self::assertEquals('Callback using scope: bar', $value);
         }
     }
 
@@ -205,7 +205,7 @@ class ImplementationTest extends TestCase
 
         foreach ($functions as $function) {
             $isFile = $this->fs->runCallback($function);
-            $this->assertTrue($isFile);
+            self::assertTrue($isFile);
         }
     }
 
@@ -220,7 +220,7 @@ class ImplementationTest extends TestCase
                 return true;
             ");
 
-        $this->assertTrue($this->fs->runCallback($function));
+        self::assertTrue($this->fs->runCallback($function));
 
         $function = $function->async(false);
 
@@ -247,8 +247,8 @@ class ImplementationTest extends TestCase
     {
         $payload = $this->fs->getHeavyPayloadWithNonAsciiChars();
 
-        $this->assertStringStartsWith('😘', $payload);
-        $this->assertStringEndsWith('😘', $payload);
+        self::assertStringStartsWith('😘', $payload);
+        self::assertStringEndsWith('😘', $payload);
     }
 
     public function testNodeCrashThrowsAFatalException()
@@ -291,13 +291,14 @@ class ImplementationTest extends TestCase
         try {
             $this->fs->tryCatch->__inexistantMethod__();
         } catch (Node\Exception $exception) {
-            $this->assertMatchesRegularExpression($regex, $exception->getMessage());
+            self::assertMatchesRegularExpression($regex, $exception->getMessage());
         }
 
         try {
+            // @phpstan-ignore-next-line
             $this->fs->__inexistantMethod__();
         } catch (Node\FatalException $exception) {
-            $this->assertMatchesRegularExpression($regex, $exception->getMessage());
+            self::assertMatchesRegularExpression($regex, $exception->getMessage());
         }
     }
 
@@ -305,7 +306,7 @@ class ImplementationTest extends TestCase
     {
         $result = $this->fs->accessSync('tests/resources/file');
 
-        $this->assertNull($result);
+        self::assertNull($result);
     }
 
     public function testExecutablePathOptionChangesTheProcessPrefix()
@@ -363,9 +364,9 @@ class ImplementationTest extends TestCase
         ]);
 
         $options = $loggerHandler->getRecords()[0]['context']['options'];
-        $this->assertArrayHasKey('read_timeout', $options);
-        $this->assertArrayNotHasKey('stop_timeout', $options);
-        $this->assertArrayNotHasKey('foo', $options);
+        self::assertArrayHasKey('read_timeout', $options);
+        self::assertArrayNotHasKey('stop_timeout', $options);
+        self::assertArrayNotHasKey('foo', $options);
     }
 
     /**
@@ -378,9 +379,9 @@ class ImplementationTest extends TestCase
             'new_option' => false,
         ]);
 
-        $this->assertNull($this->fs->getOption('read_timeout')); // Assert this option is stripped by the supervisor
-        $this->assertTrue($this->fs->getOption('log_node_console'));
-        $this->assertFalse($this->fs->getOption('new_option'));
+        self::assertNull($this->fs->getOption('read_timeout')); // Assert this option is stripped by the supervisor
+        self::assertTrue($this->fs->getOption('log_node_console'));
+        self::assertFalse($this->fs->getOption('new_option'));
     }
 
     /**
@@ -389,11 +390,11 @@ class ImplementationTest extends TestCase
     public function testProcessStatusIsTracked()
     {
         if (PHP_OS === 'WINNT') {
-            $this->markTestSkipped('This test is not supported on Windows.');
+            self::markTestSkipped('This test is not supported on Windows.');
         }
 
         if ((new Process(['which', 'pgrep']))->run() !== 0) {
-            $this->markTestSkipped('The "pgrep" command is not available.');
+            self::markTestSkipped('The "pgrep" command is not available.');
         }
 
         $oldPids = $this->getPidsForProcessName('node');
@@ -402,7 +403,7 @@ class ImplementationTest extends TestCase
 
         $newNodeProcesses = \array_values(\array_diff($newPids, $oldPids));
         $newNodeProcessesCount = \count($newNodeProcesses);
-        $this->assertCount(
+        self::assertCount(
             1,
             $newNodeProcesses,
             "One Node process should have been created instead of $newNodeProcessesCount. Try running again."
@@ -421,19 +422,19 @@ class ImplementationTest extends TestCase
     public function testProcessIsProperlyShutdownWhenThereAreNoMoreReferences()
     {
         if (!\class_exists('WeakReference')) {
-            $this->markTestSkipped('This test requires weak references: https://www.php.net/weakreference');
+            self::markTestSkipped('This test requires weak references: https://www.php.net/weakreference');
         }
 
         $ref = \WeakReference::create($this->fs->getProcessSupervisor());
 
         $resource = $this->fs->readFileSync($this->filePath);
 
-        $this->assertInstanceOf(BasicResource::class, $resource);
+        self::assertInstanceOf(BasicResource::class, $resource);
 
         $this->fs = null;
         unset($resource);
 
-        $this->assertNull($ref->get());
+        self::assertNull($ref->get());
     }
 
     /**
@@ -446,7 +447,7 @@ class ImplementationTest extends TestCase
         $logger = new Logger('test', [$loggerHandler]);
         $this->fs = new FsWithProcessDelegation(['logger' => $logger]);
 
-        $this->assertNotCount(0, $loggerHandler->getRecords());
+        self::assertNotCount(0, $loggerHandler->getRecords());
     }
 
     /**
@@ -465,7 +466,7 @@ class ImplementationTest extends TestCase
 
         $this->fs->runCallback(JsFunction::createWithBody("console.log('Hello World!')"));
 
-        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
+        self::assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
     }
 
     public function shouldLogNodeConsoleProvider(): \Generator
@@ -496,8 +497,8 @@ class ImplementationTest extends TestCase
 
         \usleep(10000); // 10ms, to be sure the delayed instructions just above are executed.
 
-        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received data on stdout:'));
-        $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
+        self::assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received data on stdout:'));
+        self::assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));
     }
 
     private static function logHandlerContainsRecord(TestHandler $testHandler, string $messageStartWith): bool

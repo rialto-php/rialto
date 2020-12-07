@@ -20,8 +20,8 @@ trait UnserializesData
                 return new Exception($value, $this->options['debug']);
             } elseif (($value['__rialto_resource__'] ?? false) === true) {
                 if ($this->delegate instanceof ShouldHandleProcessDelegation) {
-                    $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name'])
-                        ?: $this->delegate->defaultResource();
+                    $classPath = $this->delegate->resourceFromOriginalClassName($value['class_name']);
+                    $classPath = $classPath !== null ? $classPath : $this->delegate->defaultResource();
                 } else {
                     $classPath = $this->defaultResource();
                 }

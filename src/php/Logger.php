@@ -9,7 +9,7 @@ class Logger implements LoggerInterface
     /**
      * The original logger.
      *
-     * @var \Psr\Log\LoggerInterface
+     * @var \Psr\Log\LoggerInterface|null
      */
     protected $logger;
 
