@@ -39,9 +39,9 @@ abstract class AbstractEntryPoint
     protected function consolidateOptions(array $implementationOptions, array $userOptions): array
     {
         // Filter out the forbidden option
-        $userOptions = array_diff_key($userOptions, array_flip($this->forbiddenOptions));
+        $userOptions = \array_diff_key($userOptions, \array_flip($this->forbiddenOptions));
 
         // Merge the user options with the implementation ones
-        return array_merge($implementationOptions, $userOptions);
+        return \array_merge($implementationOptions, $userOptions);
     }
 }

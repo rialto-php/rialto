@@ -12,7 +12,7 @@ class IdleTimeoutException extends \RuntimeException
     public static function exceptionApplies(Process $process): bool
     {
         if (Node\FatalException::exceptionApplies($process)) {
-            $error = json_decode($process->getErrorOutput(), true, 512, JSON_THROW_ON_ERROR);
+            $error = \json_decode($process->getErrorOutput(), true, 512, JSON_THROW_ON_ERROR);
 
             return $error['message'] === 'The idle timeout has been reached.';
         }
@@ -25,9 +25,9 @@ class IdleTimeoutException extends \RuntimeException
      */
     public function __construct(float $timeout, \Throwable $previous = null)
     {
-        $timeout = number_format($timeout, 3);
+        $timeout = \number_format($timeout, 3);
 
-        parent::__construct(implode(' ', [
+        parent::__construct(\implode(' ', [
             "The idle timeout ($timeout seconds) has been exceeded.",
             'Maybe you should increase the "idle_timeout" option.',
         ]), 0, $previous);

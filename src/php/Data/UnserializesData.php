@@ -13,7 +13,7 @@ trait UnserializesData
      */
     protected function unserialize($value)
     {
-        if (!is_array($value)) {
+        if (!\is_array($value)) {
             return $value;
         } else {
             if (($value['__rialto_error__'] ?? false) === true) {
@@ -38,7 +38,7 @@ trait UnserializesData
 
                 return $resource;
             } else {
-                return array_map(function ($value) {
+                return \array_map(function ($value) {
                     return $this->unserialize($value);
                 }, $value);
             }

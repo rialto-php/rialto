@@ -13,6 +13,6 @@ class FsProcessDelegate implements ShouldHandleProcessDelegation
     {
         $class = __NAMESPACE__ . "\\Resources\\$className";
 
-        return class_exists($class) ? $class : null;
+        return \class_exists($class) ? $class : null;
     }
 }

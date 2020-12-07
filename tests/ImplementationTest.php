@@ -19,7 +19,7 @@ class ImplementationTest extends TestCase
     {
         parent::setUp();
 
-        $this->dirPath = realpath(__DIR__ . '/resources');
+        $this->dirPath = \realpath(__DIR__ . '/resources');
         $this->filePath = "{$this->dirPath}/file";
 
         $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation() : null;
@@ -317,7 +317,7 @@ class ImplementationTest extends TestCase
 
         $this->fs->constants;
 
-        sleep(1);
+        \sleep(1);
 
         $this->expectException(\Nesk\Rialto\Exceptions\IdleTimeoutException::class);
         $this->expectExceptionMessageMatches('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
@@ -392,15 +392,15 @@ class ImplementationTest extends TestCase
         $this->fs = new FsWithProcessDelegation();
         $newPids = $this->getPidsForProcessName('node');
 
-        $newNodeProcesses = array_values(array_diff($newPids, $oldPids));
-        $newNodeProcessesCount = count($newNodeProcesses);
+        $newNodeProcesses = \array_values(\array_diff($newPids, $oldPids));
+        $newNodeProcessesCount = \count($newNodeProcesses);
         $this->assertCount(
             1,
             $newNodeProcesses,
             "One Node process should have been created instead of $newNodeProcessesCount. Try running again."
         );
 
-        $processKilled = posix_kill($newNodeProcesses[0], SIGKILL);
+        $processKilled = \posix_kill($newNodeProcesses[0], SIGKILL);
         $this->assertTrue($processKilled);
 
         \usleep(10000); # To make sure the process had enough time to be killed.
@@ -413,7 +413,7 @@ class ImplementationTest extends TestCase
 
     public function testProcessIsProperlyShutdownWhenThereAreNoMoreReferences()
     {
-        if (!class_exists('WeakReference')) {
+        if (!\class_exists('WeakReference')) {
             $this->markTestSkipped('This test requires weak references: https://www.php.net/weakreference');
         }
 
@@ -487,7 +487,7 @@ class ImplementationTest extends TestCase
             });
         "));
 
-        usleep(10000); // 10ms, to be sure the delayed instructions just above are executed.
+        \usleep(10000); // 10ms, to be sure the delayed instructions just above are executed.
 
         $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received data on stdout:'));
         $this->assertTrue(self::logHandlerContainsRecord($loggerHandler, 'Received a Node log:'));

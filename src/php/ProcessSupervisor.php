@@ -204,7 +204,7 @@ class ProcessSupervisor
     {
         $this->logger->info('Applying options...', ['options' => $options]);
 
-        $this->options = array_merge($this->options, $options);
+        $this->options = \array_merge($this->options, $options);
 
         $this->logger->debug('Options applied and merged with defaults', ['options' => $this->options]);
     }
@@ -252,21 +252,21 @@ class ProcessSupervisor
      */
     protected function createNewProcess(string $connectionDelegatePath): SymfonyProcess
     {
-        $realConnectionDelegatePath = realpath($connectionDelegatePath);
+        $realConnectionDelegatePath = \realpath($connectionDelegatePath);
 
         if ($realConnectionDelegatePath === false) {
             throw new RuntimeException("Cannot find file or directory '$connectionDelegatePath'.");
         }
 
         // Remove useless options for the process
-        $processOptions = array_diff_key($this->options, array_flip(self::USELESS_OPTIONS_FOR_PROCESS));
+        $processOptions = \array_diff_key($this->options, \array_flip(self::USELESS_OPTIONS_FOR_PROCESS));
 
-        return new SymfonyProcess(array_merge(
+        return new SymfonyProcess(\array_merge(
             [$this->options['executable_path']],
             $this->options['debug'] ? ['--inspect'] : [],
             [$this->getProcessScriptPath()],
             [$realConnectionDelegatePath],
-            [json_encode((object) $processOptions, JSON_THROW_ON_ERROR)]
+            [\json_encode((object) $processOptions, JSON_THROW_ON_ERROR)]
         ));
     }
 
@@ -325,7 +325,7 @@ class ProcessSupervisor
      */
     protected function waitForProcessTermination(): void
     {
-        usleep(self::PROCESS_TERMINATION_DELAY * 1000);
+        \usleep(self::PROCESS_TERMINATION_DELAY * 1000);
     }
 
     /**
@@ -366,7 +366,7 @@ class ProcessSupervisor
         // Check the process status because it could have crash in idle status.
         $this->checkProcessStatus();
 
-        $serializedInstruction = json_encode($instruction, JSON_THROW_ON_ERROR);
+        $serializedInstruction = \json_encode($instruction, JSON_THROW_ON_ERROR);
 
         if ($instructionShouldBeLogged) {
             $this->logger->debug('Sending an instruction to the port {port}...', [
@@ -375,7 +375,7 @@ class ProcessSupervisor
 
                 // The instruction must be fully encoded and decoded to appear properly in the logs (this way,
                 // JS functions and resources are serialized too).
-                'instruction' => json_decode($serializedInstruction, true, 512, JSON_THROW_ON_ERROR),
+                'instruction' => \json_decode($serializedInstruction, true, 512, JSON_THROW_ON_ERROR),
             ]);
         }
 
@@ -405,20 +405,20 @@ class ProcessSupervisor
         $payload = '';
 
         try {
-            $startTimestamp = microtime(true);
+            $startTimestamp = \microtime(true);
 
             do {
                 $this->client->selectRead($readTimeout);
                 $packet = $this->client->read(static::SOCKET_PACKET_SIZE);
 
-                $chunksLeft = (int) substr($packet, 0, static::SOCKET_HEADER_SIZE);
-                $chunk = substr($packet, static::SOCKET_HEADER_SIZE);
+                $chunksLeft = (int) \substr($packet, 0, static::SOCKET_HEADER_SIZE);
+                $chunk = \substr($packet, static::SOCKET_HEADER_SIZE);
 
                 $payload .= $chunk;
 
                 if ($chunksLeft > 0) {
                     // The next chunk might be an empty string if don't wait a short period on slow environments.
-                    usleep(self::SOCKET_NEXT_CHUNK_DELAY * 1000);
+                    \usleep(self::SOCKET_NEXT_CHUNK_DELAY * 1000);
                 }
             } while ($chunksLeft > 0);
         } catch (SocketException $exception) {
@@ -426,10 +426,10 @@ class ProcessSupervisor
             $this->checkProcessStatus();
 
             // Extract the socket error code to throw more specific exceptions
-            preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
-            $socketErrorCode = constant($socketErrorMatches[1]);
+            \preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
+            $socketErrorCode = \constant($socketErrorMatches[1]);
 
-            $elapsedTime = microtime(true) - $startTimestamp;
+            $elapsedTime = \microtime(true) - $startTimestamp;
             if ($socketErrorCode === SOCKET_EAGAIN && $readTimeout !== null && $elapsedTime >= $readTimeout) {
                 throw new Exceptions\ReadSocketTimeoutException($readTimeout, $exception);
             }
@@ -439,13 +439,13 @@ class ProcessSupervisor
 
         $this->logProcessStandardStreams();
 
-        $data = base64_decode($payload);
-        $data = \strlen($data) > 0 ? json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
+        $data = \base64_decode($payload);
+        $data = \strlen($data) > 0 ? \json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
         ['logs' => $logs, 'value' => $value] = $data;
 
         foreach ($logs ?: [] as $log) {
             $level = (new \ReflectionClass(LogLevel::class))->getConstant($log['level']);
-            $messageContainsLineBreaks = strstr($log['message'], (string) PHP_EOL) !== false;
+            $messageContainsLineBreaks = \strstr($log['message'], (string) PHP_EOL) !== false;
             $formattedMessage = $messageContainsLineBreaks ? "\n{log}\n" : '{log}';
 
             $this->logger->log($level, "Received a $log[origin] log: $formattedMessage", [

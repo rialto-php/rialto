@@ -39,9 +39,9 @@ class JsFunction implements \JsonSerializable
      */
     public static function create(...$arguments)
     {
-        trigger_error(__METHOD__ . '() has been deprecated and will be removed from v2.', E_USER_DEPRECATED);
+        \trigger_error(__METHOD__ . '() has been deprecated and will be removed from v2.', E_USER_DEPRECATED);
 
-        if (isset($arguments[0]) && is_string($arguments[0])) {
+        if (isset($arguments[0]) && \is_string($arguments[0])) {
             return new static([], $arguments[0], $arguments[1] ?? []);
         }
 
@@ -117,12 +117,12 @@ class JsFunction implements \JsonSerializable
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        $name = lcfirst(substr($name, strlen('createWith')));
+        $name = \lcfirst(\substr($name, \strlen('createWith')));
 
         if ($name === 'jsonSerialize') {
             throw new BadMethodCallException();
         }
 
-        return call_user_func([new self(), $name], ...$arguments);
+        return \call_user_func([new self(), $name], ...$arguments);
     }
 }

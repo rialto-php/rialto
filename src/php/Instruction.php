@@ -120,7 +120,7 @@ class Instruction implements \JsonSerializable
     {
         $this->value = $type !== self::TYPE_CALL
             ? $this->validateValue($value)
-            : array_map(function ($value) {
+            : \array_map(function ($value) {
                 return $this->validateValue($value);
             }, $value);
     }
@@ -132,7 +132,7 @@ class Instruction implements \JsonSerializable
      */
     protected function validateValue($value)
     {
-        if (is_object($value) && ($value instanceof Closure)) {
+        if (\is_object($value) && ($value instanceof Closure)) {
             throw new InvalidArgumentException('You must use JS function wrappers instead of PHP closures.');
         }
 
@@ -147,7 +147,7 @@ class Instruction implements \JsonSerializable
         $instruction = ['type' => $this->type];
 
         if ($this->type !== self::TYPE_NOOP) {
-            $instruction = array_merge($instruction, [
+            $instruction = \array_merge($instruction, [
                 'name' => $this->name,
                 'catched' => $this->shouldCatchErrors,
             ]);
@@ -169,12 +169,12 @@ class Instruction implements \JsonSerializable
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        $name = lcfirst(substr($name, strlen('with')));
+        $name = \lcfirst(\substr($name, \strlen('with')));
 
         if ($name === 'jsonSerialize') {
             throw new BadMethodCallException();
         }
 
-        return call_user_func([new self(), $name], ...$arguments);
+        return \call_user_func([new self(), $name], ...$arguments);
     }
 }

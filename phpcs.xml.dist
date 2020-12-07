@@ -13,6 +13,10 @@
 
     <rule ref="PSR12"/>
 
+    <!-- Used to optimize some native function calls in namespaced code -->
+    <!-- See: http://veewee.github.io/blog/optimizing-php-performance-by-fq-function-calls/ -->
+    <rule ref="SlevomatCodingStandard.Namespaces.FullyQualifiedGlobalFunctions"/>
+
     <file>src/</file>
     <file>tests/</file>
 </ruleset>

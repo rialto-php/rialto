@@ -17,7 +17,7 @@ trait HandlesNodeErrors
     protected static function isNodeError(string $error): bool
     {
         try {
-            $error = json_decode($error, true, 512, JSON_THROW_ON_ERROR);
+            $error = \json_decode($error, true, 512, JSON_THROW_ON_ERROR);
         } catch (\JsonException $exception) {
             return false;
         }
@@ -30,7 +30,7 @@ trait HandlesNodeErrors
      */
     protected function setTraceAndGetMessage($error, bool $appendStackTraceToMessage = false): string
     {
-        $error = is_string($error) ? json_decode($error, true, 512, JSON_THROW_ON_ERROR) : $error;
+        $error = \is_string($error) ? \json_decode($error, true, 512, JSON_THROW_ON_ERROR) : $error;
 
         $this->originalTrace = $error['stack'] ?? null;
 
