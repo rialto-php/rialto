@@ -12,6 +12,11 @@
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
     <rule ref="PSR12"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
+        <properties>
+            <property name="searchAnnotations" value="true"/>
+        </properties>
+    </rule>
 
     <!-- Used to optimize some native function calls in namespaced code -->
     <!-- See: http://veewee.github.io/blog/optimizing-php-performance-by-fq-function-calls/ -->

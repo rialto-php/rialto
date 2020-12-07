@@ -2,14 +2,9 @@
 
 namespace Nesk\Rialto\Tests;
 
-use Monolog\Logger;
-use ReflectionClass;
-use Psr\Log\LogLevel;
 use PHPUnit\Util\ErrorHandler;
 use Symfony\Component\Process\Process;
-use PHPUnit\Framework\Constraint\Callback;
 use PHPUnit\Framework\TestCase as BaseTestCase;
-use PHPUnit\Framework\MockObject\Matcher\Invocation;
 
 class TestCase extends BaseTestCase
 {

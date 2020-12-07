@@ -5,7 +5,6 @@ namespace Nesk\Rialto;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Nesk\Rialto\Interfaces\ShouldIdentifyResource;
-use Nesk\Rialto\Exceptions\Node\Exception as NodeException;
 
 class Instruction implements \JsonSerializable
 {

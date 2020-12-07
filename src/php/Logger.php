@@ -2,7 +2,6 @@
 
 namespace Nesk\Rialto;
 
-use Symfony\Component\Process\Process;
 use Psr\Log\{LoggerInterface, LogLevel};
 
 class Logger implements LoggerInterface
