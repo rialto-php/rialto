@@ -7,7 +7,8 @@ use Nesk\Rialto\Interfaces\{ShouldIdentifyResource, ShouldCommunicateWithProcess
 
 class BasicResource implements ShouldIdentifyResource, ShouldCommunicateWithProcessSupervisor, \JsonSerializable
 {
-    use IdentifiesResource, CommunicatesWithProcessSupervisor;
+    use IdentifiesResource;
+    use CommunicatesWithProcessSupervisor;
 
     /**
      * Serialize the object to a value that can be serialized natively by {@see json_encode}.

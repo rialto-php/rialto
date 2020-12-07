@@ -8,6 +8,6 @@ class FsWithoutProcessDelegation extends AbstractEntryPoint
 {
     public function __construct()
     {
-        parent::__construct(__DIR__.'/FsConnectionDelegate.js');
+        parent::__construct(__DIR__ . '/FsConnectionDelegate.js');
     }
 }

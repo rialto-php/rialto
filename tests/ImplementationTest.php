@@ -13,16 +13,16 @@ use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessD
 
 class ImplementationTest extends TestCase
 {
-    const JS_FUNCTION_CREATE_DEPRECATION_PATTERN = '/^Nesk\\\\Rialto\\\\Data\\\\JsFunction::create\(\)/';
+    private const JS_FUNCTION_CREATE_DEPRECATION_PATTERN = '/^Nesk\\\\Rialto\\\\Data\\\\JsFunction::create\(\)/';
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->dirPath = realpath(__DIR__.'/resources');
+        $this->dirPath = realpath(__DIR__ . '/resources');
         $this->filePath = "{$this->dirPath}/file";
 
-        $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation : null;
+        $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation() : null;
     }
 
     public function tearDown(): void
@@ -30,24 +30,21 @@ class ImplementationTest extends TestCase
         $this->fs = null;
     }
 
-    /** @test */
-    public function can_call_method_and_get_its_return_value()
+    public function testCanCallMethodAndGetItsReturnValue()
     {
         $content = $this->fs->readFileSync($this->filePath, 'utf8');
 
         $this->assertEquals('Hello world!', $content);
     }
 
-    /** @test */
-    public function can_get_property()
+    public function testCanGetProperty()
     {
         $constants = $this->fs->constants;
 
         $this->assertIsArray($constants);
     }
 
-    /** @test */
-    public function can_set_property()
+    public function testCanSetProperty()
     {
         $this->fs->foo = 'bar';
         $this->assertEquals('bar', $this->fs->foo);
@@ -56,24 +53,21 @@ class ImplementationTest extends TestCase
         $this->assertNull($this->fs->foo);
     }
 
-    /** @test */
-    public function can_return_basic_resources()
+    public function testCanReturnBasicResources()
     {
         $resource = $this->fs->readFileSync($this->filePath);
 
         $this->assertInstanceOf(BasicResource::class, $resource);
     }
 
-    /** @test */
-    public function can_return_specific_resources()
+    public function testCanReturnSpecificResources()
     {
         $resource = $this->fs->statSync($this->filePath);
 
         $this->assertInstanceOf(Stats::class, $resource);
     }
 
-    /** @test */
-    public function can_cast_resources_to_string()
+    public function testCanCastResourcesToString()
     {
         $resource = $this->fs->statSync($this->filePath);
 
@@ -84,9 +78,9 @@ class ImplementationTest extends TestCase
      * @test
      * @dontPopulateProperties fs
      */
-    public function can_omit_process_delegation()
+    public function testCanOmitProcessDelegation()
     {
-        $this->fs = new FsWithoutProcessDelegation;
+        $this->fs = new FsWithoutProcessDelegation();
 
         $resource = $this->fs->statSync($this->filePath);
 
@@ -94,8 +88,7 @@ class ImplementationTest extends TestCase
         $this->assertNotInstanceOf(Stats::class, $resource);
     }
 
-    /** @test */
-    public function can_use_nested_resources()
+    public function testCanUseNestedResources()
     {
         $resources = $this->fs->multipleStatSync($this->dirPath, $this->filePath);
 
@@ -108,8 +101,7 @@ class ImplementationTest extends TestCase
         $this->assertTrue($isFile[1]);
     }
 
-    /** @test */
-    public function can_use_multiple_resources_without_confusion()
+    public function testCanUseMultipleResourcesWithoutConfusion()
     {
         $dirStats = $this->fs->statSync($this->dirPath);
         $fileStats = $this->fs->statSync($this->filePath);
@@ -121,8 +113,7 @@ class ImplementationTest extends TestCase
         $this->assertTrue($fileStats->isFile());
     }
 
-    /** @test */
-    public function can_return_multiple_times_the_same_resource()
+    public function testCanReturnMultipleTimesTheSameResource()
     {
         $stats1 = $this->fs->Stats;
         $stats2 = $this->fs->Stats;
@@ -131,10 +122,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function can_use_js_functions_with_a_body()
+    public function testCanUseJsFunctionsWithABody()
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
@@ -150,10 +140,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function can_use_js_functions_with_parameters()
+    public function testCanUseJsFunctionsWithParameters()
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
@@ -172,10 +161,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function can_use_js_functions_with_scope()
+    public function testCanUseJsFunctionsWithScope()
     {
         $functions = [
             $this->ignoreUserDeprecation(self::JS_FUNCTION_CREATE_DEPRECATION_PATTERN, function () {
@@ -194,10 +182,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function can_use_resources_in_js_functions()
+    public function testCanUseResourcesInJsFunctions()
     {
         $fileStats = $this->fs->statSync($this->filePath);
 
@@ -215,10 +202,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function can_use_async_with_js_functions()
+    public function testCanUseAsyncWithJsFunctions()
     {
         $function = JsFunction::createWithAsync()
             ->body("
@@ -237,10 +223,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group js-functions
      */
-    public function js_functions_are_sync_by_default()
+    public function testJsFunctionsAreSyncByDefault()
     {
         $function = JsFunction::createWithBody('await null');
 
@@ -250,8 +235,7 @@ class ImplementationTest extends TestCase
         $this->fs->runCallback($function);
     }
 
-    /** @test */
-    public function can_receive_heavy_payloads_with_non_ascii_chars()
+    public function testCanReceiveHeavyPayloadsWithNonAsciiChars()
     {
         $payload = $this->fs->getHeavyPayloadWithNonAsciiChars();
 
@@ -259,10 +243,7 @@ class ImplementationTest extends TestCase
         $this->assertStringEndsWith('😘', $payload);
     }
 
-    /**
-     * @test
-     */
-    public function node_crash_throws_a_fatal_exception()
+    public function testNodeCrashThrowsAFatalException()
     {
         $this->expectException(\Nesk\Rialto\Exceptions\Node\FatalException::class);
         $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
@@ -270,10 +251,7 @@ class ImplementationTest extends TestCase
         $this->fs->__inexistantMethod__();
     }
 
-    /**
-     * @test
-     */
-    public function can_catch_errors()
+    public function testCanCatchErrors()
     {
         $this->expectException(\Nesk\Rialto\Exceptions\Node\Exception::class);
         $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
@@ -281,10 +259,7 @@ class ImplementationTest extends TestCase
         $this->fs->tryCatch->__inexistantMethod__();
     }
 
-    /**
-     * @test
-     */
-    public function catching_a_node_exception_doesnt_catch_fatal_exceptions()
+    public function testCatchingANodeExceptionDoesntCatchFatalExceptions()
     {
         $this->expectException(\Nesk\Rialto\Exceptions\Node\FatalException::class);
         $this->expectExceptionMessage('Object.__inexistantMethod__ is not a function');
@@ -297,10 +272,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dontPopulateProperties fs
      */
-    public function in_debug_mode_node_exceptions_contain_stack_trace_in_message()
+    public function testInDebugModeNodeExceptionsContainStackTraceInMessage()
     {
         $this->fs = new FsWithProcessDelegation(['debug' => true]);
 
@@ -319,18 +293,14 @@ class ImplementationTest extends TestCase
         }
     }
 
-    /** @test */
-    public function node_current_working_directory_is_the_same_as_php()
+    public function testNodeCurrentWorkingDirectoryIsTheSameAsPhp()
     {
         $result = $this->fs->accessSync('tests/resources/file');
 
         $this->assertNull($result);
     }
 
-    /**
-     * @test
-     */
-    public function executable_path_option_changes_the_process_prefix()
+    public function testExecutablePathOptionChangesTheProcessPrefix()
     {
         $this->expectException(\Symfony\Component\Process\Exception\ProcessFailedException::class);
         $this->expectExceptionMessageMatches('/Error Output:\n=+\n.*__inexistant_process__.*not found/');
@@ -339,10 +309,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dontPopulateProperties fs
      */
-    public function idle_timeout_option_closes_node_once_timer_is_reached()
+    public function testIdleTimeoutOptionClosesNodeOnceTimerIsReached()
     {
         $this->fs = new FsWithProcessDelegation(['idle_timeout' => 0.5]);
 
@@ -357,10 +326,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dontPopulateProperties fs
      */
-    public function read_timeout_option_throws_an_exception_on_long_actions()
+    public function testReadTimeoutOptionThrowsAnExceptionOnLongActions()
     {
         $this->expectException(\Nesk\Rialto\Exceptions\ReadSocketTimeoutException::class);
         $this->expectExceptionMessageMatches('/^The timeout \(0\.010 seconds\) has been exceeded/');
@@ -371,11 +339,10 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group logs
      * @dontPopulateProperties fs
      */
-    public function forbidden_options_are_removed()
+    public function testForbiddenOptionsAreRemoved()
     {
         $loggerHandler = new TestHandler();
         $logger = new Logger('test', [$loggerHandler]);
@@ -394,10 +361,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dontPopulateProperties fs
      */
-    public function connection_delegate_receives_options()
+    public function testConnectionDelegateReceivesOptions()
     {
         $this->fs = new FsWithProcessDelegation([
             'log_node_console' => true,
@@ -410,10 +376,9 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dontPopulateProperties fs
      */
-    public function process_status_is_tracked()
+    public function testProcessStatusIsTracked()
     {
         if (PHP_OS === 'WINNT') {
             $this->markTestSkipped('This test is not supported on Windows.');
@@ -424,7 +389,7 @@ class ImplementationTest extends TestCase
         }
 
         $oldPids = $this->getPidsForProcessName('node');
-        $this->fs = new FsWithProcessDelegation;
+        $this->fs = new FsWithProcessDelegation();
         $newPids = $this->getPidsForProcessName('node');
 
         $newNodeProcesses = array_values(array_diff($newPids, $oldPids));
@@ -446,8 +411,7 @@ class ImplementationTest extends TestCase
         $this->fs->foo;
     }
 
-    /** @test */
-    public function process_is_properly_shutdown_when_there_are_no_more_references()
+    public function testProcessIsProperlyShutdownWhenThereAreNoMoreReferences()
     {
         if (!class_exists('WeakReference')) {
             $this->markTestSkipped('This test requires weak references: https://www.php.net/weakreference');
@@ -466,11 +430,10 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group logs
      * @dontPopulateProperties fs
      */
-    public function logger_is_used_when_provided()
+    public function testLoggerIsUsedWhenProvided()
     {
         $loggerHandler = new TestHandler();
         $logger = new Logger('test', [$loggerHandler]);
@@ -480,12 +443,11 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @dataProvider shouldLogNodeConsoleProvider
      * @group logs
      * @dontPopulateProperties fs
      */
-    public function node_console_calls_are_logged(bool $shouldLogNodeConsole)
+    public function testNodeConsoleCallsAreLogged(bool $shouldLogNodeConsole)
     {
         $loggerHandler = new TestHandler();
         $logger = new Logger('test', [$loggerHandler]);
@@ -506,11 +468,10 @@ class ImplementationTest extends TestCase
     }
 
     /**
-     * @test
      * @group logs
      * @dontPopulateProperties fs
      */
-    public function delayed_node_console_calls_and_data_on_standard_streams_are_logged()
+    public function testDelayedNodeConsoleCallsAndDataOnStandardStreamsAreLogged()
     {
         $loggerHandler = new TestHandler();
         $logger = new Logger('test', [$loggerHandler]);

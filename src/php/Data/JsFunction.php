@@ -39,7 +39,7 @@ class JsFunction implements \JsonSerializable
      */
     public static function create(...$arguments)
     {
-        trigger_error(__METHOD__.'() has been deprecated and will be removed from v2.', E_USER_DEPRECATED);
+        trigger_error(__METHOD__ . '() has been deprecated and will be removed from v2.', E_USER_DEPRECATED);
 
         if (isset($arguments[0]) && is_string($arguments[0])) {
             return new static([], $arguments[0], $arguments[1] ?? []);
@@ -61,7 +61,8 @@ class JsFunction implements \JsonSerializable
     /**
      * Return a new instance with the specified parameters.
      */
-    public function parameters(array $parameters): self {
+    public function parameters(array $parameters): self
+    {
         $clone = clone $this;
         $clone->parameters = $parameters;
         return $clone;
@@ -70,7 +71,8 @@ class JsFunction implements \JsonSerializable
     /**
      * Return a new instance with the specified body.
      */
-    public function body(string $body): self {
+    public function body(string $body): self
+    {
         $clone = clone $this;
         $clone->body = $body;
         return $clone;
@@ -79,7 +81,8 @@ class JsFunction implements \JsonSerializable
     /**
      * Return a new instance with the specified scope.
      */
-    public function scope(array $scope): self {
+    public function scope(array $scope): self
+    {
         $clone = clone $this;
         $clone->scope = $scope;
         return $clone;
@@ -88,7 +91,8 @@ class JsFunction implements \JsonSerializable
     /**
      * Return a new instance with the specified async state.
      */
-    public function async(bool $isAsync = true): self {
+    public function async(bool $isAsync = true): self
+    {
         $clone = clone $this;
         $clone->async = $isAsync;
         return $clone;
@@ -116,9 +120,9 @@ class JsFunction implements \JsonSerializable
         $name = lcfirst(substr($name, strlen('createWith')));
 
         if ($name === 'jsonSerialize') {
-            throw new BadMethodCallException;
+            throw new BadMethodCallException();
         }
 
-        return call_user_func([new self, $name], ...$arguments);
+        return call_user_func([new self(), $name], ...$arguments);
     }
 }

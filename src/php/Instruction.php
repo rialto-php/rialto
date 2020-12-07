@@ -54,7 +54,7 @@ class Instruction implements \JsonSerializable
      */
     public static function noop(): self
     {
-        return new self;
+        return new self();
     }
 
     /**
@@ -172,9 +172,9 @@ class Instruction implements \JsonSerializable
         $name = lcfirst(substr($name, strlen('with')));
 
         if ($name === 'jsonSerialize') {
-            throw new BadMethodCallException;
+            throw new BadMethodCallException();
         }
 
-        return call_user_func([new self, $name], ...$arguments);
+        return call_user_func([new self(), $name], ...$arguments);
     }
 }

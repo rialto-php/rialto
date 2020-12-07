@@ -16,7 +16,8 @@ use Nesk\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 
 class ProcessSupervisor
 {
-    use Data\UnserializesData, Traits\UsesBasicResourceAsDefault;
+    use Data\UnserializesData;
+    use Traits\UsesBasicResourceAsDefault;
 
     /**
      * A reasonable delay to let the process terminate itself (in milliseconds).
@@ -217,7 +218,8 @@ class ProcessSupervisor
      * This avoids double declarations of some JS classes in production, due to a require with two different paths (one
      * with the NPM path, the other one with the Composer path).
      */
-    protected function getProcessScriptPath(): string {
+    protected function getProcessScriptPath(): string
+    {
         static $scriptPath = null;
 
         if ($scriptPath !== null) {
@@ -225,7 +227,7 @@ class ProcessSupervisor
         }
 
         // The script path in local development
-        $scriptPath = __DIR__.'/../node/serve.js';
+        $scriptPath = __DIR__ . '/../node/serve.js';
 
         $process = new SymfonyProcess([
             $this->options['executable_path'],
@@ -303,7 +305,7 @@ class ProcessSupervisor
                     $this->options['idle_timeout'],
                     new NodeFatalException($process, $this->options['debug'])
                 );
-            } else if (NodeFatalException::exceptionApplies($process)) {
+            } elseif (NodeFatalException::exceptionApplies($process)) {
                 throw new NodeFatalException($process, $this->options['debug']);
             } elseif ($process->isTerminated() && !$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
@@ -321,7 +323,8 @@ class ProcessSupervisor
      * The process might take a while to stop itself. So, before trying to check its status or reading its standard
      * streams, this method should be executed.
      */
-    protected function waitForProcessTermination(): void {
+    protected function waitForProcessTermination(): void
+    {
         usleep(self::PROCESS_TERMINATION_DELAY * 1000);
     }
 
@@ -350,7 +353,7 @@ class ProcessSupervisor
     protected function createNewClient(int $port): Socket
     {
         // Set the client as non-blocking to handle the exceptions thrown by the process
-        return (new SocketFactory)
+        return (new SocketFactory())
             ->createClient("tcp://127.0.0.1:$port")
             ->setBlocking(false);
     }

@@ -11,7 +11,7 @@ class FsWithProcessDelegation extends AbstractEntryPoint
 
     public function __construct(array $userOptions = [])
     {
-        parent::__construct(__DIR__.'/FsConnectionDelegate.js', new FsProcessDelegate, [], $userOptions);
+        parent::__construct(__DIR__ . '/FsConnectionDelegate.js', new FsProcessDelegate(), [], $userOptions);
     }
 
     public function getProcessSupervisor(): ProcessSupervisor

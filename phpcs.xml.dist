@@ -11,6 +11,8 @@
     <!-- relative path from PHPCS source location -->
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
+    <rule ref="PSR12"/>
+
     <file>src/</file>
     <file>tests/</file>
 </ruleset>

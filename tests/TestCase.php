@@ -33,7 +33,8 @@ class TestCase extends BaseTestCase
         return !in_array($propertyName, $this->dontPopulateProperties);
     }
 
-    public function ignoreUserDeprecation(string $messagePattern, callable $callback) {
+    public function ignoreUserDeprecation(string $messagePattern, callable $callback)
+    {
         set_error_handler(
             function (int $errorNumber, string $errorString, string $errorFile, int $errorLine) use ($messagePattern) {
                 if ($errorNumber !== E_USER_DEPRECATED || preg_match($messagePattern, $errorString) !== 1) {
@@ -49,7 +50,8 @@ class TestCase extends BaseTestCase
         return $value;
     }
 
-    public function getPidsForProcessName(string $processName) {
+    public function getPidsForProcessName(string $processName)
+    {
         $pgrep = new Process(['pgrep', $processName]);
         $pgrep->run();
 

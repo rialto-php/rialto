@@ -37,7 +37,7 @@ trait HandlesNodeErrors
         $message = $error['message'];
 
         if ($appendStackTraceToMessage) {
-            $message .= "\n\n".$error['stack'];
+            $message .= "\n\n" . $error['stack'];
         }
 
         return $message;

@@ -11,7 +11,7 @@ class FsProcessDelegate implements ShouldHandleProcessDelegation
 
     public function resourceFromOriginalClassName(string $className): ?string
     {
-        $class = __NAMESPACE__."\\Resources\\$className";
+        $class = __NAMESPACE__ . "\\Resources\\$className";
 
         return class_exists($class) ? $class : null;
     }

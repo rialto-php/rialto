@@ -7,7 +7,8 @@ use Nesk\Rialto\Exceptions\IdentifiesProcess;
 
 class FatalException extends \RuntimeException
 {
-    use HandlesNodeErrors, IdentifiesProcess;
+    use HandlesNodeErrors;
+    use IdentifiesProcess;
 
     /**
      * Check if the exception can be applied to the process.
