@@ -6,6 +6,8 @@ use BadMethodCallException;
 use InvalidArgumentException;
 use Nesk\Rialto\Interfaces\ShouldIdentifyResource;
 
+use function Safe\substr;
+
 class Instruction implements \JsonSerializable
 {
     public const TYPE_CALL = 'call';
@@ -168,7 +170,7 @@ class Instruction implements \JsonSerializable
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        $name = \lcfirst(\substr($name, \strlen('with')));
+        $name = \lcfirst(substr($name, \strlen('with')));
 
         if ($name === 'jsonSerialize') {
             throw new BadMethodCallException();

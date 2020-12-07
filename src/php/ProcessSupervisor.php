@@ -8,11 +8,18 @@ use Nesk\Rialto\Exceptions\Node\FatalException as NodeFatalException;
 use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
 use Psr\Log\LogLevel;
 use RuntimeException;
+use Safe\Exceptions\FilesystemException;
 use Socket\Raw\Exception as SocketException;
 use Socket\Raw\Factory as SocketFactory;
 use Socket\Raw\Socket;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process as SymfonyProcess;
+
+use function Safe\array_flip;
+use function Safe\base64_decode;
+use function Safe\preg_match;
+use function Safe\realpath;
+use function Safe\substr;
 
 class ProcessSupervisor
 {
@@ -252,14 +259,14 @@ class ProcessSupervisor
      */
     protected function createNewProcess(string $connectionDelegatePath): SymfonyProcess
     {
-        $realConnectionDelegatePath = \realpath($connectionDelegatePath);
-
-        if ($realConnectionDelegatePath === false) {
+        try {
+            $realConnectionDelegatePath = realpath($connectionDelegatePath);
+        } catch (FilesystemException $exception) {
             throw new RuntimeException("Cannot find file or directory '$connectionDelegatePath'.");
         }
 
         // Remove useless options for the process
-        $processOptions = \array_diff_key($this->options, \array_flip(self::USELESS_OPTIONS_FOR_PROCESS));
+        $processOptions = \array_diff_key($this->options, array_flip(self::USELESS_OPTIONS_FOR_PROCESS));
 
         return new SymfonyProcess(\array_merge(
             [$this->options['executable_path']],
@@ -411,8 +418,13 @@ class ProcessSupervisor
                 $this->client->selectRead($readTimeout);
                 $packet = $this->client->read(static::SOCKET_PACKET_SIZE);
 
-                $chunksLeft = (int) \substr($packet, 0, static::SOCKET_HEADER_SIZE);
-                $chunk = \substr($packet, static::SOCKET_HEADER_SIZE);
+                if (\strlen($packet) === 0) {
+                    $chunksLeft = 0;
+                    continue;
+                }
+
+                $chunksLeft = (int) substr($packet, 0, static::SOCKET_HEADER_SIZE);
+                $chunk = substr($packet, static::SOCKET_HEADER_SIZE);
 
                 $payload .= $chunk;
 
@@ -426,7 +438,7 @@ class ProcessSupervisor
             $this->checkProcessStatus();
 
             // Extract the socket error code to throw more specific exceptions
-            \preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
+            preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
             $socketErrorCode = \constant($socketErrorMatches[1]);
 
             $elapsedTime = \microtime(true) - $startTimestamp;
@@ -439,7 +451,7 @@ class ProcessSupervisor
 
         $this->logProcessStandardStreams();
 
-        $data = \base64_decode($payload);
+        $data = base64_decode($payload);
         $data = \strlen($data) > 0 ? \json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
         ['logs' => $logs, 'value' => $value] = $data;
 

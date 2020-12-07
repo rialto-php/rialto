@@ -2,6 +2,8 @@
 
 namespace Nesk\Rialto\Data;
 
+use function Safe\substr;
+
 class JsFunction implements \JsonSerializable
 {
     /**
@@ -117,7 +119,7 @@ class JsFunction implements \JsonSerializable
      */
     public static function __callStatic(string $name, array $arguments)
     {
-        $name = \lcfirst(\substr($name, \strlen('createWith')));
+        $name = \lcfirst(substr($name, \strlen('createWith')));
 
         if ($name === 'jsonSerialize') {
             throw new BadMethodCallException();

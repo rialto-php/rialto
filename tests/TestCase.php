@@ -6,6 +6,8 @@ use PHPUnit\Framework\TestCase as BaseTestCase;
 use PHPUnit\Util\ErrorHandler;
 use Symfony\Component\Process\Process;
 
+use function Safe\preg_match;
+
 class TestCase extends BaseTestCase
 {
     private $dontPopulateProperties = [];
@@ -17,8 +19,9 @@ class TestCase extends BaseTestCase
         $methodName = \explode(' ', $this->getName())[0] ?? '';
         $testMethod = new \ReflectionMethod($this, $methodName);
         $docComment = $testMethod->getDocComment();
+        $docComment = $docComment !== false ? $docComment : '';
 
-        if (\preg_match('/@dontPopulateProperties (.*)/', $docComment, $matches)) {
+        if (preg_match('/@dontPopulateProperties (.*)/', $docComment, $matches)) {
             $this->dontPopulateProperties = \array_values(\array_filter(\explode(' ', $matches[1])));
         }
     }
@@ -32,7 +35,7 @@ class TestCase extends BaseTestCase
     {
         \set_error_handler(
             function (int $errorNumber, string $errorString, string $errorFile, int $errorLine) use ($messagePattern) {
-                if ($errorNumber !== E_USER_DEPRECATED || \preg_match($messagePattern, $errorString) !== 1) {
+                if ($errorNumber !== E_USER_DEPRECATED || preg_match($messagePattern, $errorString) !== 1) {
                     ErrorHandler::handleError($errorNumber, $errorString, $errorFile, $errorLine);
                 }
             }

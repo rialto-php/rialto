@@ -741,11 +741,6 @@ parameters:
 			path: tests/TestCase.php
 
 		-
-			message: "#^Parameter \\#2 \\$subject of function preg_match expects string, string\\|false given\\.$#"
-			count: 1
-			path: tests/TestCase.php
-
-		-
 			message: "#^Method Nesk\\\\Rialto\\\\Tests\\\\TestCase\\:\\:ignoreUserDeprecation\\(\\) has no return typehint specified\\.$#"
 			count: 1
 			path: tests/TestCase.php

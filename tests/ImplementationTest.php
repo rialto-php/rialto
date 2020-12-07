@@ -12,6 +12,10 @@ use Nesk\Rialto\Tests\Implementation\FsWithProcessDelegation;
 use Nesk\Rialto\Tests\Implementation\Resources\Stats;
 use Symfony\Component\Process\Process;
 
+use function Safe\posix_kill;
+use function Safe\realpath;
+use function Safe\sleep;
+
 class ImplementationTest extends TestCase
 {
     private const JS_FUNCTION_CREATE_DEPRECATION_PATTERN = '/^Nesk\\\\Rialto\\\\Data\\\\JsFunction::create\(\)/';
@@ -20,7 +24,7 @@ class ImplementationTest extends TestCase
     {
         parent::setUp();
 
-        $this->dirPath = \realpath(__DIR__ . '/resources');
+        $this->dirPath = realpath(__DIR__ . '/resources');
         $this->filePath = "{$this->dirPath}/file";
 
         $this->fs = $this->canPopulateProperty('fs') ? new FsWithProcessDelegation() : null;
@@ -321,7 +325,7 @@ class ImplementationTest extends TestCase
 
         $this->fs->constants;
 
-        \sleep(1);
+        sleep(1);
 
         $this->expectException(\Nesk\Rialto\Exceptions\IdleTimeoutException::class);
         $this->expectExceptionMessageMatches('/^The idle timeout \(0\.500 seconds\) has been exceeded/');
@@ -404,8 +408,7 @@ class ImplementationTest extends TestCase
             "One Node process should have been created instead of $newNodeProcessesCount. Try running again."
         );
 
-        $processKilled = \posix_kill($newNodeProcesses[0], SIGKILL);
-        $this->assertTrue($processKilled);
+        posix_kill($newNodeProcesses[0], SIGKILL);
 
         \usleep(10000); # To make sure the process had enough time to be killed.
 
