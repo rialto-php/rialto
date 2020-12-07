@@ -2,9 +2,9 @@
 
 namespace Nesk\Rialto\Tests;
 
+use PHPUnit\Framework\TestCase as BaseTestCase;
 use PHPUnit\Util\ErrorHandler;
 use Symfony\Component\Process\Process;
-use PHPUnit\Framework\TestCase as BaseTestCase;
 
 class TestCase extends BaseTestCase
 {

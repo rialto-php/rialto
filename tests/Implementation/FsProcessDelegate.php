@@ -2,8 +2,8 @@
 
 namespace Nesk\Rialto\Tests\Implementation;
 
-use Nesk\Rialto\Traits\UsesBasicResourceAsDefault;
 use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Nesk\Rialto\Traits\UsesBasicResourceAsDefault;
 
 class FsProcessDelegate implements ShouldHandleProcessDelegation
 {

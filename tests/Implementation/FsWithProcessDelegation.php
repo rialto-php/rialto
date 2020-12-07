@@ -2,8 +2,8 @@
 
 namespace Nesk\Rialto\Tests\Implementation;
 
-use Nesk\Rialto\ProcessSupervisor;
 use Nesk\Rialto\AbstractEntryPoint;
+use Nesk\Rialto\ProcessSupervisor;
 
 class FsWithProcessDelegation extends AbstractEntryPoint
 {

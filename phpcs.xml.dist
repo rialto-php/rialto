@@ -12,6 +12,7 @@
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
 
     <rule ref="PSR12"/>
+    <rule ref="SlevomatCodingStandard.Namespaces.AlphabeticallySortedUses"/>
     <rule ref="SlevomatCodingStandard.Namespaces.UnusedUses">
         <properties>
             <property name="searchAnnotations" value="true"/>

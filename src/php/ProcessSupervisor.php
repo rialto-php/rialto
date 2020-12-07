@@ -2,17 +2,17 @@
 
 namespace Nesk\Rialto;
 
-use Psr\Log\LogLevel;
-use RuntimeException;
-use Socket\Raw\Socket;
-use Socket\Raw\Factory as SocketFactory;
-use Socket\Raw\Exception as SocketException;
 use Nesk\Rialto\Exceptions\IdleTimeoutException;
-use Symfony\Component\Process\Process as SymfonyProcess;
-use Symfony\Component\Process\Exception\ProcessFailedException;
-use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
 use Nesk\Rialto\Exceptions\Node\Exception as NodeException;
 use Nesk\Rialto\Exceptions\Node\FatalException as NodeFatalException;
+use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Psr\Log\LogLevel;
+use RuntimeException;
+use Socket\Raw\Exception as SocketException;
+use Socket\Raw\Factory as SocketFactory;
+use Socket\Raw\Socket;
+use Symfony\Component\Process\Exception\ProcessFailedException;
+use Symfony\Component\Process\Process as SymfonyProcess;
 
 class ProcessSupervisor
 {

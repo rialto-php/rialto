@@ -2,8 +2,8 @@
 
 namespace Nesk\Rialto\Traits;
 
-use RuntimeException;
 use Nesk\Rialto\Data\ResourceIdentity;
+use RuntimeException;
 
 trait IdentifiesResource
 {

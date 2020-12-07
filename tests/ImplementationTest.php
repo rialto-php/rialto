@@ -4,12 +4,13 @@ namespace Nesk\Rialto\Tests;
 
 use Monolog\Handler\TestHandler;
 use Monolog\Logger;
+use Nesk\Rialto\Data\BasicResource;
 use Nesk\Rialto\Data\JsFunction;
 use Nesk\Rialto\Exceptions\Node;
-use Nesk\Rialto\Data\BasicResource;
-use Symfony\Component\Process\Process;
+use Nesk\Rialto\Tests\Implementation\FsWithoutProcessDelegation;
+use Nesk\Rialto\Tests\Implementation\FsWithProcessDelegation;
 use Nesk\Rialto\Tests\Implementation\Resources\Stats;
-use Nesk\Rialto\Tests\Implementation\{FsWithProcessDelegation, FsWithoutProcessDelegation};
+use Symfony\Component\Process\Process;
 
 class ImplementationTest extends TestCase
 {
