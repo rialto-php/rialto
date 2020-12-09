@@ -2,14 +2,12 @@
 
 namespace Nesk\Rialto\Data;
 
-use function Safe\substr;
-
 class JsFunction implements \JsonSerializable
 {
     /**
     * The parameters of the function.
     *
-    * @var array
+    * @var array<int|string, int|float|string|bool|null>
     */
     protected $parameters;
 
@@ -23,7 +21,7 @@ class JsFunction implements \JsonSerializable
     /**
      * The scope of the function.
      *
-     * @var array
+     * @var array<int, int|float|string|bool|null>
      */
     protected $scope;
 
@@ -52,6 +50,9 @@ class JsFunction implements \JsonSerializable
 
     /**
      * Constructor.
+     *
+     * @param array<int|string, int|float|string|bool|null> $parameters
+     * @param array<int, int|float|string|bool|null> $scope
      */
     public function __construct(array $parameters = [], string $body = '', array $scope = [])
     {
@@ -62,12 +63,22 @@ class JsFunction implements \JsonSerializable
 
     /**
      * Return a new instance with the specified parameters.
+     *
+     * @param array<int|string, int|float|string|bool|null> $parameters
      */
     public function parameters(array $parameters): self
     {
         $clone = clone $this;
         $clone->parameters = $parameters;
         return $clone;
+    }
+
+    /**
+     * @param array<int|string, int|float|string|bool|null> $parameters
+     */
+    public static function createWithParameters(array $parameters): self
+    {
+        return (new self())->parameters($parameters);
     }
 
     /**
@@ -80,14 +91,29 @@ class JsFunction implements \JsonSerializable
         return $clone;
     }
 
+    public static function createWithBody(string $body): self
+    {
+        return (new self())->body($body);
+    }
+
     /**
      * Return a new instance with the specified scope.
+     *
+     * @param array<int, int|float|string|bool|null> $scope
      */
     public function scope(array $scope): self
     {
         $clone = clone $this;
         $clone->scope = $scope;
         return $clone;
+    }
+
+    /**
+     * @param array<int, int|float|string|bool|null> $scope
+     */
+    public static function createWithScope(array $scope): self
+    {
+        return (new self())->scope($scope);
     }
 
     /**
@@ -100,8 +126,15 @@ class JsFunction implements \JsonSerializable
         return $clone;
     }
 
+    public static function createWithAsync(bool $isAsync = true): self
+    {
+        return (new self())->async($isAsync);
+    }
+
     /**
      * Serialize the object to a value that can be serialized natively by {@see json_encode}.
+     *
+     * @return array<string, mixed>
      */
     public function jsonSerialize(): array
     {
@@ -112,19 +145,5 @@ class JsFunction implements \JsonSerializable
             'scope' => (object) $this->scope,
             'async' => $this->async,
         ];
-    }
-
-    /**
-     * Proxy the "createWith*" static method calls to the "*" non-static method calls of a new instance.
-     */
-    public static function __callStatic(string $name, array $arguments)
-    {
-        $name = \lcfirst(substr($name, \strlen('createWith')));
-
-        if ($name === 'jsonSerialize') {
-            throw new BadMethodCallException();
-        }
-
-        return \call_user_func([new self(), $name], ...$arguments);
     }
 }
