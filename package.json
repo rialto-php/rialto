@@ -23,5 +23,14 @@
   },
   "dependencies": {
     "lodash": "^4.17.10"
+  },
+  "devDependencies": {
+    "prettier": "2.2.1"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "all"
   }
 }
