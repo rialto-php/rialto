@@ -1,5 +1,5 @@
-'use strict';
+'use strict'
 
 module.exports = {
-    ConnectionDelegate: require('./ConnectionDelegate'),
-};
+  ConnectionDelegate: require('./ConnectionDelegate'),
+}
