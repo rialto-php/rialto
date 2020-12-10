@@ -1,7 +1,6 @@
 'use strict'
 
 const EventEmitter = require('events'),
-  ConnectionDelegate = require('./ConnectionDelegate'),
   ResourceRepository = require('./Data/ResourceRepository'),
   Instruction = require('./Instruction'),
   DataSerializer = require('./Data/Serializer'),

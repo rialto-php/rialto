@@ -30,6 +30,7 @@ class ConnectionDelegate {
    * @param  {responseHandler} responseHandler
    * @param  {errorHandler} errorHandler
    */
+  // eslint-disable-next-line
   handleInstruction(instruction, responseHandler, errorHandler) {
     responseHandler(null)
   }

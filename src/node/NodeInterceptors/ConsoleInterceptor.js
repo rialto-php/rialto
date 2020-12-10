@@ -86,7 +86,7 @@ class ConsoleInterceptor {
   static formatMessage(message) {
     // Remove terminal colors written as escape sequences
     // See: https://stackoverflow.com/a/41407246/1513045
-    message = message.replace(/\x1b\[\d+m/g, '')
+    message = message.replace(/\x1b\[\d+m/g, '') // eslint-disable-line
 
     // Remove the final new line
     message = message.endsWith('\n') ? message.slice(0, -1) : message

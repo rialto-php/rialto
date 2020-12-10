@@ -13,7 +13,7 @@ process.on('unhandledRejection', (error) => {
 // Output the exceptions in JSON format
 process.on('uncaughtException', (error) => {
   process.stderr.write(JSON.stringify(DataSerializer.serializeError(error)))
-  process.exit(1)
+  process.exit(1) // eslint-disable-line
 })
 
 // Retrieve the options
