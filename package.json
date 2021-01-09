@@ -38,5 +38,9 @@
     "semi": false,
     "singleQuote": true,
     "trailingComma": "all"
+  },
+  "scripts": {
+    "prettier": "prettier ./src/node",
+    "eslint": "eslint . --ext .js,.ts"
   }
 }

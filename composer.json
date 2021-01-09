@@ -50,6 +50,9 @@
     },
     "scripts": {
         "post-install-cmd": "npm install",
+        "lint": "./vendor/bin/parallel-lint ./src ./tests",
+        "phpcs": "./vendor/bin/phpcs",
+        "phpstan": "./vendor/bin/phpstan analyse --memory-limit=2G",
         "test": "./vendor/bin/phpunit"
     },
     "config": {

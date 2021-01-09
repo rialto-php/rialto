@@ -12,22 +12,22 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: composer update --no-interaction --no-progress --prefer-dist --ansi
-      - run: ./vendor/bin/phpcs --colors
+      - run: composer phpcs -- --colors
   phpstan:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: composer update --no-interaction --no-progress --prefer-dist --ansi
-      - run: ./vendor/bin/phpstan analyse --no-progress --ansi
+      - run: composer phpstan -- --no-progress --ansi
   prettier:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - run: npx prettier --check ./src/node
+      - run: npm run prettier -- --check
   eslint:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: npm install
-      - run: npx eslint --color . --ext .js,.ts
+      - run: npm run eslint -- --color
