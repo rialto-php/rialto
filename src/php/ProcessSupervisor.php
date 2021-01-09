@@ -178,7 +178,7 @@ class ProcessSupervisor
             $this->process->stop($this->options['stop_timeout']);
             $this->logger->info('Stopped process with PID {pid}', $logContext);
         } else {
-            $this->logger->warning("The process cannot because be stopped because it's no longer running", $logContext);
+            $this->logger->warning("The process cannot be stopped because it's no longer running", $logContext);
         }
     }
 
