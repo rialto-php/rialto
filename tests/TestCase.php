@@ -15,7 +15,7 @@ class TestCase extends BaseTestCase
 {
     private $dontPopulateProperties = [];
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
