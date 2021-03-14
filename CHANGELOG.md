@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Rewritten the whole communication layer for better performance and stability
 - `JsFunction::createWith*` methods are now autocompleted in IDEs
 
 ### Changed

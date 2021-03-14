@@ -5,21 +5,20 @@ namespace Nesk\Rialto;
 use Nesk\Rialto\Exceptions\IdleTimeoutException;
 use Nesk\Rialto\Exceptions\Node\Exception as NodeException;
 use Nesk\Rialto\Exceptions\Node\FatalException as NodeFatalException;
+use Nesk\Rialto\Exceptions\ReadSocketTimeoutException;
 use Nesk\Rialto\Interfaces\ShouldHandleProcessDelegation;
+use Nesk\Rialto\Transport\CurlTransport;
+use Nesk\Rialto\Transport\Transport;
 use Psr\Log\LogLevel;
 use RuntimeException;
+use Safe\Exceptions\CurlException;
 use Safe\Exceptions\FilesystemException;
-use Socket\Raw\Exception as SocketException;
-use Socket\Raw\Factory as SocketFactory;
-use Socket\Raw\Socket;
+use Safe\Exceptions\JsonException;
 use Symfony\Component\Process\Exception\ProcessFailedException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 use function Safe\array_flip;
-use function Safe\base64_decode;
-use function Safe\preg_match;
 use function Safe\realpath;
-use function Safe\substr;
 
 class ProcessSupervisor
 {
@@ -118,7 +117,7 @@ class ProcessSupervisor
     /**
      * The client to communicate with the process.
      *
-     * @var \Socket\Raw\Socket
+     * @var Transport
      */
     protected $client;
 
@@ -154,7 +153,8 @@ class ProcessSupervisor
 
         $this->delegate = $processDelegate;
 
-        $this->client = $this->createNewClient($this->serverPort());
+        $this->client = new CurlTransport();
+        $this->client->connect("http://localhost:{$this->serverPort()}", $this->options['read_timeout']);
 
         if ($this->options['debug']) {
             // Clear error output made by the "--inspect" flag
@@ -302,7 +302,7 @@ class ProcessSupervisor
      *
      * @throws \Symfony\Component\Process\Exception\ProcessFailedException
      */
-    protected function checkProcessStatus(): void
+    protected function checkProcessStatus(?\Throwable $previousException = null): void
     {
         $this->logProcessStandardStreams();
 
@@ -312,10 +312,10 @@ class ProcessSupervisor
             if (IdleTimeoutException::exceptionApplies($process)) {
                 throw new IdleTimeoutException(
                     $this->options['idle_timeout'],
-                    new NodeFatalException($process, $this->options['debug'])
+                    new NodeFatalException($process, $this->options['debug'], $previousException)
                 );
             } elseif (NodeFatalException::exceptionApplies($process)) {
-                throw new NodeFatalException($process, $this->options['debug']);
+                throw new NodeFatalException($process, $this->options['debug'], $previousException);
             } elseif ($process->isTerminated() && !$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
@@ -357,17 +357,6 @@ class ProcessSupervisor
     }
 
     /**
-     * Create a new client to communicate with the process.
-     */
-    protected function createNewClient(int $port): Socket
-    {
-        // Set the client as non-blocking to handle the exceptions thrown by the process
-        return (new SocketFactory())
-            ->createClient("tcp://127.0.0.1:$port")
-            ->setBlocking(false);
-    }
-
-    /**
      * Send an instruction to the process for execution.
      */
     public function executeInstruction(Instruction $instruction, bool $instructionShouldBeLogged = true)
@@ -388,73 +377,36 @@ class ProcessSupervisor
             ]);
         }
 
-        $this->client->selectWrite(1);
-        $this->client->write($serializedInstruction);
-
-        $value = $this->readNextProcessValue($instructionShouldBeLogged);
-
-        // Check the process status if the value is null because, if the process crash while executing the instruction,
-        // the socket closes and returns an empty value (which is converted to `null`).
-        if ($value === null) {
-            $this->checkProcessStatus();
-        }
-
-        return $value;
-    }
-
-    /**
-     * Read the next value written by the process.
-     *
-     * @throws \Nesk\Rialto\Exceptions\ReadSocketTimeoutException if reading the socket exceeded the timeout.
-     * @throws \Nesk\Rialto\Exceptions\Node\Exception if the process returned an error.
-     */
-    protected function readNextProcessValue(bool $valueShouldBeLogged = true)
-    {
-        $readTimeout = $this->options['read_timeout'];
-        $payload = '';
-
         try {
-            $startTimestamp = \microtime(true);
+            $payload = $this->client->send($serializedInstruction);
+        } catch (CurlException $exception) {
+            // Check the process status before crashing on a CurlException, it's probably related.
+            $this->checkProcessStatus($exception);
 
-            do {
-                $this->client->selectRead($readTimeout);
-                $packet = $this->client->read(static::SOCKET_PACKET_SIZE);
-
-                if (\strlen($packet) === 0) {
-                    $chunksLeft = 0;
-                    continue;
-                }
-
-                $chunksLeft = (int) substr($packet, 0, static::SOCKET_HEADER_SIZE);
-                $chunk = substr($packet, static::SOCKET_HEADER_SIZE);
-
-                $payload .= $chunk;
-
-                if ($chunksLeft > 0) {
-                    // The next chunk might be an empty string if don't wait a short period on slow environments.
-                    \usleep(self::SOCKET_NEXT_CHUNK_DELAY * 1000);
-                }
-            } while ($chunksLeft > 0);
-        } catch (SocketException $exception) {
-            $this->waitForProcessTermination();
-            $this->checkProcessStatus();
-
-            // Extract the socket error code to throw more specific exceptions
-            preg_match('/\(([A-Z_]+?)\)$/', $exception->getMessage(), $socketErrorMatches);
-            $socketErrorCode = \constant($socketErrorMatches[1]);
-
-            $elapsedTime = \microtime(true) - $startTimestamp;
-            if ($socketErrorCode === SOCKET_EAGAIN && $readTimeout !== null && $elapsedTime >= $readTimeout) {
-                throw new Exceptions\ReadSocketTimeoutException($readTimeout, $exception);
+            if ($exception->getCode() === \CURLE_OPERATION_TIMEDOUT) {
+                throw new ReadSocketTimeoutException($this->options['read_timeout'], $exception);
             }
 
             throw $exception;
         }
 
-        $this->logProcessStandardStreams();
+        return $this->processClientPayload($payload, $instructionShouldBeLogged);
+    }
 
-        $data = base64_decode($payload);
-        $data = \strlen($data) > 0 ? \json_decode($data, true, 512, JSON_THROW_ON_ERROR) : null;
+    /**
+     * Read the next value written by the process.
+     *
+     * @return mixed
+     */
+    protected function processClientPayload(string $payload, bool $valueShouldBeLogged = true)
+    {
+        try {
+            $data = \strlen($payload) > 0 ? \json_decode($payload, true, 512, JSON_THROW_ON_ERROR) : null;
+        } catch (JsonException $exception) {
+            $this->checkProcessStatus();
+            throw $exception;
+        }
+
         ['logs' => $logs, 'value' => $value] = $data;
 
         foreach ($logs ?? [] as $log) {

@@ -17,6 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - run: rm -rf /tmp/phpstan
       - run: composer update --no-interaction --no-progress --prefer-dist --ansi
       - run: composer phpstan -- --no-progress --ansi
   prettier:

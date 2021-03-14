@@ -21,12 +21,12 @@ class FatalException extends \RuntimeException
     /**
      * Constructor.
      */
-    public function __construct(Process $process, bool $appendStackTraceToMessage = false)
+    public function __construct(Process $process, bool $appendStackTraceToMessage = false, ?\Throwable $previous = null)
     {
         $this->process = $process;
 
         $message = $this->setTraceAndGetMessage($process->getErrorOutput(), $appendStackTraceToMessage);
 
-        parent::__construct($message);
+        parent::__construct($message, 0, $previous);
     }
 }

@@ -1,0 +1,10 @@
+#!/usr/bin/env node
+
+// See: https://johann.pardanaud.com/blog/how-to-assert-unhandled-rejection-and-uncaught-exception-with-jest/
+process._original = (function (_original) {
+  return function () {
+    return _original
+  }
+})(process)
+
+require('jest/bin/jest')

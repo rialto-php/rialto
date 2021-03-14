@@ -3,7 +3,8 @@
         "lib": ["es5", "es2015", "es2016", "es2017", "es2018"],
         "target": "es2017",
         "module": "commonjs",
-        "strict": true
+        "strict": true,
+        "stripInternal": true
     },
-    "include": ["./src/node/**/*"],
+    "include": ["./src/node/**/*", "./tests/node/*.d.ts"],
 }

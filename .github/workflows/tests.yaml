@@ -16,4 +16,5 @@ jobs:
           coverage: none
       - run: composer update ${{ matrix.composer-flags }} --no-interaction --no-progress --prefer-dist --ansi
       - run: npm install
+      - run: npm run build
       - run: composer test -- --color=always

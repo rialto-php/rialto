@@ -6,5 +6,6 @@ includes:
   - phpstan-baseline.neon
 
 parameters:
+  bootstrapFiles: [tests/bootstrap.php]
   paths: [src, tests]
   level: 8
