@@ -1,3 +1,9 @@
+# 🚨 This project is not maintained anymore
+
+As I write these lines, it's been nearly two years since the latest release of Rialto. Despite the enthusiasm around this project, I no longer have the motivation to support its development, mainly because it never really had any use to me. So its time to be honest with you, Rialto is no longer maintained.
+
+If you create a fork and plan to maintain it, let me know and I will link it here.
+
 # Rialto
 
 [![PHP Version](https://img.shields.io/packagist/php-v/nesk/rialto.svg?style=flat-square)](http://php.net/)
